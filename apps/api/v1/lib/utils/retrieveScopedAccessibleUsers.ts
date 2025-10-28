@@ -13,6 +13,7 @@ export const getAccessibleUsers = async ({
   const adminOrgMembership = await prisma.membership.findFirst({
     where: {
       userId: adminUserId,
+      accepted: true,
       role: { in: [MembershipRole.OWNER, MembershipRole.ADMIN] },
       team: {
         isOrganization: true,
@@ -47,6 +48,7 @@ export const retrieveOrgScopedAccessibleUsers = async ({ adminId }: { adminId: n
   const adminOrgMembership = await prisma.membership.findFirst({
     where: {
       userId: adminId,
+      accepted: true,
       role: { in: [MembershipRole.OWNER, MembershipRole.ADMIN] },
       team: {
         isOrganization: true,

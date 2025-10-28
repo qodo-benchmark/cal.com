@@ -15,24 +15,28 @@ export const isAdminGuard = async (req: NextApiRequest) => {
   const orgOwnerOrAdminMemberships = await prisma.membership.findMany({
     where: {
       userId: userId,
+      accepted: true,
+      role: { in: [MembershipRole.OWNER, MembershipRole.ADMIN] },
       team: {
         isOrganization: true,
-        organizationSettings: {
-          isAdminAPIEnabled: true,
-        },
       },
-      role: { in: [MembershipRole.OWNER, MembershipRole.ADMIN] },
     },
     select: {
-      team: {
-        select: {
-          id: true,
-          isOrganization: true,
-        },
-      },
+      teamId: true,
     },
   });
-  if (orgOwnerOrAdminMemberships.length > 0) return { isAdmin: true, scope: ScopeOfAdmin.OrgOwnerOrAdmin };
+
+  if (orgOwnerOrAdminMemberships.length === 0) return { isAdmin: false, scope: null };
+
+  const teamIds = orgOwnerOrAdminMemberships.map((m) => m.teamId);
+  const orgWithAdminAPIEnabled = await prisma.organizationSettings.findFirst({
+    where: {
+      organizationId: { in: teamIds },
+      isAdminAPIEnabled: true,
+    },
+  });
+
+  if (orgWithAdminAPIEnabled) return { isAdmin: true, scope: ScopeOfAdmin.OrgOwnerOrAdmin };
 
   return { isAdmin: false, scope: null };
 };
