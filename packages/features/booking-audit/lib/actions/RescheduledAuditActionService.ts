@@ -14,6 +14,9 @@ export class RescheduledAuditActionService {
             startTime: StringChangeSchema,
             endTime: StringChangeSchema,
         }),
+        secondary: z.object({
+            previousBookingId: z.number().optional(),
+        }).optional(),
     });
 
     parse(data: unknown): z.infer<typeof RescheduledAuditActionService.schema> {

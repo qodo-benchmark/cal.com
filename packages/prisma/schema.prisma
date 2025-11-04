@@ -829,6 +829,9 @@ model Booking {
   dynamicGroupSlugRef          String?
   rescheduled                  Boolean?
   fromReschedule               String?
+  originalBookingId            Int?
+  originalBooking              Booking?                          @relation("BookingRescheduleChain", fields: [originalBookingId], references: [id], onDelete: SetNull)
+  rescheduleChain              Booking[]                         @relation("BookingRescheduleChain")
   recurringEventId             String?
   smsReminderNumber            String?
   workflowReminders            WorkflowReminder[]
@@ -868,6 +871,8 @@ model Booking {
   @@index([uid])
   @@index([status])
   @@index([startTime, endTime, status])
+  @@index([fromReschedule])
+  @@index([originalBookingId])
 }
 
 model Tracking {

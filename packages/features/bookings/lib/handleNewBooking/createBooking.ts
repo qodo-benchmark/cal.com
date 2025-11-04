@@ -258,8 +258,8 @@ function buildNewBookingData(params: CreateBookingParams) {
     destinationCalendar:
       evt.destinationCalendar && evt.destinationCalendar.length > 0
         ? {
-            connect: { id: evt.destinationCalendar[0].id },
-          }
+          connect: { id: evt.destinationCalendar[0].id },
+        }
         : undefined,
 
     routedFromRoutingFormReponse: routingFormResponseId
@@ -282,6 +282,9 @@ function buildNewBookingData(params: CreateBookingParams) {
     };
     newBookingData.paid = originalRescheduledBooking.paid;
     newBookingData.fromReschedule = originalRescheduledBooking.uid;
+    // Set originalBookingId to maintain the reschedule chain
+    // Use the original booking's originalBookingId if it exists, otherwise use its own id
+    newBookingData.originalBookingId = originalRescheduledBooking.originalBookingId ?? originalRescheduledBooking.id;
     if (originalRescheduledBooking.uid) {
       newBookingData.cancellationReason = input.rescheduleReason;
     }

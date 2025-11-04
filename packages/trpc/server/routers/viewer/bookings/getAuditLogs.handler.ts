@@ -25,6 +25,7 @@ export const getAuditLogsHandler = async ({ ctx, input }: GetAuditLogsOptions) =
             id: true,
             userId: true,
             eventTypeId: true,
+            originalBookingId: true,
             attendees: {
                 select: {
                     email: true,
@@ -81,10 +82,46 @@ export const getAuditLogsHandler = async ({ ctx, input }: GetAuditLogsOptions) =
         });
     }
 
-    // Fetch audit logs with actor information
+    // Determine the original booking ID for this chain
+    const originalIdForChain = booking.originalBookingId ?? booking.id;
+
+    // Get all bookings in this reschedule chain
+    const allBookingsInChain = await prisma.booking.findMany({
+        where: {
+            OR: [
+                { id: originalIdForChain },
+                { originalBookingId: originalIdForChain },
+            ],
+        },
+        select: {
+            id: true,
+            uid: true,
+        },
+    });
+
+    // Build a map of bookingId -> reschedule timestamp
+    // We need to find when each booking was rescheduled (if at all)
+    const rescheduleTimestamps = new Map<string, Date>();
+    for (const chainBooking of allBookingsInChain) {
+        const rescheduleAudit = await prisma.bookingAudit.findFirst({
+            where: {
+                bookingId: String(chainBooking.id),
+                action: 'RESCHEDULED',
+            },
+            select: { timestamp: true },
+            orderBy: { timestamp: 'asc' }, // Get first reschedule
+        });
+
+        if (rescheduleAudit) {
+            rescheduleTimestamps.set(String(chainBooking.id), rescheduleAudit.timestamp);
+        }
+    }
+
+    // Fetch audit logs for all bookings in chain
+    const bookingIds = allBookingsInChain.map(b => String(b.id));
     const auditLogs = await prisma.bookingAudit.findMany({
         where: {
-            bookingId: booking.id.toString(),
+            bookingId: { in: bookingIds },
         },
         include: {
             actor: {
@@ -105,9 +142,17 @@ export const getAuditLogsHandler = async ({ ctx, input }: GetAuditLogsOptions) =
         },
     });
 
+    // Filter: only show logs before or at reschedule timestamp for rescheduled bookings
+    const filteredAuditLogs = auditLogs.filter(log => {
+        const rescheduleTime = rescheduleTimestamps.get(log.bookingId);
+        if (!rescheduleTime) return true; // No reschedule yet, show all logs
+        // Only logs before or at the reschedule time (inclusive to show the RESCHEDULED action itself)
+        return log.timestamp <= rescheduleTime;
+    });
+
     // Enrich actor information with user details if userId exists
     const enrichedAuditLogs = await Promise.all(
-        auditLogs.map(async (log) => {
+        filteredAuditLogs.map(async (log) => {
             let actorDisplayName = log.actor.name || "System";
             let actorEmail = log.actor.email;
 
