@@ -193,7 +193,7 @@ function getServerUrlFromCalendarExternalId(externalId: string): string | null {
   try {
     const url = new URL(externalId);
     return `${url.protocol}//${url.host}`;
-  } catch (error) {
+  } catch {
     return null;
   }
 }
@@ -215,7 +215,7 @@ function getServerUrlFromCredential(credential: CredentialForCalendarService): s
 
     const url = new URL(decryptedData.url);
     return `${url.protocol}//${url.host}`;
-  } catch (error) {
+  } catch {
     return null;
   }
 }
