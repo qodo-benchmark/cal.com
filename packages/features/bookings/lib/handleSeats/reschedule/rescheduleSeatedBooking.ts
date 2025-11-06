@@ -103,7 +103,7 @@ const rescheduleSeatedBooking = async (
       seatedBooking.user &&
       (await PrismaOrgMembershipRepository.isLoggedInUserOrgAdminOfBookingHost(
         reqUserId,
-        seatedBooking.user?.id
+        seatedBooking.user.id
       ));
     // if no bookingSeat is given and the userId != owner, 401.
     // if no bookingSeat is given, also check if the request user is an org admin of the booking user
