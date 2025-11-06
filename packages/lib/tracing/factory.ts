@@ -4,7 +4,7 @@ import logger from "../logger";
 import { DistributedTracing, type IdGenerator } from "./index";
 
 const idGenerator: IdGenerator = {
-  generate: () => nanoid(),
+  generate: nanoid,
 };
 
 export function createDistributedTracing(): DistributedTracing {

