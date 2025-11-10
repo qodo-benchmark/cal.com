@@ -120,6 +120,7 @@ export class PrismaBookingReportRepository implements IBookingReportRepository {
     const rows = reports.map((report) => ({
       ...report,
       reporter: report.reportedBy,
+      status: report.status,
     }));
 
     return {
@@ -183,6 +184,7 @@ export class PrismaBookingReportRepository implements IBookingReportRepository {
 
     return reports.map((report) => ({
       ...report,
+      status: report.status,
       reporter: report.reportedBy,
     }));
   }
@@ -190,7 +192,10 @@ export class PrismaBookingReportRepository implements IBookingReportRepository {
   async linkWatchlistToReport(params: { reportId: string; watchlistId: string }): Promise<void> {
     await this.prismaClient.bookingReport.update({
       where: { id: params.reportId },
-      data: { watchlistId: params.watchlistId },
+      data: {
+        watchlistId: params.watchlistId,
+        status: "BLOCKED",
+      },
     });
   }
 
@@ -207,9 +212,13 @@ export class PrismaBookingReportRepository implements IBookingReportRepository {
       where.organizationId = params.organizationId;
     }
 
-    await this.prismaClient.bookingReport.updateMany({
+    const result = await this.prismaClient.bookingReport.updateMany({
       where,
       data: { status: params.status },
     });
+
+    if (result.count === 0) {
+      throw new Error("No booking report found to update");
+    }
   }
 }

