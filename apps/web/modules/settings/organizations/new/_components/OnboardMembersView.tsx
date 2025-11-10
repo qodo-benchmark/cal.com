@@ -55,7 +55,7 @@ const useOrgCreation = () => {
         reset();
         // Set flag to show welcome modal (using both query param and sessionStorage for reliability)
         setShowNewOrgModalFlag();
-        window.location.href = `${window.location.origin}/settings/organizations/profile?newOrganizationModal=true`;
+        window.location.href = `${window.location.origin}/settings/organizations/profile/?newOrganizationModal=true`;
       } else {
         // Unexpected state
         setServerErrorMessage("Unexpected response from server");
