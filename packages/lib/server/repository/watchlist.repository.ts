@@ -18,6 +18,7 @@ export class WatchlistRepository implements IWatchlistRepository {
       type: params.type,
       value: params.value,
       organizationId: params.organizationId,
+      isGlobal: params.isGlobal,
     });
 
     if (existing) {
@@ -33,7 +34,7 @@ export class WatchlistRepository implements IWatchlistRepository {
           action: params.action,
           description: params.description,
           source: WatchlistSource.MANUAL,
-          isGlobal: false,
+          isGlobal: params.isGlobal ?? false,
         },
       });
 
@@ -55,6 +56,22 @@ export class WatchlistRepository implements IWatchlistRepository {
   }
 
   async checkExists(params: CheckWatchlistInput): Promise<WatchlistEntry | null> {
+    if (!params.isGlobal && !params.organizationId) {
+      throw new Error("Both isGlobal and organizationId are missing");
+    }
+
+    if (params.isGlobal) {
+      const entry = await this.prismaClient.watchlist.findFirst({
+        where: {
+          type: params.type,
+          value: params.value,
+          isGlobal: true,
+          organizationId: null,
+        },
+      });
+      return entry;
+    }
+
     const entry = await this.prismaClient.watchlist.findUnique({
       where: {
         type_value_organizationId: {
@@ -123,8 +140,17 @@ export class WatchlistRepository implements IWatchlistRepository {
     };
   }
 
-  async findEntryWithAudit(id: string): Promise<{
-    entry: WatchlistEntry | null;
+  async findEntryWithAuditAndReports(id: string): Promise<{
+    entry:
+      | (WatchlistEntry & {
+          bookingReports?: Array<{
+            booking: {
+              uid: string;
+              title: string | null;
+            };
+          }>;
+        })
+      | null;
     auditHistory: WatchlistAuditEntry[];
   }> {
     const entry = await this.prismaClient.watchlist.findUnique({
@@ -139,6 +165,16 @@ export class WatchlistRepository implements IWatchlistRepository {
         isGlobal: true,
         source: true,
         lastUpdatedAt: true,
+        bookingReports: {
+          select: {
+            booking: {
+              select: {
+                uid: true,
+                title: true,
+              },
+            },
+          },
+        },
         audits: {
           select: {
             id: true,
@@ -169,6 +205,7 @@ export class WatchlistRepository implements IWatchlistRepository {
             isGlobal: entry.isGlobal,
             source: entry.source,
             lastUpdatedAt: entry.lastUpdatedAt,
+            bookingReports: entry.bookingReports,
           }
         : null,
       auditHistory: entry?.audits || [],
