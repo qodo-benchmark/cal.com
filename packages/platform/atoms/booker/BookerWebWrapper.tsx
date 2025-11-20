@@ -193,9 +193,9 @@ const BookerPlatformWrapperComponent = (props: BookerWebWrapperAtomProps) => {
         url.searchParams.delete("overlayCalendar");
         localStorage.removeItem("overlayCalendarSwitchDefault");
       }
-      router.push(`${url.pathname}${url.search}`);
+      window.history.pushState({}, '', `${url.pathname}${url.search}`);
     },
-    [router]
+    []
   );
   useBrandColors({
     brandColor: event.data?.profile.brandColor ?? DEFAULT_LIGHT_BRAND_COLOR,

