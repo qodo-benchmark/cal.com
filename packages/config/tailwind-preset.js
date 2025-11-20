@@ -220,6 +220,8 @@ module.exports = {
       },
       screens: {
         pwa: { raw: "(display-mode: standalone)" },
+        "3xl": "1980px",
+        "4xl": "2560px",
       },
       keyframes: {
         "fade-in-up": {
