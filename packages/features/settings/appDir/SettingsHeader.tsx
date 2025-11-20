@@ -6,17 +6,27 @@ import classNames from "@calcom/ui/classNames";
 import { Icon } from "@calcom/ui/components/icon";
 import { Button } from "@calcom/ui/components/button";
 import { useLocale } from "@calcom/lib/hooks/useLocale";
-import { useRouter } from "next/navigation";
 
-interface HeaderProps {
+type HeaderPropsBase = {
   children: React.ReactNode;
   title?: string;
   description?: string;
   CTA?: React.ReactNode;
   ctaClassName?: string;
   borderInShellHeader?: boolean;
-  backButton?: boolean;
-}
+};
+
+type HeaderPropsWithBackButton = HeaderPropsBase & {
+  backButton: true;
+  onBackButtonClick: () => void;
+};
+
+type HeaderPropsWithoutBackButton = HeaderPropsBase & {
+  backButton?: false;
+  onBackButtonClick?: () => void;
+};
+
+type HeaderProps = HeaderPropsWithBackButton | HeaderPropsWithoutBackButton;
 
 export default function Header({
   children,
@@ -26,8 +36,8 @@ export default function Header({
   ctaClassName,
   borderInShellHeader,
   backButton,
+  onBackButtonClick,
 }: HeaderProps) {
-  const router = useRouter();
   const { t } = useLocale();
   
   return (
@@ -45,7 +55,7 @@ export default function Header({
                 variant="icon"
                 size="sm"
                 color="minimal"
-                onClick={() => router.back()}
+                onClick={onBackButtonClick}
                 className="rounded-md ltr:mr-2 rtl:ml-2"
                 StartIcon="arrow-left"
                 aria-label={t("go_back")}
