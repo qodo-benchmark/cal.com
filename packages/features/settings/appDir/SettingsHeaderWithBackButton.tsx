@@ -16,8 +16,9 @@ type SettingsHeaderWithBackButtonProps = {
 
 export default function SettingsHeaderWithBackButton(props: SettingsHeaderWithBackButtonProps) {
   const router = useRouter();
+  const handleBack = () => router.back();
 
   return (
-    <SettingsHeader {...props} backButton={true} onBackButtonClick={() => router.back()} />
+    <SettingsHeader {...props} backButton={true} onBackButtonClick={handleBack} />
   );
 }

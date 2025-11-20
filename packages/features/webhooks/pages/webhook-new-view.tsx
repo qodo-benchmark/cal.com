@@ -62,7 +62,7 @@ export const NewWebhookView = ({ webhooks, installedApps }: Props) => {
       values.payloadTemplate = null;
     }
 
-    createWebhookMutation.mutate({
+    await createWebhookMutation.mutateAsync({
       subscriberUrl: values.subscriberUrl,
       eventTriggers: values.eventTriggers,
       active: values.active,

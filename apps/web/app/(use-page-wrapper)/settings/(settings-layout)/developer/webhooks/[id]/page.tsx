@@ -18,7 +18,7 @@ export const generateMetadata = async ({ params }: { params: Promise<{ id: strin
 const Page = async ({ params: _params }: PageProps) => {
   const t = await getTranslate();
   const params = await _params;
-  const id = typeof params?.id === "string" ? params.id : undefined;
+  const id = params?.id;
 
   const webhookRepository = WebhookRepository.getInstance();
   const webhook = await webhookRepository.findByWebhookId(id);

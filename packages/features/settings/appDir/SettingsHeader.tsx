@@ -23,7 +23,7 @@ type HeaderPropsWithBackButton = HeaderPropsBase & {
 
 type HeaderPropsWithoutBackButton = HeaderPropsBase & {
   backButton?: false;
-  onBackButtonClick?: never;
+  onBackButtonClick?: () => void;
 };
 
 type HeaderProps = HeaderPropsWithBackButton | HeaderPropsWithoutBackButton;
@@ -50,7 +50,7 @@ export default function Header({
         )}>
         <div className="flex w-full items-center justify-between gap-2">
           <div className="flex items-center">
-            {backButton && onBackButtonClick && (
+            {backButton && (
               <Button
                 variant="icon"
                 size="sm"
