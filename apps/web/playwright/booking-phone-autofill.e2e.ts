@@ -180,9 +180,6 @@ async function fillPhoneLocationInput(page: Page, phoneNumber: string) {
 
   // Type the phone number with a small delay to play nicely with masking
   await locationInput.pressSequentially(toType, { delay: 20 });
-
-  // Trigger blur to ensure the auto-fill effect runs
-  await page.locator('[name="name"]').click();
 }
 
 // removed local gotoBookingPage/selectFirstAvailableTimeSlot/saveEventType in favor of shared helpers

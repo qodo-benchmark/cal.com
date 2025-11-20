@@ -89,8 +89,8 @@ export const FormBuilderField = ({
         name={`responses.${field.name}`}
         render={({ field: { value, onChange }, fieldState: { error } }) => {
           const setAndNotify = (val: unknown) => {
-            onChange(val);
             onValueChange?.({ name: field.name, value: val, prevValue: value });
+            onChange(val);
           };
 
           return (
