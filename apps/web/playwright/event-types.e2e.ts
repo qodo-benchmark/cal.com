@@ -274,7 +274,6 @@ test.describe("Event Types tests", () => {
       });
 
       // TODO: This test is extremely flaky and has been failing a lot, blocking many PRs. Fix this.
-      // eslint-disable-next-line playwright/no-skipped-test
       test.skip("Can remove location from multiple locations that are saved", async ({ page }) => {
         await gotoFirstEventType(page);
 
@@ -419,7 +418,6 @@ test.describe("Event Types tests", () => {
     });
     test("should enable timezone lock in event advanced settings and verify disabled timezone selector on booking page", async ({
       page,
-      users,
     }) => {
       await gotoFirstEventType(page);
       await expect(page.locator("[data-testid=event-title]")).toBeVisible();
