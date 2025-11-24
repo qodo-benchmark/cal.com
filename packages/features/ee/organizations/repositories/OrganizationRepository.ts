@@ -248,10 +248,11 @@ export class OrganizationRepository {
     if (orgs.length > 1) {
       logger.error(
         "Multiple organizations found with the same auto accept email domain",
-        safeStringify({ orgs, emailDomain })
+        safeStringify({ orgIds: orgs.map((org) => org.id), emailDomain })
       );
-      // Detect and fail just in case this situation arises. We should really identify the problem in this case and fix the data.
-      throw new Error("Multiple organizations found with the same auto accept email domain");
+
+      // If we cannot reliably confirm a unique org then return nothing
+      return null;
     }
     const org = orgs[0];
     if (!org) {
@@ -285,6 +286,7 @@ export class OrganizationRepository {
         orgProfileRedirectsToVerifiedDomain: true,
         orgAutoAcceptEmail: true,
         disablePhoneOnlySMSNotifications: true,
+        orgAutoJoinOnSignup: true,
       },
     });
 
@@ -303,6 +305,7 @@ export class OrganizationRepository {
         orgProfileRedirectsToVerifiedDomain: organizationSettings?.orgProfileRedirectsToVerifiedDomain,
         orgAutoAcceptEmail: organizationSettings?.orgAutoAcceptEmail,
         disablePhoneOnlySMSNotifications: organizationSettings?.disablePhoneOnlySMSNotifications,
+        orgAutoJoinOnSignup: organizationSettings?.orgAutoJoinOnSignup,
       },
       user: {
         role: membership?.role,
@@ -432,6 +435,7 @@ export class OrganizationRepository {
         organizationSettings: {
           isOrganizationVerified: true,
           orgAutoAcceptEmail: domain,
+          orgAutoJoinOnSignup: true,
         },
       },
       select: {
