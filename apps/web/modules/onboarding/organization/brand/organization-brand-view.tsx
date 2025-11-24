@@ -6,6 +6,7 @@ import { useEffect, useRef, useState } from "react";
 import { useLocale } from "@calcom/lib/hooks/useLocale";
 import { Button } from "@calcom/ui/components/button";
 import { ColorPicker, Label } from "@calcom/ui/components/form";
+import { showToast } from "@calcom/ui/components/toast";
 
 import { OnboardingCard } from "../../components/OnboardingCard";
 import { OnboardingLayout } from "../../components/OnboardingLayout";
@@ -42,6 +43,9 @@ export const OrganizationBrandView = ({ userEmail }: OrganizationBrandViewProps)
         const base64 = reader.result as string;
         setLogoPreview(base64);
         setOrganizationBrand({ logo: base64 });
+      };
+      reader.onerror = () => {
+        showToast(t("error_uploading_logo"), "error");
       };
       reader.readAsDataURL(file);
     } else {

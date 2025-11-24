@@ -96,7 +96,7 @@ export function EmailInviteForm({
                 variant="icon"
                 size="sm"
                 className="h-7 w-7"
-                disabled={fields.length === 1}
+                disabled={fields.length <= 1}
                 onClick={() => remove(index)}>
                 <Icon name="x" className="h-4 w-4" />
               </Button>

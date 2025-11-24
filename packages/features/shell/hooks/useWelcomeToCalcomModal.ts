@@ -38,6 +38,7 @@ export function useWelcomeToCalcomModal() {
     setWelcomeToCalcomModal(null);
     // Also clear sessionStorage
     sessionStorage.removeItem(STORAGE_KEY);
+    sessionStorage.removeItem(ORG_MODAL_STORAGE_KEY);
   };
 
   return {

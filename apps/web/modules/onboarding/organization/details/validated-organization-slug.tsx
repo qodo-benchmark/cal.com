@@ -38,19 +38,23 @@ export function ValidatedOrganizationSlug({
       setValidationState("checking");
 
       // Call server action
-      checkSlugAvailability(slug).then((result) => {
-        startTransition(() => {
-          if (result.available) {
-            setValidationState("available");
-            setErrorMessage("");
-            onValidationChange?.(true);
-          } else {
-            setValidationState("taken");
-            setErrorMessage(result.message || "This slug is not available");
-            onValidationChange?.(false);
-          }
+      checkSlugAvailability(slug)
+        .then((result) => {
+          startTransition(() => {
+            if (result.available) {
+              setValidationState("available");
+              setErrorMessage("");
+              onValidationChange?.(true);
+            } else {
+              setValidationState("taken");
+              setErrorMessage(result.message || "This slug is not available");
+              onValidationChange?.(false);
+            }
+          });
+        })
+        .catch((error) => {
+          console.error("Slug validation error:", error);
         });
-      });
     },
     [onValidationChange]
   );
