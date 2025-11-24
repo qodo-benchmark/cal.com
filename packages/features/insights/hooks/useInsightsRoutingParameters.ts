@@ -15,13 +15,13 @@ export function useInsightsRoutingParameters() {
     return dayjs(createdAtRange?.startDate ?? getDefaultStartDate().toISOString())
       .startOf("day")
       .toISOString();
-  }, [createdAtRange?.startDate]);
+  }, [createdAtRange]);
 
   const endDate = useMemo(() => {
     return dayjs(createdAtRange?.endDate ?? getDefaultEndDate().toISOString())
       .endOf("day")
       .toISOString();
-  }, [createdAtRange?.endDate]);
+  }, [createdAtRange]);
 
   const columnFilters = useColumnFilters({
     exclude: ["createdAt"],
