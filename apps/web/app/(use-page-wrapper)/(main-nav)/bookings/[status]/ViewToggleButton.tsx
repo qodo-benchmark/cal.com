@@ -22,7 +22,7 @@ export function ViewToggleButton() {
 
   useEffect(() => {
     // Force list view on mobile
-    if (isMobile && view !== "list") {
+    if (isMobile && view === "calendar") {
       setView("list");
     }
   }, [isMobile, view, setView]);

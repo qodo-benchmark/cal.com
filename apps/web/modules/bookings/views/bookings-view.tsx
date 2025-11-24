@@ -143,7 +143,7 @@ function BookingsContent({ status, permissions }: BookingsProps) {
 
   // Only apply pagination for list view, calendar view needs all bookings
   const shouldPaginate = view === "list";
-  const queryLimit = shouldPaginate ? limit : 100; // Use max limit for calendar view
+  const queryLimit = shouldPaginate ? limit : 1000; // Use max limit for calendar view
   const queryOffset = shouldPaginate ? offset : 0; // Reset offset for calendar view
 
   const query = trpc.viewer.bookings.get.useQuery(
@@ -167,6 +167,7 @@ function BookingsContent({ status, permissions }: BookingsProps) {
     {
       staleTime: 5 * 60 * 1000, // 5 minutes - data is considered fresh
       gcTime: 30 * 60 * 1000, // 30 minutes - cache retention time
+      enabled: true,
     }
   );
 
@@ -220,7 +221,7 @@ function BookingsContent({ status, permissions }: BookingsProps) {
 
       if (bookingDateStr === today) {
         todayBookings.push(rowData);
-      } else if (bookingDate.isAfter(currentMonthStart) && bookingDate.isBefore(currentMonthEnd)) {
+      } else if (bookingDate.isAfter(currentMonthStart) && bookingDate.isBefore(currentMonthEnd.endOf("day"))) {
         currentMonthBookings.push(rowData);
       } else if (bookingDate.isAfter(currentMonthEnd)) {
         if (!monthBuckets[monthKey]) {
