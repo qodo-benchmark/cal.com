@@ -359,10 +359,13 @@ const scheduleEmailReminderForForm = async (
     hideBranding,
   } = args;
 
-  const emailContent = {
+  let emailContent = {
     emailSubject,
     emailBody: `<body style="white-space: pre-wrap;">${emailBody}</body>`,
   };
+
+  // Allows debugging generated email content without waiting for sendgrid to send emails
+  log.debug(`Sending Email for trigger ${triggerEvent}`, JSON.stringify(emailContent));
 
   if (emailBody) {
     const timeFormat = getTimeFormatStringFromUserTimeFormat(formData.user.timeFormat);
@@ -381,9 +384,6 @@ const scheduleEmailReminderForForm = async (
       hideBranding
     ).html;
   }
-
-  // Allows debugging generated email content without waiting for sendgrid to send emails
-  log.debug(`Sending Email for trigger ${triggerEvent}`, JSON.stringify(emailContent));
 
   const mailData = {
     subject: emailContent.emailSubject,

