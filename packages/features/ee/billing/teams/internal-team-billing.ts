@@ -25,11 +25,10 @@ export class InternalTeamBilling implements TeamBilling {
     metadata: NonNullable<z.infer<typeof teamPaymentMetadataSchema>>;
   };
   private billingRepository: IBillingRepository;
-  private billingService: StripeBillingService;
+  private billingService!: StripeBillingService;
   constructor(team: TeamBillingInput) {
     this.team = team;
     this.billingRepository = BillingRepositoryFactory.getRepository(team.isOrganization);
-    this.billingService = new StripeBillingService();
   }
   set team(team: TeamBillingInput) {
     const metadata = teamPaymentMetadataSchema.parse(team.metadata || {});
@@ -56,6 +55,7 @@ export class InternalTeamBilling implements TeamBilling {
       const { subscriptionId } = this.team.metadata;
       log.info(`Cancelling subscription ${subscriptionId} for team ${this.team.id}`);
       if (!subscriptionId) throw Error("missing subscriptionId");
+      this.billingService = new StripeBillingService();
       await this.billingService.handleSubscriptionCancel(subscriptionId);
       await this.downgrade();
       log.info(`Cancelled subscription ${subscriptionId} for team ${this.team.id}`);
@@ -156,6 +156,7 @@ export class InternalTeamBilling implements TeamBilling {
       }
       if (!subscriptionId) throw Error("missing subscriptionId");
       if (!subscriptionItemId) throw Error("missing subscriptionItemId");
+      this.billingService = new StripeBillingService();
       await this.billingService.handleSubscriptionUpdate({
         subscriptionId,
         subscriptionItemId,
@@ -172,6 +173,7 @@ export class InternalTeamBilling implements TeamBilling {
     /** If there's no paymentId, we need to pay this team */
     if (!paymentId) return { url: null, paymentId: null, paymentRequired: true };
     /** If there's a pending session but it isn't paid, we need to pay this team */
+    this.billingService = new StripeBillingService();
     const checkoutSessionIsPaid = await this.billingService.checkoutSessionIsPaid(paymentId);
     if (!checkoutSessionIsPaid) return { url: null, paymentId, paymentRequired: true };
     /** If the session is already paid we return the upgrade URL so team is updated. */
@@ -185,6 +187,7 @@ export class InternalTeamBilling implements TeamBilling {
   async getSubscriptionStatus() {
     const { subscriptionId } = this.team.metadata;
     if (!subscriptionId) return null;
+    this.billingService = new StripeBillingService();
     return await this.billingService.getSubscriptionStatus(subscriptionId);
   }
 
@@ -203,6 +206,7 @@ export class InternalTeamBilling implements TeamBilling {
       }
 
       // End the trial by converting to regular subscription
+      this.billingService = new StripeBillingService();
       await this.billingService.handleEndTrial(subscriptionId);
       log.info(`Successfully ended trial for team ${this.team.id}`);
       return true;
