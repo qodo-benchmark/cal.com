@@ -43,11 +43,9 @@ export function BookingsListContainer({
   const utils = trpc.useUtils();
 
   // Filter out separator rows and extract bookings
-  const bookings = useMemo(() => {
-    return data
-      .filter((row): row is Extract<RowData, { type: "data" }> => row.type === "data")
-      .map((row) => row.booking);
-  }, [data]);
+  const bookings = data
+    .filter((row): row is Extract<RowData, { type: "data" }> => row.type === "data")
+    .map((row) => row.booking);
 
   const [rejectionDialogIsOpen, setRejectionDialogIsOpen] = useState(false);
   const [rejectionReason, setRejectionReason] = useState<string>("");

