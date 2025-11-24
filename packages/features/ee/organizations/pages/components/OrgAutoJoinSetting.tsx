@@ -11,6 +11,7 @@ interface IOrgAutoJoinSettingProps {
   orgId: number;
   orgAutoJoinEnabled: boolean;
   emailDomain: string;
+  disabled?: boolean;
 }
 
 const OrgAutoJoinSetting = (props: IOrgAutoJoinSettingProps) => {
@@ -24,6 +25,7 @@ const OrgAutoJoinSetting = (props: IOrgAutoJoinSettingProps) => {
     },
     onError: () => {
       showToast(t("error_updating_settings"), "error");
+      setIsEnabled(!isEnabled);
     },
     onSettled: () => {
       utils.viewer.organizations.listCurrent.invalidate();
@@ -39,10 +41,10 @@ const OrgAutoJoinSetting = (props: IOrgAutoJoinSettingProps) => {
       description={t("org_auto_join_description")}
       data-testid="make-team-private-check"
       onCheckedChange={(checked) => {
+        setIsEnabled(checked);
         mutation.mutate({
           orgAutoJoinOnSignup: checked,
         });
-        setIsEnabled(checked);
       }}
     />
   );

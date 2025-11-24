@@ -242,7 +242,6 @@ export class OrganizationRepository {
           orgAutoAcceptEmail: emailDomain,
           isOrganizationVerified: true,
           isAdminReviewed: true,
-          orgAutoJoinOnSignup: true,
         },
       },
     });
@@ -436,6 +435,7 @@ export class OrganizationRepository {
         organizationSettings: {
           isOrganizationVerified: true,
           orgAutoAcceptEmail: domain,
+          orgAutoJoinOnSignup: true,
         },
       },
       select: {

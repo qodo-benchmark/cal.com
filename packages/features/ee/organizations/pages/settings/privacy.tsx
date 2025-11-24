@@ -49,6 +49,7 @@ const PrivacyView = ({
             orgId={currentOrg.id}
             orgAutoJoinEnabled={!!currentOrg.organizationSettings.orgAutoJoinOnSignup}
             emailDomain={currentOrg.organizationSettings.orgAutoAcceptEmail}
+            disabled={isDisabled}
           />
         )}
 

