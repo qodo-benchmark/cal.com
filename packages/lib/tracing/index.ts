@@ -6,7 +6,7 @@ export interface TraceContext {
   parentSpanId?: string;
   operation: string;
   // So that we don't violate open closed principle, we allow meta to be added to the trace context
-  meta?: Record<string, string>;
+  meta?: Record<string, string | number | boolean | null | undefined>;
 }
 
 export interface IdGenerator {
@@ -31,7 +31,7 @@ export class DistributedTracing {
   createSpan(
     parentContext: TraceContext,
     operation: string,
-    additionalMeta?: Record<string, string>
+    additionalMeta?: Record<string, string | number | boolean | null | undefined>
   ): TraceContext {
     const mergedMeta = {
       ...parentContext.meta,
@@ -47,7 +47,15 @@ export class DistributedTracing {
     };
   }
 
-  getTracingLogger(context: TraceContext) {
+  getTracingLogger(
+    context: TraceContext,
+    additionalMeta?: Record<string, string | number | boolean | null | undefined>
+  ) {
+    const mergedMeta = {
+      ...context.meta,
+      ...additionalMeta,
+    };
+
     const prefixes = [
       "distributed-trace",
       `trace:${context.traceId}`,
@@ -85,7 +93,10 @@ export class DistributedTracing {
     };
   }
 
-  updateTrace(traceContext: TraceContext, additionalMeta?: Record<string, string>): TraceContext {
+  updateTrace(
+    traceContext: TraceContext,
+    additionalMeta?: Record<string, string | number | boolean | null | undefined>
+  ): TraceContext {
     return {
       ...traceContext,
       meta: {
