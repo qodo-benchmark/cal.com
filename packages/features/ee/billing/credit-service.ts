@@ -838,7 +838,7 @@ export class CreditService {
     teamId: number | null;
     userId: number | null;
   }) {
-    let userIdsWithNoCredits: number[] = userId ? [userId] : [];
+    let userIdsWithNoCredits: number[] = [];
     if (teamId) {
       const teamMembers = await prisma.membership.findMany({
         where: {
@@ -857,6 +857,8 @@ export class CreditService {
       )
         .filter(({ hasCredits }) => !hasCredits)
         .map(({ userId }) => userId);
+    } else if (userId) {
+      userIdsWithNoCredits = [userId];
     }
     return userIdsWithNoCredits;
   }

