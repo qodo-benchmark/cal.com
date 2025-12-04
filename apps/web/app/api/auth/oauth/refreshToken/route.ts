@@ -75,6 +75,11 @@ async function handler(req: NextRequest) {
     scope: decodedRefreshToken.scope,
     token_type: "Access Token",
     clientId: client_id,
+    // Preserve PKCE information for access token too
+    ...(decodedRefreshToken.codeChallenge && {
+      codeChallenge: decodedRefreshToken.codeChallenge,
+      codeChallengeMethod: decodedRefreshToken.codeChallengeMethod,
+    }),
   };
 
   const payloadRefreshToken: OAuthTokenPayload = {

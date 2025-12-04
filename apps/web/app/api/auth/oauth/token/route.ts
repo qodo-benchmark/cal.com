@@ -48,12 +48,12 @@ async function handler(req: NextRequest) {
 
   const accessCode = await accessCodeRepository.findValidCode(code, client_id);
 
-  // Delete all expired accessCodes + the one that is used here
-  await accessCodeRepository.deleteExpiredAndUsedCodes(code, client_id);
-
   if (!accessCode) {
     return NextResponse.json({ error: "invalid_grant" }, { status: 400 });
   }
+
+  // Delete all expired accessCodes + the one that is used here
+  await accessCodeRepository.deleteExpiredAndUsedCodes(code, client_id);
 
   const pkceError = OAuthService.verifyPKCE(client, accessCode, code_verifier);
   if (pkceError) {
