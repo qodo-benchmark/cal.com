@@ -80,7 +80,7 @@ export function Event({
     </div>
   );
 
-  const displayType = eventDuration < 40 ? "single-line" : eventDuration < 45 ? "multi-line" : "full";
+  const displayType = eventDuration <= 30 ? "single-line" : eventDuration < 45 ? "multi-line" : "full";
 
   return (
     <Tooltip content={tooltipContent} className="max-w-none" side={tooltipSide}>
