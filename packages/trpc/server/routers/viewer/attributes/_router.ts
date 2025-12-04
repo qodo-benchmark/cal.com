@@ -26,10 +26,12 @@ export const attributesRouter = router({
     const { default: handler } = await import("./get.handler");
     return handler(opts);
   }),
-  getByUserId: authedProcedure.input(getByUserIdSchema).query(async ({ ctx, input }) => {
-    const { default: handler } = await import("./getByUserId.handler");
-    return handler({ ctx, input });
-  }),
+  getByUserId: createAttributePbacProcedure("organization.attributes.read")
+    .input(getByUserIdSchema)
+    .query(async ({ ctx, input }) => {
+      const { default: handler } = await import("./getByUserId.handler");
+      return handler({ ctx, input });
+    }),
   // Mutations
   create: createAttributePbacProcedure("organization.attributes.create")
     .input(createAttributeSchema)

