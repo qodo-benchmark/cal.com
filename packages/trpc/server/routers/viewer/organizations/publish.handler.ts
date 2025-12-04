@@ -55,8 +55,6 @@ export const publishHandler = async ({ ctx }: PublishOptions) => {
 
   // Since this is an ORG we need to make sure ORG members are scyned with the team. Every time a user is added to the TEAM, we need to add them to the ORG
   if (IS_TEAM_BILLING_ENABLED) {
-    const tracking = getTrackingFromCookies(ctx.req?.cookies);
-
     const checkoutSession = await purchaseTeamOrOrgSubscription({
       teamId: prevTeam.id,
       seatsUsed: prevTeam.members.length,
@@ -67,7 +65,6 @@ export const publishHandler = async ({ ctx }: PublishOptions) => {
       isOrg: true,
       pricePerSeat: metadata.data?.orgPricePerSeat ?? null,
       billingPeriod: metadata.data?.billingPeriod ?? undefined,
-      tracking,
     });
 
     if (!checkoutSession.url)

