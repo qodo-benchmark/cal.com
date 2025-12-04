@@ -244,6 +244,7 @@ export class OutputBookingsService_2024_08_13 {
         databaseBooking.status === BookingStatus.CANCELLED ? databaseBooking.cancelledBy : undefined,
       reschedulingReason: bookingResponses?.rescheduledReason,
       rescheduledFromUid: databaseBooking.fromReschedule || undefined,
+      rescheduledByEmail: databaseBooking.rescheduledBy,
       start: databaseBooking.startTime,
       end: databaseBooking.endTime,
       duration,
