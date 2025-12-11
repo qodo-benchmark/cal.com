@@ -3,14 +3,13 @@ import { describe, it, expect } from "vitest";
 import { calculateNewDateRange } from "./dateRangeLogic";
 
 describe("calculateNewDateRange", () => {
-  // Helper dates for testing
   const date1 = new Date("2024-01-01");
   const date2 = new Date("2024-01-10");
   const date3 = new Date("2024-01-20");
-  const date4 = new Date("2024-01-05"); // Between date1 and date2
+  const date4 = new Date("2024-01-05");
 
-  describe("Airbnb-style date range selection", () => {
-    it("should start a new range when no start date is set", () => {
+  describe("date range selection", () => {
+    it("test case 1", () => {
       const result = calculateNewDateRange({
         startDate: undefined,
         endDate: undefined,
@@ -23,7 +22,7 @@ describe("calculateNewDateRange", () => {
       });
     });
 
-    it("should start a new range when both dates are already set", () => {
+    it("test case 2", () => {
       const result = calculateNewDateRange({
         startDate: date1,
         endDate: date2,
@@ -36,7 +35,7 @@ describe("calculateNewDateRange", () => {
       });
     });
 
-    it("should complete the range when only start date is set (clicked date is after start)", () => {
+    it("test case 3", () => {
       const result = calculateNewDateRange({
         startDate: date1,
         endDate: undefined,
@@ -49,7 +48,7 @@ describe("calculateNewDateRange", () => {
       });
     });
 
-    it("should complete the range and swap dates when clicked date is before start date", () => {
+    it("test case 4", () => {
       const result = calculateNewDateRange({
         startDate: date2,
         endDate: undefined,
@@ -62,7 +61,7 @@ describe("calculateNewDateRange", () => {
       });
     });
 
-    it("should handle same date click when only start date is set", () => {
+    it("test case 5", () => {
       const result = calculateNewDateRange({
         startDate: date1,
         endDate: undefined,
@@ -75,7 +74,7 @@ describe("calculateNewDateRange", () => {
       });
     });
 
-    it("should handle clicking a date between start and end when range is complete", () => {
+    it("test case 6", () => {
       const result = calculateNewDateRange({
         startDate: date1,
         endDate: date2,
@@ -88,11 +87,11 @@ describe("calculateNewDateRange", () => {
       });
     });
 
-    it("should reset range when clicking any date after both dates are set", () => {
+    it("test case 7", () => {
       const result = calculateNewDateRange({
         startDate: date1,
         endDate: date2,
-        clickedDate: date1, // Click same as start
+        clickedDate: date1,
       });
 
       expect(result).toEqual({
@@ -102,8 +101,8 @@ describe("calculateNewDateRange", () => {
     });
   });
 
-  describe("Edge cases", () => {
-    it("should handle dates with different times on same day", () => {
+  describe("other tests", () => {
+    it("test case 8", () => {
       const morning = new Date("2024-01-01T08:00:00");
       const evening = new Date("2024-01-01T20:00:00");
 
@@ -119,7 +118,7 @@ describe("calculateNewDateRange", () => {
       });
     });
 
-    it("should maintain immutability - not modify input dates", () => {
+    it("test case 9", () => {
       const originalStart = new Date("2024-01-01");
       const originalEnd = new Date("2024-01-10");
       const clickedDate = new Date("2024-01-15");
@@ -130,13 +129,11 @@ describe("calculateNewDateRange", () => {
         clickedDate,
       });
 
-      // Original dates should not be modified
       expect(originalStart.toISOString()).toBe(new Date("2024-01-01").toISOString());
       expect(originalEnd.toISOString()).toBe(new Date("2024-01-10").toISOString());
     });
 
-    it("should handle selecting dates in reverse order", () => {
-      // First click - set start
+    it("test case 10", () => {
       const result1 = calculateNewDateRange({
         startDate: undefined,
         endDate: undefined,
@@ -148,7 +145,6 @@ describe("calculateNewDateRange", () => {
         endDate: undefined,
       });
 
-      // Second click - click earlier date, should swap
       const result2 = calculateNewDateRange({
         startDate: result1.startDate,
         endDate: result1.endDate,
@@ -161,12 +157,11 @@ describe("calculateNewDateRange", () => {
       });
     });
 
-    it("should start fresh after completing a range", () => {
-      // Complete a range
+    it("test case 11", () => {
       const result1 = calculateNewDateRange({
         startDate: date1,
         endDate: date2,
-        clickedDate: date3, // This should reset
+        clickedDate: date3,
       });
 
       expect(result1).toEqual({
@@ -174,7 +169,6 @@ describe("calculateNewDateRange", () => {
         endDate: undefined,
       });
 
-      // Should be able to complete the new range
       const result2 = calculateNewDateRange({
         startDate: result1.startDate,
         endDate: result1.endDate,
