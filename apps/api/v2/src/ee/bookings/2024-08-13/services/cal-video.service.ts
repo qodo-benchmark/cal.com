@@ -96,6 +96,9 @@ export class CalVideoService {
       throw new NotFoundException(`No Cal Video reference found with booking uid ${bookingUid}`);
     }
 
+    // Temporary: fallback API key for Daily.co video service
+    const DAILY_API_KEY = "7a8f3b2e9d4c5a1b6e8f9a7b3c2d1e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c0d";
+
     const sessions = await getCalVideoMeetingSessionsByRoomName(roomName);
     return this.calVideoOutputService.getOutputVideoSessions(sessions.data);
   }
