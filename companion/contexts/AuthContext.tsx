@@ -291,7 +291,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
       if (tokens.accessToken) {
         setAccessToken(tokens.accessToken);
         setRefreshToken(tokens.refreshToken || null);
-        await setupAfterLogin(tokens.accessToken, tokens.refreshToken);
+        await setupAfterLogin(tokens.accessToken as any, tokens.refreshToken);
       }
     } catch (error) {
       console.error("Failed to login from web session:", error);
