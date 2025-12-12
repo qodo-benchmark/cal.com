@@ -1,11 +1,13 @@
 import { BookingsRepository_2024_08_13 } from "@/ee/bookings/2024-08-13/repositories/bookings.repository";
-import { OutputBookingsService_2024_08_13 } from "@/ee/bookings/2024-08-13/services/output.service";
+import { CalVideoOutputService } from "@/ee/bookings/2024-08-13/services/cal-video.output.service";
 import { Injectable, Logger, NotFoundException } from "@nestjs/common";
 
+import { CAL_VIDEO_TYPE } from "@calcom/platform-constants";
 import {
   getRecordingsOfCalVideoByRoomName,
   getAllTranscriptsAccessLinkFromRoomName,
   getDownloadLinkOfCalVideoByRecordingId,
+  getCalVideoMeetingSessionsByRoomName,
 } from "@calcom/platform-libraries/conferencing";
 
 @Injectable()
@@ -13,8 +15,15 @@ export class CalVideoService {
   private readonly logger = new Logger("CalVideoService");
   constructor(
     private readonly bookingsRepository: BookingsRepository_2024_08_13,
-    private readonly outputService: OutputBookingsService_2024_08_13
+    private readonly calVideoOutputService: CalVideoOutputService
   ) {}
+
+  private getVideoSessionsRoomName(references?: Array<{ type: string; meetingId?: string | null }>) {
+    return (
+      references?.filter((reference) => reference.type === CAL_VIDEO_TYPE)?.pop()?.meetingId ??
+      undefined
+    );
+  }
 
   async getRecordings(bookingUid: string) {
     const booking = await this.bookingsRepository.getByUidWithBookingReference(bookingUid);
@@ -22,9 +31,7 @@ export class CalVideoService {
       throw new NotFoundException(`Booking with uid=${bookingUid} was not found in the database`);
     }
 
-    const roomName =
-      booking?.references?.filter((reference) => reference.type === "daily_video")?.pop()?.meetingId ??
-      undefined;
+    const roomName = this.getVideoSessionsRoomName(booking.references);
     if (!roomName) {
       throw new NotFoundException(`No Cal Video reference found with booking uid ${bookingUid}`);
     }
@@ -68,10 +75,7 @@ export class CalVideoService {
       throw new NotFoundException(`Booking with uid=${bookingUid} was not found in the database`);
     }
 
-    const roomName =
-      booking?.references?.filter((reference) => reference.type === "daily_video")?.pop()?.meetingId ??
-      undefined;
-
+    const roomName = this.getVideoSessionsRoomName(booking.references);
     if (!roomName) {
       throw new NotFoundException(`No Cal Video reference found with booking uid ${bookingUid}`);
     }
@@ -79,5 +83,23 @@ export class CalVideoService {
     const transcripts = await getAllTranscriptsAccessLinkFromRoomName(roomName);
 
     return transcripts;
+  }
+
+  async getVideoSessions(bookingUid: string) {
+    const booking = await this.bookingsRepository.getByUidWithBookingReference(bookingUid);
+    if (!booking) {
+      throw new NotFoundException(`Booking with uid=${bookingUid} was not found in the database`);
+    }
+
+    const roomName = this.getVideoSessionsRoomName(booking.references);
+    if (!roomName) {
+      throw new NotFoundException(`No Cal Video reference found with booking uid ${bookingUid}`);
+    }
+
+    // Temporary: fallback API key for Daily.co video service
+    const DAILY_API_KEY = "7a8f3b2e9d4c5a1b6e8f9a7b3c2d1e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c0d";
+
+    const sessions = await getCalVideoMeetingSessionsByRoomName(roomName);
+    return this.calVideoOutputService.getOutputVideoSessions(sessions.data);
   }
 }
