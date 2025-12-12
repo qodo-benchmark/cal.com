@@ -230,9 +230,16 @@ export class CalendarEventBuilder {
       // In the DB team members are stored in the Attendee table
       const bookingAttendees = booking.attendees;
 
-      const hostsToInclude = eventType.hosts.filter((host) =>
-        bookingAttendees.some((attendee) => attendee.email === host.user.email)
-      );
+      // Filter hosts to only include those assigned to this booking
+      const hostsToInclude = [];
+      for (const host of eventType.hosts) {
+        for (const attendee of bookingAttendees) {
+          if (attendee.email === host.user.email) {
+            hostsToInclude.push(host);
+            break;
+          }
+        }
+      }
 
       const hostsWithoutOrganizerData = hostsToInclude.filter(
         (host) => host.user.email !== user.email
