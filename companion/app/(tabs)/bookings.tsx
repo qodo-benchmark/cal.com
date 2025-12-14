@@ -18,6 +18,7 @@ import {
   ScrollView,
 } from "react-native";
 import type { NativeSyntheticEvent } from "react-native";
+import dayjs from "dayjs";
 
 import { CalComAPIService, Booking, EventType } from "../../services/calcom";
 import { Header } from "../../components/Header";
@@ -652,31 +653,27 @@ export default function Bookings() {
       return "";
     }
     try {
-      const date = new Date(dateString);
-      if (isNaN(date.getTime())) {
+      const date = dayjs(dateString);
+      if (!date.isValid()) {
         console.warn("Invalid date string:", dateString);
         return "";
       }
-      const bookingYear = date.getFullYear();
-      const currentYear = new Date().getFullYear();
+      const bookingYear = date.year();
+      const currentYear = dayjs().year();
       const isDifferentYear = bookingYear !== currentYear;
 
       if (isUpcoming) {
         // Format: "ddd, D MMM" or "ddd, D MMM YYYY" if different year
-        const weekday = date.toLocaleDateString("en-US", { weekday: "short" });
-        const day = date.getDate();
-        const month = date.toLocaleDateString("en-US", { month: "short" });
+        const weekday = date.format("ddd");
+        const day = date.date();
+        const month = date.format("MMM");
         if (isDifferentYear) {
           return `${weekday}, ${day} ${month} ${bookingYear}`;
         }
         return `${weekday}, ${day} ${month}`;
       } else {
         // Format: "D MMMM YYYY" for past bookings
-        return date.toLocaleDateString("en-US", {
-          day: "numeric",
-          month: "long",
-          year: "numeric",
-        });
+        return date.format("D MMMM YYYY");
       }
     } catch (error) {
       console.error("Error formatting date:", error, dateString);
