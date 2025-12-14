@@ -16,6 +16,8 @@ import { userMetadata } from "@calcom/prisma/zod-utils";
 
 import { TRPCError } from "@trpc/server";
 
+import dayjs from "@calcom/dayjs";
+
 import { OrganizationPermissionService } from "./OrganizationPermissionService";
 import type { OnboardingUser } from "./service/onboarding/types";
 
@@ -251,7 +253,7 @@ export class OrganizationPaymentService {
         organizationOnboardingId,
         pricePerSeat: config.pricePerSeat,
         billingPeriod: config.billingPeriod,
-        createdAt: new Date().toISOString(),
+        createdAt: dayjs().toISOString(),
       },
     });
 
