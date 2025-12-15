@@ -2,7 +2,6 @@ import { getBillingProviderService } from "@calcom/features/ee/billing/di/contai
 import type { StripeBillingService } from "@calcom/features/ee/billing/service/billingProvider/StripeBillingService";
 import { UserRepository } from "@calcom/features/users/repositories/UserRepository";
 import {
-  ORGANIZATION_SELF_SERVE_MIN_SEATS,
   ORGANIZATION_SELF_SERVE_PRICE,
   WEBAPP_URL,
   ORG_TRIAL_DAYS,
@@ -16,6 +15,8 @@ import { UserPermissionRole, type BillingPeriod } from "@calcom/prisma/enums";
 import { userMetadata } from "@calcom/prisma/zod-utils";
 
 import { TRPCError } from "@trpc/server";
+
+import dayjs from "@calcom/dayjs";
 
 import { OrganizationPermissionService } from "./OrganizationPermissionService";
 import type { OnboardingUser } from "./service/onboarding/types";
@@ -134,7 +135,7 @@ export class OrganizationPaymentService {
   }): PaymentConfig {
     return {
       billingPeriod: input.billingPeriod || "MONTHLY",
-      seats: input.seats || Number(ORGANIZATION_SELF_SERVE_MIN_SEATS),
+      seats: input.seats ?? 1,
       pricePerSeat: input.pricePerSeat || Number(ORGANIZATION_SELF_SERVE_PRICE),
     };
   }
@@ -252,7 +253,7 @@ export class OrganizationPaymentService {
         organizationOnboardingId,
         pricePerSeat: config.pricePerSeat,
         billingPeriod: config.billingPeriod,
-        createdAt: new Date().toISOString(),
+        createdAt: dayjs().toISOString(),
       },
     });
 
