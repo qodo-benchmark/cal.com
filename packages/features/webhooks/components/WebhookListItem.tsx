@@ -100,6 +100,7 @@ export default function WebhookListItem(props: {
             <Link
               href={getWebhookVersionDocsUrl(webhook.version)}
               target="_blank"
+              rel="noopener"
               className="text-subtle hover:text-emphasis ml-1 flex items-center">
               <Icon name="external-link" className="h-4 w-4" />
             </Link>

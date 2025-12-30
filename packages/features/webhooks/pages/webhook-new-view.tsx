@@ -117,6 +117,7 @@ export const NewWebhookView = ({ webhooks, installedApps }: Props) => {
                 <Link
                   href={getWebhookVersionDocsUrl(formMethods.watch("version"))}
                   target="_blank"
+                  rel="noopener"
                   className="text-subtle hover:text-emphasis flex items-center">
                   <Icon name="external-link" className="h-4 w-4" />
                 </Link>

@@ -41,7 +41,7 @@ export const WEBHOOK_VERSION_DOCS: Record<WebhookVersion, string> = {
  * Get documentation URL for a specific webhook version
  */
 export const getWebhookVersionDocsUrl = (version: WebhookVersion): string =>
-  WEBHOOK_VERSION_DOCS[version] ?? "https://cal.com/docs/developing/guides/automation/webhooks";
+  WEBHOOK_VERSION_DOCS[version] || "https://cal.com/docs/developing/guides/automation/webhooks";
 
 export const WEBHOOK_TRIGGER_EVENTS_GROUPED_BY_APP = {
   core: [
