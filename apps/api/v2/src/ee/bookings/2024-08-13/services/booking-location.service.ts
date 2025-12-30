@@ -37,7 +37,7 @@ export class BookingLocationService_2024_08_13 {
       throw new NotFoundException(`Booking with uid=${bookingUid} not found`);
     }
 
-    if (existingBooking.eventTypeId && existingBooking.eventType) {
+    if (existingBooking.eventTypeId) {
       const eventType = await this.eventTypesRepository.getEventTypeByIdWithOwnerAndTeam(
         existingBooking.eventTypeId
       );
@@ -82,14 +82,13 @@ export class BookingLocationService_2024_08_13 {
       throw new NotFoundException(`No user found for booking with uid=${bookingUid}`);
     }
 
+    const responses = (existingBooking.responses || {}) as Record<string, unknown>;
+
     const bookingFieldsLocation = this.inputService.transformLocation(
       inputLocation as BookingInputLocation_2024_08_13
     );
 
-    const responses = (existingBooking.responses || {}) as Record<string, unknown>;
-    const { location: _existingLocation, ...rest } = responses;
-
-    const updatedBookingResponses = { ...rest, location: bookingFieldsLocation };
+    const updatedBookingResponses = { ...responses, location: bookingFieldsLocation };
 
     const updatedBooking = await this.bookingsRepository.updateBooking(bookingUid, {
       location: bookingLocation,
