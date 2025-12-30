@@ -1,3 +1,4 @@
+/* eslint-disable */
 const { withAxiom } = require("next-axiom");
 const { withSentryConfig } = require("@sentry/nextjs");
 const { PrismaPlugin } = require("@prisma/nextjs-monorepo-workaround-plugin");
@@ -6,6 +7,9 @@ const plugins = [withAxiom];
 
 /** @type {import("next").NextConfig} */
 const nextConfig = {
+  turbopack: {
+    resolveExtensions: [".ts", ".tsx", ".js", ".jsx"],
+  },
   transpilePackages: [
     "@calcom/app-store",
     "@calcom/dayjs",
