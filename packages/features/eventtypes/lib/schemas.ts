@@ -39,7 +39,6 @@ type EventTypeLocation = {
   hostPhoneNumber?: string;
   credentialId?: number;
   teamName?: string;
-  customLabel?: string;
 };
 
 type EventTypeMetadata = z.infer<typeof EventTypeMetaDataSchema>;
@@ -69,7 +68,7 @@ export type TCreateEventTypeInput = {
   slug: string;
   description?: string | null;
   length: number;
-  hidden?: boolean;
+  hidden: boolean;
   teamId?: number | null;
   schedulingType?: SchedulingType | null;
   locations?: EventTypeLocation[];

@@ -6,7 +6,7 @@ import { routingFormAppDataSchemas } from "./appDataSchemas";
 
 export type FieldOption = {
   label: string;
-  id: string | null;
+  id: string;
 };
 
 export type TNonRouterField = {

