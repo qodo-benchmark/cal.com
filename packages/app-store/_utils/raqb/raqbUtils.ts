@@ -16,7 +16,6 @@
 export {
   raqbQueryValueUtils,
   getValueOfAttributeOption,
-  getAttributesQueryBuilderConfigHavingListofLabels,
   acrossQueryValueCompatiblity,
 } from "./raqbUtils.server";
 

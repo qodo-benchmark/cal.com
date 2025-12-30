@@ -106,7 +106,7 @@ function useEnsureEventTypeIdInRedirectUrlAction({
     setRoute(route.id, {
       action: { ...route.action, eventTypeId: matchingOption.eventTypeId },
     });
-  }, [eventOptions, setRoute, route, routeActionValue, routeActionType, routeActionEventTypeId]);
+  }, [eventOptions, setRoute, route.id, routeActionValue, routeActionType, routeActionEventTypeId]);
 }
 
 const hasRules = (route: EditFormRoute) => {
