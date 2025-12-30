@@ -7,7 +7,9 @@ const plugins = [withAxiom];
 
 /** @type {import("next").NextConfig} */
 const nextConfig = {
-  turbopack: {},
+  turbopack: {
+    resolveExtensions: [".ts", ".tsx", ".js", ".jsx"],
+  },
   transpilePackages: [
     "@calcom/app-store",
     "@calcom/dayjs",
@@ -96,7 +98,7 @@ const nextConfig = {
   },
 };
 
-if (process.env.NEXT_PUBLIC_SENTRY_DSN) {
+if (!!process.env.NEXT_PUBLIC_SENTRY_DSN) {
   plugins.push((nextConfig) =>
     withSentryConfig(nextConfig, {
       autoInstrumentServerFunctions: true,

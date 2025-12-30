@@ -4,7 +4,7 @@ const nextConfig = {
   turbopack: {},
   reactStrictMode: true,
   transpilePackages: ["@calcom/platform-constants"],
-  webpack: (config, { webpack, buildId }) => {
+  webpack: (config, { webpack, buildId, isServer }) => {
     config.resolve.fallback = {
       ...config.resolve.fallback, // if you miss it, all the other options in fallback, specified
     };

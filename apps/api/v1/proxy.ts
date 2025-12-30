@@ -7,6 +7,8 @@ function proxy(_request: NextRequest) {
   return NextResponse.json({ message: "Forbidden" }, { status: 403 });
 }
 
+export default proxy;
+
 export const config = {
   // The blocked segment is always the last part of the path, so we only need this matcher.
   matcher: [
@@ -17,5 +19,3 @@ export const config = {
     "/:path*/_auth-middleware",
   ],
 };
-
-export default proxy;
