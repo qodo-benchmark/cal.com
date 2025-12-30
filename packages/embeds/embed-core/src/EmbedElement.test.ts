@@ -456,11 +456,13 @@ describe("EmbedElement", () => {
         expectColorSchemeListenerToBeRegistered(boundPrefersDarkThemeChangedHandler);
         expectAnimationFrameListenerToBeRegistered(element.skeletonContainerHeightTimer!, boundEnsureContainerTakesSkeletonHeightWhenVisible);
 
+        const rafIdBeforeDisconnect = element.skeletonContainerHeightTimer;
+
         document.body.removeChild(element);
 
         expectListenerToBeUnregistered("resize", boundResizeHandler);
         expectColorSchemeListenerToBeUnregistered(boundPrefersDarkThemeChangedHandler);
-        expectAnimationFrameListenerToBeUnregistered(element.skeletonContainerHeightTimer!, boundEnsureContainerTakesSkeletonHeightWhenVisible);
+        expectAnimationFrameListenerToBeUnregistered(rafIdBeforeDisconnect!, boundEnsureContainerTakesSkeletonHeightWhenVisible);
       });
     });
   });
