@@ -23,5 +23,5 @@ export async function revalidateTeamEventTypeCache({
   meetingSlug: string;
   orgSlug: string | null;
 }) {
-  revalidateTag(`event-type:${orgSlug ? `${orgSlug}:` : ""}${teamSlug}:${meetingSlug}`);
+  revalidateTag(`event-type:${orgSlug ? `${orgSlug}:` : ""}${teamSlug}:${meetingSlug}`, "max");
 }
