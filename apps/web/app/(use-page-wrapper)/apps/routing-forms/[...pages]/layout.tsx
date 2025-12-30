@@ -9,8 +9,7 @@ interface LayoutProps {
 }
 
 export default async function Layout({ children, params }: LayoutProps) {
-  const { pages } = await params;
-  const isPublic = pages?.[0] === "routing-link";
+  const isPublic = (await params).pages?.[0] === "routing-link";
   if (isPublic) {
     return <FormProvider>{children}</FormProvider>;
   }

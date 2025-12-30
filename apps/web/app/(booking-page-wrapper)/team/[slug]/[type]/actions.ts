@@ -10,7 +10,7 @@ export async function revalidateTeamDataCache({
   teamSlug: string;
   orgSlug: string | null;
 }) {
-  revalidateTag(`team:${orgSlug ? `${orgSlug}:` : ""}${teamSlug}`, "max");
+  revalidateTag(`team:${orgSlug ? `${orgSlug}:` : ""}${teamSlug}`);
 }
 
 // Coupled with `getCachedTeamEventType` in `queries.ts`
