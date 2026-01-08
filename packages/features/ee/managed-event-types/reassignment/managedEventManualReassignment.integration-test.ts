@@ -131,7 +131,8 @@ beforeAll(async () => {
 });
 
 afterEach(async () => {
-  // Clean up bookings
+  // Clean up ALL bookings associated with test event types (including those created by reassignment)
+  // This is more robust than tracking bookingIds since it catches indirectly created bookings
   if (bookingIds.length > 0) {
     await prisma.bookingReference.deleteMany({
       where: { bookingId: { in: bookingIds } },
@@ -145,8 +146,8 @@ afterEach(async () => {
     await prisma.booking.deleteMany({
       where: { id: { in: bookingIds } },
     });
-    bookingIds.splice(0, bookingIds.length);
   }
+  bookingIds.splice(0, bookingIds.length);
 
   // Clean up event types
   if (eventTypeIds.length > 0) {
@@ -255,12 +256,6 @@ describe("managedEventManualReassignment - Integration Tests", () => {
   it("should record assignment reason for manual reassignment", async () => {
     const managedEventManualReassignment = (await import("./managedEventManualReassignment")).default;
 
-    await prisma.booking.deleteMany({
-      where: {
-        idempotencyKey: { startsWith: "test-idempotency-" },
-      },
-    });
-
     const originalUser = await createTestUser({
       email: "original2@test.com",
       name: "Original User 2",
@@ -330,12 +325,6 @@ describe("managedEventManualReassignment - Integration Tests", () => {
   it("should preserve booking details (attendees, time) during reassignment", async () => {
     const managedEventManualReassignment = (await import("./managedEventManualReassignment")).default;
 
-    await prisma.booking.deleteMany({
-      where: {
-        idempotencyKey: { startsWith: "test-idempotency-" },
-      },
-    });
-
     const originalUser = await createTestUser({
       email: "original3@test.com",
       name: "Original User 3",
@@ -389,13 +378,8 @@ describe("managedEventManualReassignment - Integration Tests", () => {
         eventTypeId: childEventTypes[1].id,
         userId: newUser.id,
       },
-      select: {
-        startTime: true,
-        endTime: true,
+      include: {
         attendees: {
-          select: {
-            email: true,
-          },
           orderBy: {
             id: "asc",
           },
