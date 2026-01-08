@@ -63,6 +63,13 @@ export async function handleWebhookScheduledTriggers(prisma: PrismaClient) {
     if (webhook) {
       headers["X-Cal-Signature-256"] = createWebhookSignature({ secret: webhook.secret, body: job.payload });
     }
+    // clean finished job
+    await prisma.webhookScheduledTriggers.delete({
+      where: {
+        id: job.id,
+      },
+    });
+
     fetchPromises.push(
       fetch(job.subscriberUrl, {
         method: "POST",
@@ -74,13 +81,6 @@ export async function handleWebhookScheduledTriggers(prisma: PrismaClient) {
         console.error(`Webhook trigger for subscriber url ${job.subscriberUrl} failed with error: ${error}`);
       })
     );
-
-    // clean finished job
-    await prisma.webhookScheduledTriggers.delete({
-      where: {
-        id: job.id,
-      },
-    });
   }
 
   Promise.allSettled(fetchPromises);
