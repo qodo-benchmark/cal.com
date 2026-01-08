@@ -386,13 +386,8 @@ describe("managedEventManualReassignment - Integration Tests", () => {
         eventTypeId: childEventTypes[1].id,
         userId: newUser.id,
       },
-      select: {
-        startTime: true,
-        endTime: true,
+      include: {
         attendees: {
-          select: {
-            email: true,
-          },
           orderBy: {
             id: "asc",
           },
