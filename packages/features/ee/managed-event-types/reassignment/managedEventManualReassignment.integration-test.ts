@@ -133,27 +133,19 @@ beforeAll(async () => {
 afterEach(async () => {
   // Clean up ALL bookings associated with test event types (including those created by reassignment)
   // This is more robust than tracking bookingIds since it catches indirectly created bookings
-  if (eventTypeIds.length > 0) {
-    const allBookings = await prisma.booking.findMany({
-      where: { eventTypeId: { in: eventTypeIds } },
-      select: { id: true },
+  if (bookingIds.length > 0) {
+    await prisma.bookingReference.deleteMany({
+      where: { bookingId: { in: bookingIds } },
     });
-    const allBookingIds = allBookings.map((b) => b.id);
-
-    if (allBookingIds.length > 0) {
-      await prisma.bookingReference.deleteMany({
-        where: { bookingId: { in: allBookingIds } },
-      });
-      await prisma.attendee.deleteMany({
-        where: { bookingId: { in: allBookingIds } },
-      });
-      await prisma.assignmentReason.deleteMany({
-        where: { bookingId: { in: allBookingIds } },
-      });
-      await prisma.booking.deleteMany({
-        where: { id: { in: allBookingIds } },
-      });
-    }
+    await prisma.attendee.deleteMany({
+      where: { bookingId: { in: bookingIds } },
+    });
+    await prisma.assignmentReason.deleteMany({
+      where: { bookingId: { in: bookingIds } },
+    });
+    await prisma.booking.deleteMany({
+      where: { id: { in: bookingIds } },
+    });
   }
   bookingIds.splice(0, bookingIds.length);
 
@@ -386,13 +378,8 @@ describe("managedEventManualReassignment - Integration Tests", () => {
         eventTypeId: childEventTypes[1].id,
         userId: newUser.id,
       },
-      select: {
-        startTime: true,
-        endTime: true,
+      include: {
         attendees: {
-          select: {
-            email: true,
-          },
           orderBy: {
             id: "asc",
           },

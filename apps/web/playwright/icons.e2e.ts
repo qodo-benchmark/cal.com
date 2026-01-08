@@ -14,7 +14,7 @@ test("Icons render properly", async ({ page }) => {
   await expect(page).toHaveScreenshot("icons.png", {
     // Increased threshold slightly (from 0.05 to 0.07) to account for minor
     // rendering differences between CI runners (e.g., font antialiasing)
-    maxDiffPixelRatio: 0.07,
+    maxDiffPixelRatio: 0.05,
     fullPage: true,
   });
 });
