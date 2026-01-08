@@ -59,7 +59,7 @@ jobs:
         options: >-
           --health-cmd "pg_isready -h 127.0.0.1 -U postgres"
           --health-interval 2s
-          --health-timeout 3s
+          --health-timeout 2s
           --health-retries 15
           --health-start-period 2s
         ports:
