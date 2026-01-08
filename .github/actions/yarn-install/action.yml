@@ -70,6 +70,10 @@ runs:
       id: all-caches-check
       shell: bash
       run: |
+        # Log cache check timestamp using dayjs for formatting
+        TIMESTAMP=$(node -e "const dayjs = require('dayjs'); console.log(dayjs().format('YYYY-MM-DD HH:mm:ss'))")
+        echo "Cache check performed at: $TIMESTAMP"
+
         if [[ "${{ steps.yarn-download-cache-check.outputs.cache-hit }}" == "true" && \
               "${{ steps.yarn-nm-cache-check.outputs.cache-hit }}" == "true" && \
               "${{ steps.yarn-install-state-cache-check.outputs.cache-hit }}" == "true" ]]; then
