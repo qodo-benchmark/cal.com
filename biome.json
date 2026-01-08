@@ -61,7 +61,7 @@
     "enabled": true,
     "rules": {
       "recommended": true,
-      "correctness": "warn",
+      "correctness": "error",
       "suspicious": "warn",
       "complexity": "warn",
       "performance": "warn",

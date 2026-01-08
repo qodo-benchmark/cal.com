@@ -58,9 +58,7 @@ describe("defaultResponderForAppDir", () => {
 
     expect(response.status).toBe(409);
     expect(json).toEqual({
-      message: ErrorCode.NoAvailableUsersFound,
-      url: undefined,
-      method: undefined,
+      message: "Request failed",
     });
   });
 
@@ -76,9 +74,7 @@ describe("defaultResponderForAppDir", () => {
 
     expect(response.status).toBe(429);
     expect(json).toEqual({
-      message: "TOO_MANY_REQUESTS",
-      url: undefined,
-      method: undefined,
+      message: "Request failed",
     });
   });
 });
