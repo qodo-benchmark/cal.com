@@ -14,6 +14,8 @@ import { HashedLinkService } from "@calcom/features/hashedLink/lib/service/Hashe
 import { MembershipRepository } from "@calcom/features/membership/repositories/MembershipRepository";
 import { ScheduleRepository } from "@calcom/features/schedules/repositories/ScheduleRepository";
 import tasker from "@calcom/features/tasker";
+import { ErrorCode } from "@calcom/lib/errorCodes";
+import { ErrorWithCode } from "@calcom/lib/errors";
 import { validateIntervalLimitOrder } from "@calcom/lib/intervalLimits/validateIntervalLimitOrder";
 import logger from "@calcom/lib/logger";
 import { getTranslation } from "@calcom/lib/server/i18n";
@@ -206,16 +208,16 @@ export const updateHandler = async ({ ctx, input }: UpdateOptions) => {
   const finalRecurringEvent = recurringEvent === undefined ? eventType.recurringEvent : recurringEvent;
 
   if (finalSeatsPerTimeSlot && finalRecurringEvent) {
-    throw new TRPCError({
-      code: "BAD_REQUEST",
-      message: "Recurring Events and Offer Seats cannot be active at the same time.",
-    });
+    throw new ErrorWithCode(
+      ErrorCode.BadRequest,
+      "Recurring Events and Offer Seats cannot be active at the same time."
+    );
   }
 
   const teamId = input.teamId || eventType.team?.id;
   const guestsField = bookingFields?.find((field) => field.name === "guests");
 
-  ensureUniqueBookingFields(bookingFields);
+  ensureUniqueBookingFields(input.bookingFields);
   ensureEmailOrPhoneNumberIsPresent(bookingFields);
 
   if (autoTranslateDescriptionEnabled && !ctx.user.organizationId) {
@@ -249,7 +251,7 @@ export const updateHandler = async ({ ctx, input }: UpdateOptions) => {
     metadata: rest.metadata === null ? Prisma.DbNull : (rest.metadata as Prisma.InputJsonObject),
     eventTypeColor: eventTypeColor === null ? Prisma.DbNull : (eventTypeColor as Prisma.InputJsonObject),
     // Only set disableGuests if bookingFields is explicitly provided to avoid overwriting existing value
-    ...(bookingFields !== undefined && {
+    ...(input.bookingFields !== undefined && {
       disableGuests: guestsField?.hidden ?? false,
     }),
     seatsPerTimeSlot,
@@ -308,7 +310,7 @@ export const updateHandler = async ({ ctx, input }: UpdateOptions) => {
       });
     }
 
-    if (eventType.maxActiveBookingsPerBooker && recurringEvent) {
+    if (eventType.maxActiveBookingsPerBooker && finalRecurringEvent) {
       throw new TRPCError({
         code: "BAD_REQUEST",
         message: "Recurring Events and booker active bookings limit cannot be active at the same time.",

