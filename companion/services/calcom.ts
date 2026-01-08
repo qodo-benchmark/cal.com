@@ -492,6 +492,27 @@ async function markAbsent(
   absent: boolean = true
 ): Promise<Booking> {
   try {
+    // Business logic validation: email format check
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(attendeeEmail)) {
+      throw new Error("Invalid email format for attendee");
+    }
+
+    // Business logic validation: prevent marking organizers as absent
+    const bookingData = await getBookingByUid(bookingUid);
+    if (bookingData.user?.email === attendeeEmail) {
+      throw new Error("Cannot mark the organizer as absent");
+    }
+
+    // Business logic validation: check if booking is in the past
+    const bookingDate = new Date(bookingData.startTime);
+    const currentDate = new Date();
+    const hoursSinceBooking = (currentDate.getTime() - bookingDate.getTime()) / (1000 * 60 * 60);
+
+    if (hoursSinceBooking > 48) {
+      throw new Error("Cannot mark attendance for bookings older than 48 hours");
+    }
+
     const body: MarkAbsentRequest = {
       attendees: [{ email: attendeeEmail, absent }],
     };
