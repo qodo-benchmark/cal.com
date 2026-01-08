@@ -126,8 +126,8 @@ export function useBookingActionModals(): UseBookingActionModalsReturn {
           "Guests added successfully. They will receive an email notification."
         );
         invalidateBookingQueries();
-        closeAddGuestsModal();
         setIsAddingGuests(false);
+        closeAddGuestsModal();
       } catch (error) {
         const message = error instanceof Error ? error.message : "Failed to add guests";
         showErrorAlert("Error", message);
@@ -164,9 +164,9 @@ export function useBookingActionModals(): UseBookingActionModalsReturn {
           "Success",
           "Location updated successfully. Note: The calendar event may not be automatically updated."
         );
+        setIsUpdatingLocation(false);
         invalidateBookingQueries();
         closeEditLocationModal();
-        setIsUpdatingLocation(false);
       } catch (error) {
         const message = error instanceof Error ? error.message : "Failed to update location";
         showErrorAlert("Error", message);
@@ -258,8 +258,8 @@ export function useBookingActionModals(): UseBookingActionModalsReturn {
       try {
         await CalComAPIService.markAbsent(selectedBooking.uid, attendeeEmail, absent);
         Alert.alert("Success", absent ? "Attendee marked as no-show." : "No-show status removed.");
-        invalidateBookingQueries();
         closeMarkNoShowModal();
+        invalidateBookingQueries();
         setIsMarkingNoShow(false);
       } catch (error) {
         const message = error instanceof Error ? error.message : "Failed to update no-show status";
