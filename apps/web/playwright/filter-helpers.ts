@@ -176,7 +176,7 @@ export async function listSegments(page: Page): Promise<string[]> {
 }
 
 export function locateSelectedSegmentName(page: Page, expectedName: string) {
-  return page.locator('[data-testid="filter-segment-select"]').filter({ hasText: expectedName });
+  return page.locator('[data-testid="filter-segment-select"]').first().filter({ hasText: expectedName });
 }
 
 /**
