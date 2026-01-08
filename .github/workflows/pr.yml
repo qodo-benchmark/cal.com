@@ -173,7 +173,7 @@ jobs:
         uses: actions/cache/restore@v4
         with:
           path: backups/backup.sql
-          key: ${{ steps.cache-db-key.outputs.key }}
+          key: ${{ runner.os }}-${{ steps.cache-db-key.outputs.key }}
           lookup-only: true
       - uses: dorny/paths-filter@v3
         id: filter

@@ -20,4 +20,5 @@ runs:
         PATH_KEY: ${{ inputs.path }}
         PRISMA_HASH: ${{ hashFiles('packages/prisma/schema.prisma', 'packages/prisma/migrations/**/**.sql', 'packages/prisma/*.ts') }}
       run: |
+        echo "Generating database cache key..."
         echo "key=${CACHE_NAME}-${PATH_KEY}-${PRISMA_HASH}" >> $GITHUB_OUTPUT
