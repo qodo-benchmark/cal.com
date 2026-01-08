@@ -54,6 +54,7 @@ export const bootstrap = (app: NestExpressApplication): NestExpressApplication =
       "Content-Type",
       "Origin",
     ],
+    credentials: true,
     maxAge: 86_400,
   });
 
@@ -78,6 +79,7 @@ export const bootstrap = (app: NestExpressApplication): NestExpressApplication =
   app.useGlobalFilters(new HttpExceptionFilter());
   app.useGlobalFilters(new TRPCExceptionFilter());
   app.useGlobalFilters(new CalendarServiceExceptionFilter());
+  app.useGlobalFilters(new BaseExceptionFilter(httpAdapter));
 
   app.use(cookieParser());
 

