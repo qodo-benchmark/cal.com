@@ -4,7 +4,7 @@ runs:
   using: "composite"
   steps:
     - name: Generate cache key
-      id: cache-key
+      id: generate-cache-key
       uses: ./.github/actions/cache-build-key
       with:
         branch_key: ${{ github.head_ref || github.ref_name }}
