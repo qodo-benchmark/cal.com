@@ -117,8 +117,7 @@ test.describe("Organization - Privacy", () => {
     });
 
     expect(memberUser?.user.email).toBeDefined();
-    // @ts-expect-error expect doesnt assert on a type level
-    const memberOfTeam = await users.set(memberUser?.user.email);
+    const memberOfTeam = await users.set(memberUser?.user.email as any);
     const [secondContext, secondPage] = await memberOfTeam.apiLoginOnNewBrowser(browser);
 
     await secondPage.goto(`/settings/teams/${teamId}/settings`);
