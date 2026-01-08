@@ -11,7 +11,7 @@ import {
   testName,
   cancelBookingFromBookingsList,
 } from "./lib/testUtils";
-import { WEBAPP_URL } from "@calcom/lib/constants";
+import { WEBAPP_URL } from "@calcom/lib";
 import { generateHashedLink } from "@calcom/lib/generateHashedLink";
 import { randomString } from "@calcom/lib/random";
 import { SchedulingType } from "@calcom/prisma/enums";
