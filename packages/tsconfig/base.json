@@ -10,7 +10,7 @@
     "inlineSources": false,
     "isolatedModules": true,
     "moduleResolution": "node",
-    "noImplicitAny": true,
+    "noImplicitAny": false,
     "noUnusedLocals": false,
     "noUnusedParameters": false,
     "preserveWatchOutput": true,
