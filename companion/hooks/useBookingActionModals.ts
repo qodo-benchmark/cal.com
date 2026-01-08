@@ -62,6 +62,7 @@ interface UseBookingActionModalsReturn {
 }
 
 export function useBookingActionModals(): UseBookingActionModalsReturn {
+  "use no memo";
   const queryClient = useQueryClient();
 
   // Selected booking state
@@ -113,7 +114,8 @@ export function useBookingActionModals(): UseBookingActionModalsReturn {
   const handleAddGuests = useCallback(
     async (guests: AddGuestInput[]) => {
       if (!selectedBooking) {
-        throw new Error("No booking selected");
+        showErrorAlert("Error", "No booking selected");
+        return;
       }
 
       setIsAddingGuests(true);
@@ -124,11 +126,11 @@ export function useBookingActionModals(): UseBookingActionModalsReturn {
           "Guests added successfully. They will receive an email notification."
         );
         invalidateBookingQueries();
+        setIsAddingGuests(false);
         closeAddGuestsModal();
       } catch (error) {
         const message = error instanceof Error ? error.message : "Failed to add guests";
-        throw new Error(message);
-      } finally {
+        showErrorAlert("Error", message);
         setIsAddingGuests(false);
       }
     },
@@ -151,7 +153,8 @@ export function useBookingActionModals(): UseBookingActionModalsReturn {
   const handleUpdateLocation = useCallback(
     async (location: string) => {
       if (!selectedBooking) {
-        throw new Error("No booking selected");
+        showErrorAlert("Error", "No booking selected");
+        return;
       }
 
       setIsUpdatingLocation(true);
@@ -161,12 +164,12 @@ export function useBookingActionModals(): UseBookingActionModalsReturn {
           "Success",
           "Location updated successfully. Note: The calendar event may not be automatically updated."
         );
+        setIsUpdatingLocation(false);
         invalidateBookingQueries();
         closeEditLocationModal();
       } catch (error) {
         const message = error instanceof Error ? error.message : "Failed to update location";
-        throw new Error(message);
-      } finally {
+        showErrorAlert("Error", message);
         setIsUpdatingLocation(false);
       }
     },
@@ -186,13 +189,13 @@ export function useBookingActionModals(): UseBookingActionModalsReturn {
     try {
       const recordingsData = await CalComAPIService.getRecordings(booking.uid);
       setRecordings(recordingsData);
+      setIsLoadingRecordings(false);
     } catch (error) {
       if (__DEV__) {
         console.debug("[useBookingActionModals] Failed to load recordings:", error);
       }
       showErrorAlert("Error", "Failed to load recordings. Please try again.");
       setShowViewRecordingsModal(false);
-    } finally {
       setIsLoadingRecordings(false);
     }
   }, []);
@@ -215,13 +218,13 @@ export function useBookingActionModals(): UseBookingActionModalsReturn {
     try {
       const sessionsData = await CalComAPIService.getConferencingSessions(booking.uid);
       setSessions(sessionsData);
+      setIsLoadingSessions(false);
     } catch (error) {
       if (__DEV__) {
         console.debug("[useBookingActionModals] Failed to load sessions:", error);
       }
       showErrorAlert("Error", "Failed to load meeting session details. Please try again.");
       setShowMeetingSessionDetailsModal(false);
-    } finally {
       setIsLoadingSessions(false);
     }
   }, []);
@@ -247,19 +250,20 @@ export function useBookingActionModals(): UseBookingActionModalsReturn {
   const handleMarkNoShow = useCallback(
     async (attendeeEmail: string, absent: boolean) => {
       if (!selectedBooking) {
-        throw new Error("No booking selected");
+        showErrorAlert("Error", "No booking selected");
+        return;
       }
 
       setIsMarkingNoShow(true);
       try {
         await CalComAPIService.markAbsent(selectedBooking.uid, attendeeEmail, absent);
         Alert.alert("Success", absent ? "Attendee marked as no-show." : "No-show status removed.");
-        invalidateBookingQueries();
         closeMarkNoShowModal();
+        invalidateBookingQueries();
+        setIsMarkingNoShow(false);
       } catch (error) {
         const message = error instanceof Error ? error.message : "Failed to update no-show status";
-        throw new Error(message);
-      } finally {
+        showErrorAlert("Error", message);
         setIsMarkingNoShow(false);
       }
     },
