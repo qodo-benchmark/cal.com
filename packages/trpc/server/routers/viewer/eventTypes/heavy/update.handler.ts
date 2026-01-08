@@ -14,6 +14,8 @@ import { HashedLinkService } from "@calcom/features/hashedLink/lib/service/Hashe
 import { MembershipRepository } from "@calcom/features/membership/repositories/MembershipRepository";
 import { ScheduleRepository } from "@calcom/features/schedules/repositories/ScheduleRepository";
 import tasker from "@calcom/features/tasker";
+import { ErrorCode } from "@calcom/lib/errorCodes";
+import { ErrorWithCode } from "@calcom/lib/errors";
 import { validateIntervalLimitOrder } from "@calcom/lib/intervalLimits/validateIntervalLimitOrder";
 import logger from "@calcom/lib/logger";
 import { getTranslation } from "@calcom/lib/server/i18n";
@@ -206,10 +208,10 @@ export const updateHandler = async ({ ctx, input }: UpdateOptions) => {
   const finalRecurringEvent = recurringEvent === undefined ? eventType.recurringEvent : recurringEvent;
 
   if (finalSeatsPerTimeSlot && finalRecurringEvent) {
-    throw new TRPCError({
-      code: "BAD_REQUEST",
-      message: "Recurring Events and Offer Seats cannot be active at the same time.",
-    });
+    throw new ErrorWithCode(
+      ErrorCode.BadRequest,
+      "Recurring Events and Offer Seats cannot be active at the same time."
+    );
   }
 
   const teamId = input.teamId || eventType.team?.id;
@@ -240,7 +242,8 @@ export const updateHandler = async ({ ctx, input }: UpdateOptions) => {
     }),
     description: newDescription,
     title: newTitle,
-    bookingFields,
+    bookingFields:
+      bookingFields === null ? Prisma.DbNull : (bookingFields as Prisma.InputJsonValue | undefined),
     maxActiveBookingsPerBooker,
     isRRWeightsEnabled,
     rrSegmentQueryValue:
