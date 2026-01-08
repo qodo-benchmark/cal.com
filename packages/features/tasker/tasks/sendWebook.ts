@@ -1,5 +1,6 @@
 import { z } from "zod";
 
+import { WebhookVersion } from "@calcom/features/webhooks/lib/interface/IWebhookRepository";
 import sendPayload from "@calcom/features/webhooks/lib/sendPayload";
 
 const sendWebhookPayloadSchema = z.object({
@@ -22,7 +23,6 @@ export async function sendWebhook(payload: string): Promise<void> {
     );
     await sendPayload(secretKey, triggerEvent, createdAt, webhook, data);
   } catch (error) {
-    // ... handle error
     console.error(error);
     throw error;
   }
