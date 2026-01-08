@@ -1,13 +1,60 @@
 name: Install playwright binaries
 description: "Install playwright, cache and restore if necessary"
+inputs:
+  skip-install-if-cache-hit:
+    description: "Skip playwright install if cache is hit. Use this for jobs that only need to check that cache exists."
+    required: false
+    default: "false"
 runs:
   using: "composite"
   steps:
+    # Debug: Environment information for Playwright
+    - name: Debug - Playwright environment
+      shell: bash
+      run: |
+        echo "=== Playwright Environment Debug ==="
+        echo "OS: $(uname -a)"
+        echo "Current directory: $(pwd)"
+        echo "User: $(whoami)"
+        echo "Home: $HOME"
+        echo "Node version: $(node --version)"
+        echo "NPM version: $(npm --version)"
+        echo "Yarn version: $(yarn --version)"
+        echo "GitHub workspace: $GITHUB_WORKSPACE"
+        echo "Runner OS: $RUNNER_OS"
+        echo "=== End Playwright Environment Debug ==="
+
     - name: Get installed Playwright version
       shell: bash
       id: playwright-version
       run: echo "PLAYWRIGHT_VERSION=$(node -e "console.log(require('./package.json').devDependencies['@playwright/test'])")" >> $GITHUB_ENV
+
+    # Debug: Verify Playwright version
+    - name: Debug - Playwright version info
+      shell: bash
+      run: |
+        echo "=== Playwright Version Information ==="
+        echo "Playwright version from package.json: ${{ env.PLAYWRIGHT_VERSION }}"
+        echo "Package.json devDependencies:"
+        node -e "console.log(JSON.stringify(require('./package.json').devDependencies, null, 2))" | grep -A 5 playwright || echo "No playwright dependencies found"
+        echo "=== End Playwright Version Information ==="
+
+    # When skip-install-if-cache-hit is true, first check if cache exists without downloading (lookup-only mode)
+    - name: Check playwright cache (lookup-only)
+      if: ${{ inputs.skip-install-if-cache-hit == 'true' }}
+      id: playwright-cache-check
+      uses: actions/cache/restore@v4
+      with:
+        path: |
+          ~/Library/Caches/ms-playwright
+          ~/.cache/ms-playwright
+          ${{ github.workspace }}/node_modules/playwright
+        key: ${{ runner.os }}-playwright-${{ env.PLAYWRIGHT_VERSION }}
+        lookup-only: true
+
+    # Only restore cache if not in skip mode, or if skip mode but cache check missed
     - name: Cache playwright binaries
+      if: ${{ inputs.skip-install-if-cache-hit != 'true' || steps.playwright-cache-check.outputs.cache-hit != 'true' }}
       id: playwright-cache
       uses: actions/cache@v4
       with:
@@ -16,7 +63,136 @@ runs:
           ~/.cache/ms-playwright
           ${{ github.workspace }}/node_modules/playwright
         key: ${{ runner.os }}-playwright-${{ env.PLAYWRIGHT_VERSION }}
-    - name: Yarn playwright install
-      if: steps.playwright-cache.outputs.cache-hit != 'true'
+
+    # Debug: Check Playwright cache directories
+    - name: Debug - Playwright cache directories
       shell: bash
-      run: yarn playwright install --with-deps
+      run: |
+        echo "=== Playwright Cache Directories ==="
+        echo "Checking macOS cache location:"
+        if [ -d "$HOME/Library/Caches/ms-playwright" ]; then
+          echo "macOS cache exists: $HOME/Library/Caches/ms-playwright"
+          echo "Size: $(du -sh $HOME/Library/Caches/ms-playwright 2>/dev/null || echo 'Error')"
+          echo "Contents:"
+          ls -la $HOME/Library/Caches/ms-playwright 2>/dev/null || echo "Cannot list contents"
+        else
+          echo "macOS cache does NOT exist"
+        fi
+        echo "Checking Linux cache location:"
+        if [ -d "$HOME/.cache/ms-playwright" ]; then
+          echo "Linux cache exists: $HOME/.cache/ms-playwright"
+          echo "Size: $(du -sh $HOME/.cache/ms-playwright 2>/dev/null || echo 'Error')"
+          echo "Contents:"
+          ls -la $HOME/.cache/ms-playwright 2>/dev/null || echo "Cannot list contents"
+        else
+          echo "Linux cache does NOT exist"
+        fi
+        echo "Checking node_modules playwright:"
+        if [ -d "${{ github.workspace }}/node_modules/playwright" ]; then
+          echo "node_modules/playwright exists"
+          echo "Size: $(du -sh ${{ github.workspace }}/node_modules/playwright 2>/dev/null || echo 'Error')"
+        else
+          echo "node_modules/playwright does NOT exist"
+        fi
+        echo "=== End Playwright Cache Directories ==="
+
+    # Debug: Cache restoration status
+    - name: Debug - Playwright cache status
+      shell: bash
+      run: |
+        echo "=== Playwright Cache Status ==="
+        echo "Skip install if cache hit: ${{ inputs.skip-install-if-cache-hit }}"
+        echo "Playwright cache check hit: ${{ steps.playwright-cache-check.outputs.cache-hit }}"
+        echo "Playwright cache hit: ${{ steps.playwright-cache.outputs.cache-hit }}"
+        echo "Playwright version: ${{ env.PLAYWRIGHT_VERSION }}"
+        echo "Cache key: ${{ runner.os }}-playwright-${{ env.PLAYWRIGHT_VERSION }}"
+        echo "=== End Playwright Cache Status ==="
+
+    # Debug: System dependencies check
+    - name: Debug - System dependencies
+      shell: bash
+      run: |
+        echo "=== System Dependencies for Playwright ==="
+        echo "Checking available system libraries:"
+        if command -v ldconfig &> /dev/null; then
+          echo "ldconfig available"
+          ldconfig -p 2>/dev/null | grep -E 'libx11|libxcb|libxcomposite|libxdamage|libxfixes|libxrandr' || echo "X11 libraries check complete"
+        else
+          echo "ldconfig not available (macOS or Windows)"
+        fi
+        echo "Checking for browsers:"
+        which chromium 2>/dev/null && echo "Chromium found" || echo "Chromium not in PATH"
+        which firefox 2>/dev/null && echo "Firefox found" || echo "Firefox not in PATH"
+        which webkit 2>/dev/null && echo "WebKit found" || echo "WebKit not in PATH"
+        echo "Display server:"
+        echo "DISPLAY=${DISPLAY:-not set}"
+        echo "WAYLAND_DISPLAY=${WAYLAND_DISPLAY:-not set}"
+        echo "=== End System Dependencies ==="
+
+    # Debug: Disk space check
+    - name: Debug - Disk space
+      shell: bash
+      run: |
+        echo "=== Disk Space Before Installation ==="
+        df -h
+        echo "Home directory usage:"
+        du -sh $HOME 2>/dev/null || echo "Cannot calculate home directory size"
+        echo "Workspace usage:"
+        du -sh ${{ github.workspace }} 2>/dev/null || echo "Cannot calculate workspace size"
+        echo "=== End Disk Space Check ==="
+
+    # In default mode: run if playwright-cache missed
+    # In skip mode: run if playwright-cache-check missed (but cache restore step was also skipped)
+    - name: Yarn playwright install
+      if: ${{ (inputs.skip-install-if-cache-hit != 'true' && steps.playwright-cache.outputs.cache-hit != 'true') || (inputs.skip-install-if-cache-hit == 'true' && steps.playwright-cache-check.outputs.cache-hit != 'true') }}
+      shell: bash
+      run: |
+        echo "=== Starting Playwright Installation ==="
+        echo "Timestamp: $(date -Iseconds)"
+        yarn playwright install --with-deps
+        echo "Playwright installation completed"
+        echo "Timestamp: $(date -Iseconds)"
+        echo "=== End Playwright Installation ==="
+
+    # Debug: Post-installation verification
+    - name: Debug - Post-install verification
+      if: ${{ (inputs.skip-install-if-cache-hit != 'true' && steps.playwright-cache.outputs.cache-hit != 'true') || (inputs.skip-install-if-cache-hit == 'true' && steps.playwright-cache-check.outputs.cache-hit != 'true') }}
+      shell: bash
+      run: |
+        echo "=== Playwright Post-Installation Verification ==="
+        echo "Verifying browser installations:"
+        if command -v playwright &> /dev/null; then
+          echo "Playwright CLI available"
+          playwright --version
+        else
+          echo "Playwright CLI not in PATH, checking via yarn"
+          yarn playwright --version 2>/dev/null || echo "Cannot determine Playwright version"
+        fi
+        echo "Checking installed browsers:"
+        if [ -d "$HOME/Library/Caches/ms-playwright" ]; then
+          echo "macOS browsers:"
+          ls -la $HOME/Library/Caches/ms-playwright
+        fi
+        if [ -d "$HOME/.cache/ms-playwright" ]; then
+          echo "Linux browsers:"
+          ls -la $HOME/.cache/ms-playwright
+        fi
+        echo "Verifying node_modules/playwright:"
+        if [ -d "${{ github.workspace }}/node_modules/playwright" ]; then
+          echo "Playwright package verified in node_modules"
+          echo "Size: $(du -sh ${{ github.workspace }}/node_modules/playwright 2>/dev/null || echo 'Error')"
+        else
+          echo "ERROR: Playwright not found in node_modules"
+        fi
+        echo "=== End Post-Installation Verification ==="
+
+    # Debug: Final disk space
+    - name: Debug - Final disk space
+      if: ${{ (inputs.skip-install-if-cache-hit != 'true' && steps.playwright-cache.outputs.cache-hit != 'true') || (inputs.skip-install-if-cache-hit == 'true' && steps.playwright-cache-check.outputs.cache-hit != 'true') }}
+      shell: bash
+      run: |
+        echo "=== Disk Space After Installation ==="
+        df -h
+        echo "Cache directory size:"
+        du -sh $HOME/Library/Caches/ms-playwright 2>/dev/null || du -sh $HOME/.cache/ms-playwright 2>/dev/null || echo "Cannot calculate cache size"
+        echo "=== End Final Disk Space Check ==="
