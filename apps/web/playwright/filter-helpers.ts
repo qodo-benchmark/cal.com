@@ -11,7 +11,7 @@ export const getByTableColumnText = (page: Page, columnId: string, text: string)
  */
 export async function addFilter(page: Page, columnId: string) {
   await page.getByTestId("add-filter-button").first().click();
-  await page.getByTestId(`add-filter-item-${columnId}`).click();
+  await page.getByTestId(`add-filter-item-${columnId}`).first().click();
 }
 
 export async function openFilter(page: Page, columnId: string) {
