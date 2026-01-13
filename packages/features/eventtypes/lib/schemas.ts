@@ -1,7 +1,8 @@
 import { z } from "zod";
 
+import { eventTypeLocations, eventTypeSlug, type EventTypeLocation } from "@calcom/lib/zod/eventType";
 import { SchedulingType } from "@calcom/prisma/enums";
-import { eventTypeLocations, EventTypeMetaDataSchema, eventTypeSlug } from "@calcom/prisma/zod-utils";
+import { EventTypeMetaDataSchema } from "@calcom/prisma/zod-utils";
 
 type CalVideoSettings =
   | {
@@ -30,17 +31,6 @@ const calVideoSettingsSchema: z.ZodType<CalVideoSettings> = z
   })
   .optional()
   .nullable();
-
-type EventTypeLocation = {
-  type: string;
-  address?: string;
-  link?: string;
-  displayLocationPublicly?: boolean;
-  hostPhoneNumber?: string;
-  credentialId?: number;
-  teamName?: string;
-  customLabel?: string;
-};
 
 type EventTypeMetadata = z.infer<typeof EventTypeMetaDataSchema>;
 
