@@ -8,6 +8,7 @@ import { handleConfirmation } from "@calcom/features/bookings/lib/handleConfirma
 import { getBooking } from "@calcom/features/bookings/lib/payment/getBooking";
 import { getPlatformParams } from "@calcom/features/platform-oauth-client/get-platform-params";
 import { PlatformOAuthClientRepository } from "@calcom/features/platform-oauth-client/platform-oauth-client.repository";
+import tasker from "@calcom/features/tasker";
 import { HttpError as HttpCode } from "@calcom/lib/http-error";
 import logger from "@calcom/lib/logger";
 import type { TraceContext } from "@calcom/lib/tracing";
@@ -83,6 +84,17 @@ export async function handlePaymentSuccess(paymentId: number, bookingId: number,
   });
 
   await prisma.$transaction([paymentUpdate, bookingUpdate]);
+
+  try {
+    await tasker.cancelWithReference(booking.uid, "sendAwaitingPaymentEmail");
+    log.debug(`Cancelled scheduled awaiting payment email for booking ${bookingId}`);
+  } catch (error) {
+    log.warn(
+      { bookingId, error },
+      `Failed to cancel awaiting payment task - email may still be sent but will be suppressed by task handler`
+    );
+  }
+
   if (!isConfirmed) {
     if (!requiresConfirmation) {
       await handleConfirmation({
