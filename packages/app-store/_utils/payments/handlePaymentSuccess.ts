@@ -27,16 +27,6 @@ export async function handlePaymentSuccess(paymentId: number, bookingId: number,
   log.debug(`handling payment success for bookingId ${bookingId}`);
   const { booking, user: userWithCredentials, evt, eventType } = await getBooking(bookingId);
 
-  try {
-    await tasker.cancelWithReference(booking.uid, "sendAwaitingPaymentEmail");
-    log.debug(`Cancelled scheduled awaiting payment email for booking ${bookingId}`);
-  } catch (error) {
-    log.warn(
-      { bookingId, error },
-      `Failed to cancel awaiting payment task - email may still be sent but will be suppressed by task handler`
-    );
-  }
-
   if (booking.location) evt.location = booking.location;
 
   const bookingData: Prisma.BookingUpdateInput = {
@@ -94,6 +84,17 @@ export async function handlePaymentSuccess(paymentId: number, bookingId: number,
   });
 
   await prisma.$transaction([paymentUpdate, bookingUpdate]);
+
+  try {
+    await tasker.cancelWithReference(booking.uid, "sendAwaitingPaymentEmail");
+    log.debug(`Cancelled scheduled awaiting payment email for booking ${bookingId}`);
+  } catch (error) {
+    log.warn(
+      { bookingId, error },
+      `Failed to cancel awaiting payment task - email may still be sent but will be suppressed by task handler`
+    );
+  }
+
   if (!isConfirmed) {
     if (!requiresConfirmation) {
       await handleConfirmation({
