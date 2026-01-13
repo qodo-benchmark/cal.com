@@ -267,9 +267,9 @@ export function BookingDetailScreen({ uid, onActionsReady }: BookingDetailScreen
 
   const handleConfirmCancel = useCallback(() => {
     const reason = cancellationReason.trim() || "Cancelled by host";
-    setShowCancelDialog(false);
     setCancellationReason("");
     performCancelBooking(reason);
+    setShowCancelDialog(false);
   }, [cancellationReason, performCancelBooking]);
 
   const handleCloseCancelDialog = useCallback(() => {
