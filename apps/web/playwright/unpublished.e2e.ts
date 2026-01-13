@@ -20,10 +20,6 @@ const assertChecks = async (page: any, entityName: string, entityType: string) =
 
 // Group 1: Regular team tests - share setup data
 test.describe("Unpublished - Regular team", () => {
-  test.afterEach(async ({ users }) => {
-    await users.deleteAll();
-  });
-
   test("Regular team profile", async ({ page, users }) => {
     const owner = await users.create(undefined, {
       hasTeam: true,
@@ -46,6 +42,10 @@ test.describe("Unpublished - Regular team", () => {
       await page.goto(`${prefix}/team/${requestedSlug}/${teamEventSlug}`);
       await assertChecks(page, team.name, "team");
     }
+  });
+
+  test.afterEach(async ({ users }) => {
+    await users.deleteAll();
   });
 });
 

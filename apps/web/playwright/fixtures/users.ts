@@ -1160,11 +1160,10 @@ export async function apiLogin(
     csrfToken,
   };
 
-  const response = await retryOnNetworkError(() =>
-    page.context().request.post("/api/auth/callback/credentials", {
-      data: loginData,
-    })
-  );
+  // Don't wrap login request with retry - credential failures shouldn't be retried
+  const response = await page.context().request.post("/api/auth/callback/credentials", {
+    data: loginData,
+  });
 
   expect(response.status()).toBe(200);
 
