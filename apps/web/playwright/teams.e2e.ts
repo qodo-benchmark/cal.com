@@ -174,7 +174,7 @@ test.describe("Teams - NonOrg", () => {
       // Wait for the page to fully load and the publish button to be visible
       await page.waitForLoadState("networkidle");
       const publishButton = page.locator("[data-testid=publish-button]");
-      await publishButton.waitFor({ state: "visible", timeout: 10000 });
+      await publishButton.waitFor({ state: "attached", timeout: 10000 });
       await publishButton.click();
       await page.waitForURL(/\/settings\/teams\/(\d+)\/event-type*$/i);
       await page.locator("[data-testid=handle-later-button]").click();
