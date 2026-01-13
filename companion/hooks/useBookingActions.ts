@@ -249,10 +249,10 @@ export const useBookingActions = ({
       { uid: cancelBooking.uid, reason },
       {
         onSuccess: () => {
-          setShowCancelModal(false);
           setCancelBooking(null);
           setCancelReason("");
           Alert.alert("Success", "Event cancelled successfully");
+          setShowCancelModal(false);
         },
         onError: (_error) => {
           console.error("Failed to cancel booking");
