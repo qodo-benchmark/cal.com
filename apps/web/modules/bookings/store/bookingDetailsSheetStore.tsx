@@ -199,7 +199,7 @@ function useBiDirectionalSyncBetweenStoreAndUrl({ store }: { store: BookingDetai
     });
 
     return unsubscribe;
-  }, [selectedBookingUidFromUrl, activeSegmentFromUrl, store]);
+  }, [selectedBookingUidFromUrl, activeSegmentFromUrl, store, setSelectedBookingUidToUrl, setActiveSegmentToUrl]);
 
   // Sync URL → Store
   useEffect(() => {
