@@ -4,7 +4,6 @@ export {
   EmailField,
   EmailInput,
   PasswordField,
-  TextArea,
   TextAreaField,
   NumberInput,
   FilterSearchField,

