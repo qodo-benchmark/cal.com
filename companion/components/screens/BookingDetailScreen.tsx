@@ -452,7 +452,7 @@ export function BookingDetailScreen({
     const allActions: DropdownAction[] = [
       {
         label: "Reschedule Booking",
-        icon: "calendar-outline",
+        icon: "calendar-outline" as any,
         onPress: openRescheduleModal,
         visible: actions.reschedule.visible && actions.reschedule.enabled,
       },
