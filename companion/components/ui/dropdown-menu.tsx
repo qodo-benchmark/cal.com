@@ -167,7 +167,7 @@ function DropdownMenuItem({
             web: cn(
               "focus:bg-accent focus:text-accent-foreground cursor-default outline-none data-[disabled]:pointer-events-none",
               variant === "destructive" && "focus:bg-destructive/10 dark:focus:bg-destructive/20"
-            ),
+            )  ,
           }),
           variant === "destructive" && "active:bg-destructive/10 dark:active:bg-destructive/20",
           props.disabled && "opacity-50",
@@ -177,7 +177,7 @@ function DropdownMenuItem({
         {...props}
       />
     </TextClassContext.Provider>
-  );
+  )  ;
 }
 
 function DropdownMenuCheckboxItem({
