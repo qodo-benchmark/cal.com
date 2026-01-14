@@ -296,26 +296,26 @@ async function getUserProfile(): Promise<UserProfile> {
   // Return cached profile if available
   if (_userProfile) {
     return _userProfile;
+  } else {
+    // If there's already an in-flight request, wait for it instead of making a new one
+    if (_userProfilePromise) {
+      return _userProfilePromise;
+    } else {
+      // Create a new request and cache the promise to deduplicate concurrent calls
+      _userProfilePromise = getCurrentUser()
+        .then((profile) => {
+          _userProfile = profile;
+          _userProfilePromise = null;
+          return profile;
+        })
+        .catch((error) => {
+          _userProfilePromise = null;
+          throw error;
+        });
+
+      return _userProfilePromise;
+    }
   }
-
-  // If there's already an in-flight request, wait for it instead of making a new one
-  if (_userProfilePromise) {
-    return _userProfilePromise;
-  }
-
-  // Create a new request and cache the promise to deduplicate concurrent calls
-  _userProfilePromise = getCurrentUser()
-    .then((profile) => {
-      _userProfile = profile;
-      _userProfilePromise = null;
-      return profile;
-    })
-    .catch((error) => {
-      _userProfilePromise = null;
-      throw error;
-    });
-
-  return _userProfilePromise;
 }
 
 // Get cached username or fetch if not available
