@@ -285,7 +285,7 @@ export class BookingAuditViewerService {
                 if (!actor.attendeeId) {
                     throw new Error("Attendee ID is required for ATTENDEE actor");
                 }
-                const attendee = await this.attendeeRepository.findById(actor.attendeeId);
+                const attendee = await this.attendeeRepository.findAttendeeById(actor.attendeeId);
                 if (attendee) {
                     return {
                         displayName: attendee.name || attendee.email,
