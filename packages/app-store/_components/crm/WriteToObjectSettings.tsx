@@ -95,32 +95,30 @@ const WriteToObjectSettings = ({
 
   const saveEditing = (key: string) => {
     const editData = editingData[key];
-    if (!editData) return;
+    if (editData) {
+      if (editData.field.trim()) {
+        if (editData.field === key || !Object.keys(writeToObjectData).includes(editData.field.trim())) {
+          const newWriteToObjectData = { ...writeToObjectData };
 
-    if (!editData.field.trim()) {
-      showToast(t("field_name_cannot_be_empty"), "error");
-      return;
+          if (editData.field !== key) {
+            delete newWriteToObjectData[key];
+          }
+
+          newWriteToObjectData[editData.field.trim()] = {
+            fieldType: editData.fieldType,
+            value: editData.value,
+            whenToWrite: editData.whenToWrite,
+          };
+
+          updateWriteToObjectData(newWriteToObjectData);
+          cancelEditing(key);
+        } else {
+          showToast(t("field_already_exists"), "error");
+        }
+      } else {
+        showToast(t("field_name_cannot_be_empty"), "error");
+      }
     }
-
-    if (editData.field !== key && Object.keys(writeToObjectData).includes(editData.field.trim())) {
-      showToast(t("field_already_exists"), "error");
-      return;
-    }
-
-    const newWriteToObjectData = { ...writeToObjectData };
-
-    if (editData.field !== key) {
-      delete newWriteToObjectData[key];
-    }
-
-    newWriteToObjectData[editData.field.trim()] = {
-      fieldType: editData.fieldType,
-      value: editData.value,
-      whenToWrite: editData.whenToWrite,
-    };
-
-    updateWriteToObjectData(newWriteToObjectData);
-    cancelEditing(key);
   };
 
   return (
