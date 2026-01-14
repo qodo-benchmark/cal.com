@@ -305,7 +305,7 @@ export default function BookingDetailIOS() {
       </Stack.Header>
 
       <BookingDetailScreen
-        booking={booking}
+        booking={booking ?? undefined}
         isLoading={isLoading}
         error={error ?? null}
         refetch={refetch}

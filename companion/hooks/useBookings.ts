@@ -144,11 +144,6 @@ export function useMarkNoShow() {
     onSuccess: (_, variables) => {
       // Invalidate all booking queries to refetch fresh data
       queryClient.invalidateQueries({ queryKey: queryKeys.bookings.all });
-
-      // Also invalidate the specific booking detail
-      queryClient.invalidateQueries({
-        queryKey: queryKeys.bookings.detail(variables.uid),
-      });
     },
     onError: (_error) => {
       console.error("Failed to mark attendee as no-show");

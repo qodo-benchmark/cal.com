@@ -761,7 +761,7 @@ export const BookingListScreen: React.FC<BookingListScreenProps> = ({
         onFilterClose={() => setShowFilterModal?.(false)}
         onEventTypeSelect={onEventTypeChange}
         showBookingActionsModal={false}
-        selectedBooking={selectedBooking}
+        selectedBooking={null}
         onActionsClose={() => {}}
         onReschedule={() => {}}
         onCancel={() => {}}
