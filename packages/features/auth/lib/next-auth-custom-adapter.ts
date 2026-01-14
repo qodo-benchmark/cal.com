@@ -14,6 +14,7 @@ const parseIntSafe = (id: string | number): number => {
 // Simple utility functions for transformations
 const toAdapterUser = (user: User): AdapterUser => ({
   id: user.id.toString(),
+  uuid: user.uuid,
   name: user.name,
   email: user.email,
   emailVerified: user.emailVerified,
@@ -104,7 +105,7 @@ export default function CalComAdapter(prismaClient: PrismaClient): Adapter {
     },
 
     updateUser: async (userData) => {
-      const { id, ...data } = userData;
+      const { id, uuid, ...data } = userData;
       const user = await prismaClient.user.update({
         where: { id: parseIntSafe(id) },
         data: {
