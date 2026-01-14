@@ -1,7 +1,7 @@
 import { enrichUsersWithDelegationCredentials } from "@calcom/app-store/delegationCredential";
 import type { RoutingFormResponse } from "@calcom/features/bookings/lib/getLuckyUser";
 import { getQualifiedHostsService } from "@calcom/features/di/containers/QualifiedHosts";
-import { ProfileRepository } from "@calcom/features/profile/repositories/ProfileRepository";
+import { ProfileRepository } from "@calcom/features/profile";
 import { withSelectedCalendars } from "@calcom/features/users/repositories/UserRepository";
 import { sentrySpan } from "@calcom/features/watchlist/lib/telemetry";
 import { filterBlockedUsers } from "@calcom/features/watchlist/operations/filter-blocked-users.controller";
