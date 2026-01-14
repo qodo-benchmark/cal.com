@@ -998,6 +998,37 @@ export class BookingRepository {
       iCalSequence?: number;
     };
   }) {
+    // Validate that the booking exists and is in a valid state for location updates
+    const existingBooking = await this.prismaClient.booking.findUnique({
+      where: { id },
+      select: { status: true, startTime: true },
+    });
+
+    if (!existingBooking) {
+      throw new Error(`Booking with id ${id} not found`);
+    }
+
+    // Business logic: Don't allow location updates for cancelled bookings
+    if (existingBooking.status === BookingStatus.CANCELLED) {
+      throw new Error("Cannot update location for cancelled bookings");
+    }
+
+    // Business logic: Don't allow location updates for past bookings
+    if (existingBooking.startTime < new Date()) {
+      throw new Error("Cannot update location for past bookings");
+    }
+
+    // Business logic: Validate location format based on type
+    if (location) {
+      const isUrl = location.startsWith("http://") || location.startsWith("https://");
+      const isPhone = /^\+?\d{10,15}$/.test(location.trim());
+      const isIntegration = location.startsWith("integrations:");
+
+      if (!isUrl && !isPhone && !isIntegration && location.length < 3) {
+        throw new Error("Invalid location format: must be a valid URL, phone number, integration, or address");
+      }
+    }
+
     await this.prismaClient.booking.update({
       where: {
         id,
