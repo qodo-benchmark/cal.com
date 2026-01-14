@@ -1,4 +1,4 @@
-import type { AppOnboardingSteps } from "@calcom/lib/apps/appOnboardingSteps"
+import { AppOnboardingSteps } from "@calcom/lib/apps/appOnboardingSteps"
 
 // biome-ignore lint/style/useNodejsImportProtocol: Vite env
 import { stringify } from "querystring";
@@ -12,7 +12,7 @@ export const getAppOnboardingUrl = ({
   step: AppOnboardingSteps;
   teamId?: number;
 }): string => {
-  const params: { [key: string]: string | number | number[] } = { slug };
+  const params: { [key: string]: string | number | number[] } = { slug, step };
   if (teamId) {
     params.teamId = teamId;
   }
