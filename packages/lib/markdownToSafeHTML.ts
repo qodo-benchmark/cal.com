@@ -13,9 +13,7 @@ export function markdownToSafeHTML(markdown: string | null) {
 
   const html = md.render(markdown);
 
-  const safeHTML = sanitizeHtml(html);
-
-  let safeHTMLWithListFormatting = safeHTML
+  let htmlWithFormatting = html
     .replace(
       /<ul>/g,
       "<ul style='list-style-type: disc; list-style-position: inside; margin-left: 12px; margin-bottom: 4px'>"
@@ -26,9 +24,12 @@ export function markdownToSafeHTML(markdown: string | null) {
     )
     .replace(/<a\s+href=/g, "<a target='_blank' class='text-blue-500 hover:text-blue-600' href=");
 
+  // Sanitize after adding attributes - sanitize-html 2.17.0 will strip unallowed attributes
+  const safeHTML = sanitizeHtml(htmlWithFormatting);
+
   // Match: <li>Some text </li><li><ul>...</ul></li>
   // Convert to: <li>Some text <ul>...</ul></li>
-  safeHTMLWithListFormatting = safeHTMLWithListFormatting.replace(
+  const safeHTMLWithListFormatting = safeHTML.replace(
     /<li>([^<]+|<strong>.*?<\/strong>)<\/li>\s*<li>\s*<ul([^>]*)>([\s\S]*?)<\/ul>\s*<\/li>/g,
     "<li>$1<ul$2>$3</ul></li>"
   );
