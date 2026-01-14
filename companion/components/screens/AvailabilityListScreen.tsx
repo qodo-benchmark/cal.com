@@ -282,9 +282,6 @@ export function AvailabilityListScreen({
       },
       {
         onSuccess: (newSchedule) => {
-          onShowCreateModalChange(false);
-          setNewScheduleName("");
-
           // Navigate to edit the newly created schedule
           router.push({
             pathname: "/(tabs)/(availability)/availability-detail",
@@ -292,6 +289,9 @@ export function AvailabilityListScreen({
               id: newSchedule.id.toString(),
             },
           });
+
+          onShowCreateModalChange(false);
+          setNewScheduleName("");
         },
         onError: (error) => {
           const message = error instanceof Error ? error.message : String(error);

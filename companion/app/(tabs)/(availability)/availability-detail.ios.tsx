@@ -44,7 +44,7 @@ export default function AvailabilityDetailIOS() {
     } else if (screenRef.current?.setAsDefault) {
       screenRef.current.setAsDefault();
     }
-  }, []);
+  }, [actionHandlersRef.current]);
 
   const handleDelete = useCallback(() => {
     if (actionHandlersRef.current?.handleDelete) {
@@ -52,7 +52,7 @@ export default function AvailabilityDetailIOS() {
     } else if (screenRef.current?.delete) {
       screenRef.current.delete();
     }
-  }, []);
+  }, [actionHandlersRef.current]);
 
   if (!id) {
     return null;
@@ -110,8 +110,7 @@ export default function AvailabilityDetailIOS() {
       <AvailabilityDetailScreen
         ref={screenRef}
         id={id}
-        // @ts-expect-error - onActionsReady is only available in AvailabilityDetailScreen.ios.tsx
-        onActionsReady={handleActionsReady}
+        {...({ onActionsReady: handleActionsReady } as any)}
       />
     </>
   );

