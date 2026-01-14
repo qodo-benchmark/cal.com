@@ -172,7 +172,6 @@ test.describe("Teams - NonOrg", () => {
       if (IS_TEAM_BILLING_ENABLED) await fillStripeTestCheckout(page);
       await page.waitForURL(/\/settings\/teams\/(\d+)\/onboard-members.*$/i);
       // Wait for the page to fully load and the publish button to be visible
-      await page.waitForLoadState("networkidle");
       const publishButton = page.locator("[data-testid=publish-button]");
       await publishButton.waitFor({ state: "visible", timeout: 10000 });
       await publishButton.click();
