@@ -889,6 +889,11 @@ const createUserFixture = (user: UserWithIncludes, page: Page) => {
           teamId,
           schedulingType,
         },
+        include: {
+          users: true,
+          team: true,
+          webhooks: true,
+        },
       });
     },
     setupEventWithPrice: async (eventType: Pick<EventType, "id">, slug: string) =>
