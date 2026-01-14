@@ -12,7 +12,7 @@
   },
   "include": [
     "next-env.d.ts",
-    "./next.d.ts",
+    "./next.generated.ts",
     "**/*.ts",
     "**/*.tsx",
     "../../../packages/types/*.d.ts",

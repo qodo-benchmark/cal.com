@@ -45,6 +45,6 @@ export class ApiKeyService {
 
   private isExpired(expiresAt: Date): boolean {
     const now = new Date();
-    return now.setHours(0, 0, 0, 0) > expiresAt.setHours(0, 0, 0, 0);
+    return now.getTime() > expiresAt.getTime();
   }
 }
