@@ -15,7 +15,7 @@ export class DisableRescheduling_2024_06_14 {
   @Min(1)
   @ApiPropertyOptional({
     description:
-      "Disable rescheduling when less than the specified number of minutes before the meeting. If set, `disabled` should be false or undefined.",
+      "Rescheduling will be unavailable within the specified time window before your meeting starts. If set, `disabled` should be false or undefined.",
     example: 60,
   })
   minutesBefore?: number;
