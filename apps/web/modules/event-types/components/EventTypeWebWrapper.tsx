@@ -164,7 +164,7 @@ const EventTypeWeb = ({
     onSuccess: async () => {
       const currentValues = form.getValues();
 
-      currentValues.children = currentValues.children.map((child) => ({
+      currentValues.children = currentValues.children?.map((child) => ({
         ...child,
         created: true,
       }));

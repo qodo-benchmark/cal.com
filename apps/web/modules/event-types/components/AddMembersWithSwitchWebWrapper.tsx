@@ -6,8 +6,10 @@ import { AddMembersWithSwitch } from "./AddMembersWithSwitch";
 export const AddMembersWithSwitchWebWrapper = ({ ...props }: AddMembersWithSwitchProps) => {
   const utils = trpc.useUtils();
 
-  utils.viewer.appRoutingForms.getAttributesForTeam.prefetch({
-    teamId: props.teamId,
-  });
+  if (props.teamId) {
+    utils.viewer.appRoutingForms.getAttributesForTeam.prefetch({
+      teamId: props.teamId,
+    });
+  }
   return <AddMembersWithSwitch {...props} />;
 };

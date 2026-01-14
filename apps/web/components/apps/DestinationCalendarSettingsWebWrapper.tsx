@@ -22,7 +22,7 @@ export const DestinationCalendarSettingsWebWrapper = () => {
         connectedCalendars={calendars.data.connectedCalendars}
         isPending={mutation.isPending}
         destinationCalendar={calendars.data.destinationCalendar}
-        value={calendars.data.destinationCalendar.externalId}
+        value={calendars.data.destinationCalendar?.externalId}
         hidePlaceholder
         onChange={mutation.mutate}
       />

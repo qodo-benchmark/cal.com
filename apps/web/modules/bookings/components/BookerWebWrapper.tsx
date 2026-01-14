@@ -106,7 +106,7 @@ const BookerWebWrapperComponent = (props: BookerWebWrapperAtomProps) => {
         ...metadata,
         [key.substring("metadata[".length, key.length - 1)]: searchParams?.get(key),
       }),
-      {}
+      {} as any
     );
   const prefillFormParams = useMemo(() => {
     return {
