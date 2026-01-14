@@ -1,7 +1,7 @@
 import { trpc } from "@calcom/trpc/react";
 
-import { AtomsWrapper } from "../../src/components/atoms-wrapper";
-import { DestinationCalendarSettings } from "../DestinationCalendar";
+import { AtomsWrapper } from "../../../../packages/platform/atoms/src/components/atoms-wrapper";
+import { DestinationCalendarSettings } from "../../../../packages/platform/atoms/destination-calendar/DestinationCalendar";
 
 export const DestinationCalendarSettingsWebWrapper = () => {
   const calendars = trpc.viewer.calendars.connectedCalendars.useQuery();
@@ -22,7 +22,7 @@ export const DestinationCalendarSettingsWebWrapper = () => {
         connectedCalendars={calendars.data.connectedCalendars}
         isPending={mutation.isPending}
         destinationCalendar={calendars.data.destinationCalendar}
-        value={calendars.data.destinationCalendar.externalId}
+        value={calendars.data.destinationCalendar?.externalId}
         hidePlaceholder
         onChange={mutation.mutate}
       />
