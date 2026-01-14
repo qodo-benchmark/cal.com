@@ -101,8 +101,8 @@ export function useActiveBookingFilter(
    */
   const handleFilterChange = useCallback(
     (filter: BookingFilter) => {
-      setActiveFilter(filter);
       onFilterChange?.(filter);
+      setActiveFilter(filter);
     },
     [onFilterChange]
   );

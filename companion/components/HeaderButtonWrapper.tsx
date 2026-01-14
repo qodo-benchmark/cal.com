@@ -8,7 +8,7 @@ interface HeaderButtonWrapperProps {
 const WEB_HEADER_INSET = 12;
 
 export function HeaderButtonWrapper({ children, side }: HeaderButtonWrapperProps) {
-  if (Platform.OS !== "web") {
+  if (Platform.OS !== "web" && Platform.OS !== "android") {
     return <>{children}</>;
   }
 

