@@ -93,6 +93,17 @@ export const createTestBooking = async (
   });
 };
 
+export const getBookingByUid = async (uid: string) => {
+  return prisma.booking.findUnique({
+    where: { uid },
+    include: {
+      attendees: true,
+      user: true,
+      eventType: true,
+    },
+  });
+};
+
 export const enableFeatureForOrganization = async (organizationId: number, featureSlug: string) => {
   await prisma.feature.upsert({
     where: { slug: featureSlug },
