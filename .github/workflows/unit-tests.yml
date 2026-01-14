@@ -16,4 +16,4 @@ jobs:
       - uses: ./.github/actions/yarn-install
       - run: yarn test -- --no-isolate
       # We could add different timezones here that we need to run our tests in
-      - run: TZ=America/Los_Angeles VITEST_MODE=timezone yarn test -- --no-isolate
+      - run: VITEST_MODE=timezone TZ=America/Los_Angeles yarn test -- --no-isolate
