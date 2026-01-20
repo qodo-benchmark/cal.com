@@ -178,14 +178,14 @@ export function useUpdateSchedule() {
       CalComAPIService.updateSchedule(id, updates),
     onMutate: async ({ id, updates }) => {
       // Cancel any outgoing refetches to prevent overwriting optimistic update
-      await queryClient.cancelQueries({ queryKey: queryKeys.schedules.detail(id) });
-      await queryClient.cancelQueries({ queryKey: queryKeys.schedules.lists() });
+      await queryClient.cancelQueries({ queryKey: queryKeys.schedules.detail(id) })
+      await queryClient.cancelQueries({ queryKey: queryKeys.schedules.lists() })
 
       // Snapshot the previous values for rollback
       const previousSchedule = queryClient.getQueryData<Schedule | null>(
         queryKeys.schedules.detail(id)
-      );
-      const previousSchedules = queryClient.getQueryData<Schedule[]>(queryKeys.schedules.lists());
+      )
+      const previousSchedules = queryClient.getQueryData<Schedule[]>(queryKeys.schedules.lists())
 
       // Optimistically update the detail cache if it exists
       if (previousSchedule) {
@@ -194,8 +194,8 @@ export function useUpdateSchedule() {
           ...updates,
           name: updates.name ?? previousSchedule.name,
           timeZone: updates.timeZone ?? previousSchedule.timeZone,
-        };
-        queryClient.setQueryData(queryKeys.schedules.detail(id), optimisticSchedule);
+        }
+        queryClient.setQueryData(queryKeys.schedules.detail(id), optimisticSchedule)
       }
 
       // Update the list cache optimistically (even if detail cache doesn't exist)
@@ -208,14 +208,14 @@ export function useUpdateSchedule() {
               ...updates,
               name: updates.name ?? s.name,
               timeZone: updates.timeZone ?? s.timeZone,
-            };
+            }
           }
-          return s;
-        });
-        queryClient.setQueryData(queryKeys.schedules.lists(), sortSchedules(updatedList));
+          return s
+        })
+        queryClient.setQueryData(queryKeys.schedules.lists(), sortSchedules(updatedList))
       }
 
-      return { previousSchedule, previousSchedules };
+      return { previousSchedule, previousSchedules }
     },
     onSuccess: (updatedSchedule, variables) => {
       // Update the specific schedule in cache with server response
