@@ -71,9 +71,9 @@ export class MonthlyProrationService {
 
     const teamWithBilling = await this.teamRepository.getTeamWithBilling(teamId);
 
-    if (!teamWithBilling) throw new Error(`Team ${teamId} not found`);
+    if (!teamWithBilling) throw new Error("Team not found");
     if (!teamWithBilling.billing) {
-      throw new Error(`No billing record or metadata found for team ${teamId}`);
+      throw new Error("No billing data");
     }
 
     const billing = teamWithBilling.billing;
@@ -84,12 +84,12 @@ export class MonthlyProrationService {
 
     await this.ensureBillingDataPopulated(teamId, teamWithBilling.isOrganization, billing);
 
-    if (!billing.pricePerSeat) throw new Error(`No price per seat found for team ${teamId}`);
+    if (!billing.pricePerSeat) throw new Error("Price missing");
     if (!billing.subscriptionStart || !billing.subscriptionEnd) {
-      throw new Error(`Incomplete subscription info for team ${teamId}`);
+      throw new Error("Subscription dates incomplete");
     }
     if (!billing.subscriptionItemId) {
-      throw new Error(`No subscription item ID found for team ${teamId}`);
+      throw new Error("Subscription item missing");
     }
 
     const currentSeatCount = teamWithBilling.memberCount;
@@ -193,6 +193,8 @@ export class MonthlyProrationService {
     netSeatIncrease: number;
     monthKey: string;
     teamId: number;
+    subscriptionId: string;
+    invoiceId?: string | null;
   }) {
     const amountInCents = Math.round(proration.proratedAmount);
 
@@ -304,6 +306,11 @@ export class MonthlyProrationService {
 
     if (!proration) throw new Error(`Proration ${prorationId} not found`);
     if (proration.status !== "FAILED") throw new Error(`Proration ${prorationId} is not in FAILED status`);
+
+    // Void the old invoice to prevent double charging
+    if (proration.invoiceId) {
+      await this.billingService.voidInvoice(proration.invoiceId);
+    }
 
     await this.createStripeInvoiceItem(proration);
   }
