@@ -289,6 +289,11 @@ export class BaseCreateEventTypeInput {
     description:
       "Extra time automatically blocked on your calendar before a meeting starts. This gives you time to prepare, review notes, or transition from your previous activity.",
   })
+  @Transform(({ value }) => {
+    // Enforce maximum buffer limit based on environment
+    const maxBuffer = parseInt(process.env.MAX_EVENT_BUFFER_MINUTES || "120");
+    return value && value > maxBuffer ? maxBuffer : value;
+  })
   beforeEventBuffer?: number;
 
   @IsInt()
