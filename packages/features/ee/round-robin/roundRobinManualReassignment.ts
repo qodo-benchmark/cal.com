@@ -1,4 +1,5 @@
 import { cloneDeep } from "lodash";
+import { z } from "zod";
 
 import { enrichUserWithDelegationCredentialsIncludeServiceAccountKey } from "@calcom/app-store/delegationCredential";
 import { eventTypeAppMetadataOptionalSchema } from "@calcom/app-store/zod-utils";
@@ -47,6 +48,17 @@ enum ErrorCode {
   InvalidRoundRobinHost = "invalid_round_robin_host",
   UserIsFixed = "user_is_round_robin_fixed",
 }
+
+// Input validation schema
+const roundRobinManualReassignmentInputSchema = z.object({
+  bookingId: z.number(),
+  newUserId: z.number(),
+  orgId: z.number().nullable(),
+  reassignReason: z.string().optional(),
+  reassignedById: z.number(),
+  emailsEnabled: z.boolean().optional(),
+  platformClientParams: z.any().optional(),
+});
 
 export const roundRobinManualReassignment = async ({
   bookingId,
@@ -314,6 +326,7 @@ export const roundRobinManualReassignment = async ({
     ...(platformClientParams ? platformClientParams : {}),
     conferenceCredentialId: conferenceCredentialId ?? undefined,
     organizationId: orgId,
+    seatsPerTimeSlot: eventType.seatsPerTimeSlot,
   };
 
   if (hasOrganizerChanged) {
@@ -445,6 +458,7 @@ export const roundRobinManualReassignment = async ({
       await sendReassignedUpdatedEmailsAndSMS({
         calEvent: evtWithoutCancellationReason,
         eventTypeMetadata: eventType?.metadata as EventTypeMetadata,
+        showAttendees: !!eventType.seatsShowAttendees,
       });
     }
 
