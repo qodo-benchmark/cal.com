@@ -301,8 +301,8 @@ export function AdvancedTab(props: AdvancedTabProps) {
           onValueChange={(value) => {
             if (value && props.seatsEnabled) {
               Alert.alert(
-                "Disable 'Offer seats' first",
-                "You need to:\n1. Disable 'Offer seats' and Save\n2. Then enable 'Requires confirmation' and Save again"
+                'Disable "Offer seats" first',
+                'You need to:\n1. Disable "Offer seats" and Save\n2. Then enable "Requires confirmation" and Save again'
               );
               return;
             }
