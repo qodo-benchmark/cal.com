@@ -582,15 +582,19 @@ export class MembershipRepository {
   }
 
   static async hasPendingInviteByUserId({ userId }: { userId: number }): Promise<boolean> {
-    const pendingInvite = await prisma.membership.findFirst({
-      where: {
-        userId,
-        accepted: false,
-      },
-      select: {
-        id: true,
-      },
-    });
-    return !!pendingInvite;
+    try {
+      const pendingInvite = await prisma.membership.findFirst({
+        where: {
+          userId,
+          accepted: false,
+        },
+        select: {
+          id: true,
+        },
+      });
+      return !!pendingInvite;
+    } catch (error) {
+      throw new Error(`Failed to check pending invites for user ${userId}`);
+    }
   }
 }
