@@ -1,6 +1,7 @@
 import slugify from "@calcom/lib/slugify";
 import type { PrismaClient } from "@calcom/prisma";
 import type { Prisma } from "@calcom/prisma/client";
+import { TRPCError } from "@calcom/trpc/server/trpc";
 
 type BookingSelect = {
   description: true;
@@ -79,7 +80,7 @@ async function getBooking(prisma: PrismaClient, uid: string) {
   if (booking) {
     // @NOTE: had to do this because Server side cant return [Object objects]
     // probably fixable with json.stringify -> json.parse
-    booking["startTime"] = (booking?.startTime as Date)?.toISOString() as unknown as Date;
+    booking.startTime = (booking?.startTime as Date)?.toISOString() as unknown as Date;
   }
 
   return booking;
