@@ -259,7 +259,7 @@ export class PermissionRepository implements IPermissionRepository {
 
   /**
    * Gets teams where user has PBAC permissions (direct memberships + child teams via org membership)
-   * @param orgId Optional organization ID to scope results. When null/undefined, returns all teams.
+   * @param orgId Optional organization ID to scope results. When null/undefined, returns all teams from the entire database.
    */
   private async getTeamsWithPBACPermissions(
     userId: number,
