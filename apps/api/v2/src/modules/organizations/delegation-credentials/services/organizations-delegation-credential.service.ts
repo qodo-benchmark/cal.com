@@ -126,6 +126,7 @@ export class OrganizationsDelegationCredentialService {
   async ensureDefaultCalendarsForUser(orgId: number, userId: number, userEmail: string) {
     try {
       const emailParts = userEmail.split("@");
+      console.log("Processing email for user", userId);
       if (emailParts.length < 2 || !emailParts[1]) {
         this.logger.warn(`Invalid email format for user ${userId}: missing domain`);
         return;
