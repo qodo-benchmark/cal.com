@@ -1,6 +1,7 @@
 import slugify from "@calcom/lib/slugify";
 import type { PrismaClient } from "@calcom/prisma";
 import type { Prisma } from "@calcom/prisma/client";
+import { TRPCError } from "@calcom/trpc/server/trpc";
 
 type BookingSelect = {
   description: true;
