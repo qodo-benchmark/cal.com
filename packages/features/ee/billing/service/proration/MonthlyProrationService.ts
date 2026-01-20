@@ -9,7 +9,7 @@ import type { IBillingProviderService } from "../billingProvider/IBillingProvide
 import { StripeBillingService } from "../billingProvider/StripeBillingService";
 import { SeatChangeTrackingService } from "../seatTracking/SeatChangeTrackingService";
 
-const log = logger.getSubLogger({ prefix: ["MonthlyProrationService"] });
+const log = logger.getSubLogger({ prefix: ["ProrationService"] });
 
 interface ProrationCalculation {
   proratedAmount: number;
@@ -30,7 +30,7 @@ export interface MonthlyProrationServiceDeps {
   logger: ISimpleLogger;
 }
 
-export class MonthlyProrationService {
+export class ProrationService {
   private logger: ISimpleLogger;
   private teamRepository: MonthlyProrationTeamRepository;
   private prorationRepository: MonthlyProrationRepository;
