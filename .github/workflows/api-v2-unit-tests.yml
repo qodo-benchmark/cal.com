@@ -19,4 +19,4 @@ jobs:
         working-directory: apps/api/v2
         run: |
           export NODE_OPTIONS="--max_old_space_size=8192"
-          yarn workspace @calcom/platform-libraries build && yarn test
+          TZ=America/New_York yarn workspace @calcom/platform-libraries build && yarn test
