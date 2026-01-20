@@ -4,25 +4,13 @@ import type { FeaturesRepository } from "@calcom/features/flags/features.reposit
 import { OPT_IN_FEATURES } from "../config";
 import { applyAutoOptIn } from "../lib/applyAutoOptIn";
 import { computeEffectiveStateAcrossTeams } from "../lib/computeEffectiveState";
-
-type ResolvedFeatureState = {
-  featureId: FeatureId;
-  globalEnabled: boolean;
-  orgState: FeatureState; // Raw state (before auto-opt-in transform)
-  teamStates: FeatureState[]; // Raw states
-  userState: FeatureState | undefined; // Raw state
-  effectiveEnabled: boolean;
-  // Auto-opt-in flags for UI to show checkbox state
-  orgAutoOptIn: boolean;
-  teamAutoOptIns: boolean[];
-  userAutoOptIn: boolean;
-};
+import type { IFeatureOptInService, ResolvedFeatureState } from "./IFeatureOptInService";
 
 /**
  * Service class for managing feature opt-in logic.
  * Computes effective states based on global, org, team, and user settings.
  */
-export class FeatureOptInService {
+export class FeatureOptInService implements IFeatureOptInService {
   constructor(private featuresRepository: FeaturesRepository) {}
 
   /**
@@ -141,7 +129,12 @@ export class FeatureOptInService {
       featureIds,
     });
 
-    return featureIds.map((featureId) => resolvedStates[featureId]).filter((state) => state.globalEnabled);
+    // In development mode, include all features regardless of global state for testing
+    const includeDisabled = process.env.NODE_ENV === "development";
+
+    return featureIds
+      .map((featureId) => resolvedStates[featureId])
+      .filter((state) => includeDisabled || state.globalEnabled);
   }
 
   /**
