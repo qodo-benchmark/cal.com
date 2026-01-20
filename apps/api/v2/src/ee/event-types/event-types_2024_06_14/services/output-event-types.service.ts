@@ -53,7 +53,7 @@ type EventTypeUser = {
   weekStart: string;
   metadata: Prisma.JsonValue;
   organizationId: number | null;
-  organization?: { slug: string | null } | null;
+  organization?: { slug: string | null; isPlatform?: boolean } | null;
   movedToProfile?: ProfileMinimal | null;
   profiles?: ProfileMinimal[];
 };
@@ -448,8 +448,10 @@ export class OutputEventTypesService_2024_06_14 {
       return "";
     }
 
-    const orgSlug = profile?.organization?.slug ?? null;
-    const webAppUrl = this.configService.get<string>("app.baseUrl", "https://app.cal.com");
+    const org = profile?.organization;
+    // Don't use org subdomain for platform organizations - they don't have public-facing subdomains
+    const orgSlug = org && !org.isPlatform ? org.slug : null;
+    const webAppUrl = process.env.NEXT_PUBLIC_WEBAPP_URL || "https://app.cal.com";
     const baseUrl = orgSlug ? getBookerBaseUrlSync(orgSlug) : webAppUrl;
     const normalizedBaseUrl = baseUrl.replace(/\/$/, "");
 
