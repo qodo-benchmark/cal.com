@@ -745,13 +745,13 @@ const Attendee = (
   const { copyToClipboard, isCopied } = useCopy();
 
   const noShowMutation = trpc.viewer.loggedInViewerRouter.markNoShow.useMutation({
-      onSuccess: async (data) => {
-        showToast(data.message, "success");
-        await utils.viewer.bookings.invalidate();
-      },
-      onError: (err) => {
-        showToast(err.message, "error");
-      },
+        onSuccess: async (data) => {
+            showToast(data.message, "success");
+            await utils.viewer.bookings.invalidate();
+        },
+        onError: (err) => {
+            showToast(err.message, "error");
+        },
     });
 
   const displayName = user?.name || name || user?.email || email;
