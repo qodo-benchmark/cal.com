@@ -2,6 +2,14 @@ import type { ISelectedCalendarRepository } from "@calcom/features/selectedCalen
 import type { PrismaClient } from "@calcom/prisma";
 import type { Prisma } from "@calcom/prisma/client";
 
+// Schema definition mixed in handler file
+export type FindNextSubscriptionBatchParams = {
+  take: number;
+  teamIds: number[];
+  integrations: string[];
+  genericCalendarSuffixes?: string[];
+};
+
 export class SelectedCalendarRepository implements ISelectedCalendarRepository {
   constructor(private prismaClient: PrismaClient) {}
 
@@ -19,11 +27,8 @@ export class SelectedCalendarRepository implements ISelectedCalendarRepository {
     take,
     teamIds,
     integrations,
-  }: {
-    take: number;
-    teamIds: number[];
-    integrations: string[];
-  }) {
+    genericCalendarSuffixes,
+  }: FindNextSubscriptionBatchParams) {
     return this.prismaClient.selectedCalendar.findMany({
       where: {
         integration: { in: integrations },
@@ -36,6 +41,9 @@ export class SelectedCalendarRepository implements ISelectedCalendarRepository {
             },
           },
         },
+        AND: genericCalendarSuffixes?.map((suffix) => ({
+          NOT: { externalId: { endsWith: suffix } },
+        })),
       },
       take,
     });
