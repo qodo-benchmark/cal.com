@@ -1,238 +1,103 @@
-# Cal.com Development Guide for AI Agents
+# Compliance Rules
 
-You are a senior Cal.com engineer working in a Yarn/Turbo monorepo. You prioritize type safety, security, and small, reviewable diffs.
+This file contains the compliance and code quality rules for this repository.
 
-## Do
+## 1. Repository and Service Classes Must Follow Naming Conventions
 
-- Use `select` instead of `include` in Prisma queries for performance and security
-- Use `import type { X }` for TypeScript type imports
-- Use early returns to reduce nesting: `if (!booking) return null;`
-- Use `ErrorWithCode` for errors in non-tRPC files (services, repositories, utilities); use `TRPCError` only in tRPC routers
-- Use conventional commits: `feat:`, `fix:`, `refactor:`
-- Create PRs in draft mode by default
-- Run `yarn type-check:ci --force` before concluding CI failures are unrelated to your changes
-- Import directly from source files, not barrel files (e.g., `@calcom/ui/components/button` not `@calcom/ui`)
-- Add translations to `apps/web/public/static/locales/en/common.json` for all UI strings
-- Use `date-fns` or native `Date` instead of Day.js when timezone awareness isn't needed
-- Put permission checks in `page.tsx`, never in `layout.tsx`
-- Use `ast-grep` for searching if available; otherwise use `rg` (ripgrep), then fall back to `grep`
-- Use Biome for formatting and linting
+**Objective:** Ensure consistency and discoverability by requiring repository classes to use 'Prisma<Entity>Repository' pattern and service classes to use '<Entity>Service' pattern, with filenames matching class names exactly in PascalCase
 
+**Success Criteria:** Repository files are named 'Prisma<Entity>Repository.ts' with matching exported class names (e.g., PrismaAppRepository), and service files are named '<Entity>Service.ts' with matching class names (e.g., MembershipService)
 
-## Don't
+**Failure Criteria:** Repository or service files use generic names like 'app.ts', use dot-suffixes like '.service.ts' or '.repository.ts', or have filename/class name mismatches
 
-- Never use `as any` - use proper type-safe solutions instead
-- Never expose `credential.key` field in API responses or queries
-- Never commit secrets or API keys
-- Never modify `*.generated.ts` files directly - they're created by app-store-cli
-- Never put business logic in repositories - that belongs in Services
-- Never use barrel imports from index.ts files
-- Never skip running type checks before pushing
-- Never create large PRs (>500 lines or >10 files) - split them instead
+---
 
-## Commands
+## 2. Prevent Circular Dependencies Between Core Packages
 
-### File-scoped (preferred for speed)
+**Objective:** Maintain clear architectural boundaries and prevent circular dependencies by enforcing import restrictions between core packages (lib, app-store, features, trpc)
 
-```bash
-# Type check - always run on changed files
-yarn type-check:ci --force
+**Success Criteria:** The lib package does not import from app-store, features, or trpc; app-store does not import from features or trpc; features does not import from trpc; and trpc does not import from apps/web
 
-# Lint and format single file
-yarn biome check --write path/to/file.tsx
+**Failure Criteria:** Code contains imports that violate the dependency hierarchy, such as lib importing from features, app-store importing from trpc, or any other restricted cross-package imports
 
-# Unit test specific file
-yarn vitest run path/to/file.test.ts
+---
 
-# Unit test specific file + specific test
-yarn vitest run path/to/file.test.ts --testNamePattern="specific test name"
+## 3. Use Biome for Code Formatting with Standardized Configuration
 
-# Integration test specific file
-yarn test path/to/file.integration-test.ts -- --integrationTestsOnly
+**Objective:** Ensure consistent code formatting across the entire codebase by using Biome with specific formatting rules for line width, indentation, quotes, and semicolons
 
-# Integration test specific file + specific test
-yarn test path/to/file.integration-test.ts --testNamePattern="specific test name" -- --integrationTestsOnly
+**Success Criteria:** All TypeScript/JavaScript files use 110 character line width, 2-space indentation, LF line endings, double quotes for JSX, always include semicolons, use ES5 trailing commas, and always use arrow function parentheses
 
-# E2E test specific file
-PLAYWRIGHT_HEADLESS=1 yarn e2e path/to/file.e2e.ts
+**Failure Criteria:** Code files deviate from the standard formatting rules, such as using single quotes in JSX, omitting semicolons, using different indentation widths, or exceeding line width limits
 
-# E2E test specific file + specific test
-PLAYWRIGHT_HEADLESS=1 yarn e2e path/to/file.e2e.ts --grep "specific test name"
-```
+---
 
-### Project-wide (use sparingly)
+## 4. Default Exports Allowed Only in Next.js Page and Layout Files
 
-```bash
-# Development
-yarn dev              # Start dev server
-yarn dx               # Dev with database setup
+**Objective:** Enforce named exports throughout the codebase for better refactoring and tree-shaking, while allowing default exports only where Next.js requires them (page.tsx and layout.tsx files)
 
-# Build & check
-yarn build                   # Build all packages
-yarn biome check --write .   # Lint and format all
-yarn type-check              # Type check all
+**Success Criteria:** Files use named exports (export const, export function, export class) except for files matching patterns 'apps/web/app/**/page.tsx', 'apps/web/app/**/layout.tsx', and 'apps/web/app/pages/**/*.tsx' which may use default exports
 
-# Tests (use TZ=UTC for consistency)
-TZ=UTC yarn test      # All unit tests
-yarn e2e              # All E2E tests
+**Failure Criteria:** Non-page/layout files use default exports, or page/layout files fail to export the required default component
 
-# Database
-yarn prisma generate  # Regenerate types after schema changes
-yarn workspace @calcom/prisma db-migrate  # Run migrations
-```
+---
 
-### Biome focused workflow
-+
-```bash
-yarn biome check --write .
-yarn type-check:ci --force
-```
+## 5. Schema and Handler Files Must Be Separated with Type-Safe Patterns
 
+**Objective:** Maintain separation of concerns and type safety by requiring schema definitions in separate '.schema.ts' files with both Zod schema and TypeScript type exports, while handlers in '.handler.ts' files use these typed schemas
 
-## Boundaries
+**Success Criteria:** Schema files export both a TypeScript type (T<Operation>InputSchema) and a corresponding Zod schema (Z<Operation>InputSchema: z.ZodType<T<Operation>InputSchema>), and handler files import and use these typed schemas for validation
 
-### Always do
-- Run type check on changed files before committing
-- Run relevant tests before pushing
-- Use `select` in Prisma queries
-- Follow conventional commits for PR titles
-- Run Biome before pushing
+**Failure Criteria:** Schema and handler logic are mixed in the same file, schema files lack either TypeScript types or Zod schemas, or handler files perform validation without using the defined schemas
 
-### Ask first
-- Adding new dependencies
-- Schema changes to `packages/prisma/schema.prisma`
-- Changes affecting multiple packages
-- Deleting files
-- Running full build or E2E suites
+---
 
-### Never do
-- Commit secrets, API keys, or `.env` files
-- Expose `credential.key` in any query
-- Use `as any` type casting
-- Force push or rebase shared branches
-- Modify generated files directly
+## 6. Lint Staged Files Before Commit with Error-on-Warnings Enforcement
 
-## Project Structure
+**Objective:** Ensure code quality by running Biome linting on staged files before commits and treating warnings as errors unless explicitly skipped via SKIP_WARNINGS environment variable
 
-```
-apps/web/                    # Main Next.js application
-packages/prisma/             # Database schema (schema.prisma) and migrations
-packages/trpc/               # tRPC API layer (routers in server/routers/)
-packages/ui/                 # Shared UI components
-packages/features/           # Feature-specific code
-packages/app-store/          # Third-party integrations
-packages/lib/                # Shared utilities
-```
+**Success Criteria:** Pre-commit hook runs 'biome lint --error-on-warnings' on staged TypeScript/JavaScript files, 'biome format' on JSON files, and 'prisma format' on schema.prisma, and all checks pass before commit is allowed
 
-### Key files
-- Routes: `apps/web/app/` (App Router)
-- Database schema: `packages/prisma/schema.prisma`
-- tRPC routers: `packages/trpc/server/routers/`
-- Translations: `apps/web/public/static/locales/en/common.json`
-- Workflow constants: `packages/features/ee/workflows/lib/constants.ts`
+**Failure Criteria:** Commits are made with linting warnings or formatting issues, staged files are not checked before commit, or the pre-commit hook is bypassed without proper justification
 
-## Tech Stack
+---
 
-- **Framework**: Next.js 13+ (App Router in some areas)
-- **Language**: TypeScript (strict)
-- **Database**: PostgreSQL with Prisma ORM
-- **API**: tRPC for type-safe APIs
-- **Auth**: NextAuth.js
-- **Styling**: Tailwind CSS
-- **Testing**: Vitest (unit), Playwright (E2E)
-- **i18n**: next-i18next
+## 7. Environment Variables Must Not Be Accessed Directly in Non-Configuration Code
 
-## Code Examples
+**Objective:** Prevent runtime errors and improve testability by avoiding direct process.env access in business logic and instead using centralized configuration modules or environment-specific checks
 
-### Good error handling
+**Success Criteria:** Direct process.env access is limited to configuration files, environment detection utilities (isENVProd, isENVDev), and build-time configuration, while business logic receives environment values through dependency injection or configuration objects
 
-```typescript
-// Good - Descriptive error with context
-throw new Error(`Unable to create booking: User ${userId} has no available time slots for ${date}`);
+**Failure Criteria:** Business logic, handlers, or service classes directly access process.env properties instead of using configuration abstractions or injected values
 
-// Bad - Generic error
-throw new Error("Booking failed");
-```
+---
 
-For which error class to use (`ErrorWithCode` vs `TRPCError`) and concrete examples, see [Error Types in knowledge-base.md](agents/knowledge-base.md#error-types).
+## 8. All Tests Must Use Vitest Framework and UTC Timezone
 
-### Good Prisma query
+**Objective:** Ensure consistent test execution and prevent timezone-related bugs by standardizing on Vitest as the test framework and enforcing UTC timezone for all test runs
 
-```typescript
-// Good - Use select for performance and security
-const booking = await prisma.booking.findFirst({
-  select: {
-    id: true,
-    title: true,
-    user: {
-      select: {
-        id: true,
-        name: true,
-        email: true,
-      }
-    }
-  }
-});
+**Success Criteria:** Test files use Vitest syntax (vi.mock, vi.fn, describe, it, expect), test commands set TZ=UTC environment variable, and tests do not depend on local timezone settings
 
-// Bad - Include fetches all fields including sensitive ones
-const booking = await prisma.booking.findFirst({
-  include: { user: true }
-});
-```
+**Failure Criteria:** Tests use Jest-specific APIs, test commands omit TZ=UTC setting, or tests fail when run in different timezones
 
-### Good imports
+---
 
-```typescript
-// Good - Type imports and direct paths
-import type { User } from "@prisma/client";
-import { Button } from "@calcom/ui/components/button";
+## 9. React Components Must Use react-hook-form with Zod Schema Validation
 
-// Bad - Regular import for types, barrel imports
-import { User } from "@prisma/client";
-import { Button } from "@calcom/ui";
-```
+**Objective:** Ensure consistent form handling and validation by requiring React Hook Form with Zod resolver for all form components, providing type-safe validation and error handling
 
-### API v2 Imports (apps/api/v2)
+**Success Criteria:** Form components use useForm hook with zodResolver, define Zod schemas for form validation, use Controller or register for form fields, and properly handle validation errors with error messages
 
-When importing from `@calcom/features` or `@calcom/trpc` into `apps/api/v2`, **do not import directly** because the API v2 app's `tsconfig.json` doesn't have path mappings for these modules, which causes "module not found" errors.
+**Failure Criteria:** Form components implement custom validation logic without react-hook-form, lack Zod schema validation, or fail to properly display validation errors to users
 
-Instead, re-export from `packages/platform/libraries/index.ts` and import from `@calcom/platform-libraries`:
+---
 
-```typescript
-// Step 1: In packages/platform/libraries/index.ts, add the export
-export { ProfileRepository } from "@calcom/features/profile/repositories/ProfileRepository";
+## 10. Custom Error Classes Must Use Hierarchical Structure with Typed Codes
 
-// Step 2: In apps/api/v2, import from platform-libraries
-import { ProfileRepository } from "@calcom/platform-libraries";
+**Objective:** Enable robust error handling and debugging by requiring custom error classes that extend base Error classes with typed error codes, HTTP status codes, and structured error information
 
-// Bad - Direct import causes module not found error in apps/api/v2
-import { ProfileRepository } from "@calcom/features/profile/repositories/ProfileRepository";
-```
+**Success Criteria:** Error classes extend from base error types (HttpError, CalendarAppError, ErrorWithCode), include typed error codes for categorization, provide statusCode for HTTP errors, and include relevant context (URL, method, cause)
 
-## PR Checklist
+**Failure Criteria:** Code throws generic Error objects, lacks error categorization, omits HTTP status codes for API errors, or fails to include sufficient debugging context
 
-- [ ] Title follows conventional commits: `feat(scope): description`
-- [ ] Type check passes: `yarn type-check:ci --force`
-- [ ] Lint passes: `yarn lint:fix`
-- [ ] Relevant tests pass
-- [ ] Diff is small and focused (<500 lines, <10 files)
-- [ ] No secrets or API keys committed
-- [ ] UI strings added to translation files
-- [ ] Created as draft PR
-
-## When Stuck
-
-- Ask a clarifying question before making large speculative changes
-- Propose a short plan for complex tasks
-- Open a draft PR with notes if unsure about approach
-- Fix type errors before test failures - they're often the root cause
-- Run `yarn prisma generate` if you see missing enum/type errors
-
-## Extended Documentation
-
-For detailed information, see the `agents/` directory:
-
-- **[agents/README.md](agents/README.md)** - Architecture overview and patterns
-- **[agents/commands.md](agents/commands.md)** - Complete command reference
-- **[agents/knowledge-base.md](agents/knowledge-base.md)** - Domain knowledge and best practices
-- **[agents/coding-standards.md](agents/coding-standards.md)** - Coding standards with examples
+---
