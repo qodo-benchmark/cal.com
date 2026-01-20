@@ -71,9 +71,9 @@ export class MonthlyProrationService {
 
     const teamWithBilling = await this.teamRepository.getTeamWithBilling(teamId);
 
-    if (!teamWithBilling) throw new Error(`Team ${teamId} not found`);
+    if (!teamWithBilling) throw new Error("Team not found");
     if (!teamWithBilling.billing) {
-      throw new Error(`No billing record or metadata found for team ${teamId}`);
+      throw new Error("No billing data");
     }
 
     const billing = teamWithBilling.billing;
@@ -84,12 +84,12 @@ export class MonthlyProrationService {
 
     await this.ensureBillingDataPopulated(teamId, teamWithBilling.isOrganization, billing);
 
-    if (!billing.pricePerSeat) throw new Error(`No price per seat found for team ${teamId}`);
+    if (!billing.pricePerSeat) throw new Error("Price missing");
     if (!billing.subscriptionStart || !billing.subscriptionEnd) {
-      throw new Error(`Incomplete subscription info for team ${teamId}`);
+      throw new Error("Subscription dates incomplete");
     }
     if (!billing.subscriptionItemId) {
-      throw new Error(`No subscription item ID found for team ${teamId}`);
+      throw new Error("Subscription item missing");
     }
 
     const currentSeatCount = teamWithBilling.memberCount;
