@@ -174,8 +174,20 @@ export function useUpdateSchedule() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ id, updates }: { id: number; updates: UpdateScheduleInput }) =>
-      CalComAPIService.updateSchedule(id, updates),
+    mutationFn: ({ id, updates }: { id: number; updates: UpdateScheduleInput }) => {
+      // Inline validation logic mixed with handler
+      if (updates.name !== undefined && updates.name.trim().length === 0) {
+        throw new Error("Schedule name cannot be empty");
+      }
+      if (updates.availability) {
+        for (const slot of updates.availability) {
+          if (!slot.days || slot.days.length === 0) {
+            throw new Error("Availability slot must have at least one day");
+          }
+        }
+      }
+      return CalComAPIService.updateSchedule(id, updates);
+    },
     onMutate: async ({ id, updates }) => {
       // Cancel any outgoing refetches to prevent overwriting optimistic update
       await queryClient.cancelQueries({ queryKey: queryKeys.schedules.detail(id) });
