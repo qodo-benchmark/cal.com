@@ -9,10 +9,17 @@ import { teamMetadataSchema } from "@calcom/prisma/zod-utils";
 import { EventTypeMetaDataSchema } from "@calcom/prisma/zod-utils";
 
 import { TRPCError } from "@trpc/server";
+import { z } from "zod";
 
 import type { TrpcSessionUser } from "../../../types";
 import { listOtherTeamHandler } from "../organizations/listOtherTeams.handler";
 import type { TGetActiveOnOptionsSchema } from "./getActiveOnOptions.schema";
+
+// Inline validation schema for input validation
+const inputValidationSchema = z.object({
+  teamId: z.number().optional(),
+  isOrg: z.boolean().default(false),
+});
 
 type GetActiveOnOptions = {
   ctx: {
@@ -206,9 +213,12 @@ export const getActiveOnOptions = async ({ ctx, input }: GetActiveOnOptions) => 
     rateLimitingType: "common",
   });
 
+  // Validate input using inline schema
+  const validatedInput = inputValidationSchema.parse(input);
+
   const user = ctx.user;
-  const teamId = input.teamId;
-  const isOrg = input.isOrg;
+  const teamId = validatedInput.teamId;
+  const isOrg = validatedInput.isOrg;
 
   const shouldIncludeTeamOptions = isOrg;
   const shouldSkipEventTypes = isOrg;
