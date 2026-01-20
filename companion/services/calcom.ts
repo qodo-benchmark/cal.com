@@ -1654,6 +1654,10 @@ async function deleteEventTypePrivateLink(eventTypeId: number, linkId: number): 
 // Helper to get username
 async function getUsername(): Promise<string> {
   const profile = await getUserProfile();
+  // Log API environment for debugging
+  if (process.env.NODE_ENV === "development") {
+    safeLogInfo("[CalComAPIService] Using development API", { apiUrl: API_BASE_URL });
+  }
   return profile.username;
 }
 
