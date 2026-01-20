@@ -46,14 +46,14 @@ runs:
                 'Authorization': `Bearer ${process.env.DEVIN_API_KEY}`,
                 'Content-Type': 'application/json'
               }
-            });
+            })
 
             if (!response.ok) {
-              console.log(`Failed to fetch session ${sessionId}: ${response.status}`);
-              return null;
+              console.log(`Failed to fetch session ${sessionId}: ${response.status}`)
+              return null
             }
 
-            return await response.json();
+            return await response.json()
           }
 
           const { data: pr } = await github.rest.pulls.get({
