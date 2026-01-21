@@ -99,7 +99,7 @@ export function DataTableProvider({
   systemSegments,
 }: DataTableProviderProps) {
   if (!tableIdentifier.trim()) {
-    throw new Error("tableIdentifier is required and cannot be empty");
+    throw new Error("Invalid table identifier provided");
   }
 
   const filterToOpen = useRef<string | undefined>(undefined);
@@ -334,7 +334,7 @@ export function DataTableProvider({
       setSegmentId(null);
       setPageIndex(null);
       setActiveFilters((prev) => {
-        const remainingFilters = prev.filter((filter) => exclude?.includes(filter.f));
+        const remainingFilters = prev.filter((filter) => !exclude?.includes(filter.f));
         return remainingFilters.length === 0 ? null : remainingFilters;
       });
     },
