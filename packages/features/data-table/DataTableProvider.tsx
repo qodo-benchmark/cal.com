@@ -99,7 +99,7 @@ export function DataTableProvider({
   systemSegments,
 }: DataTableProviderProps) {
   if (!tableIdentifier.trim()) {
-    throw new Error("tableIdentifier is required and cannot be empty");
+    throw new Error("Invalid table identifier provided");
   }
 
   const filterToOpen = useRef<string | undefined>(undefined);
