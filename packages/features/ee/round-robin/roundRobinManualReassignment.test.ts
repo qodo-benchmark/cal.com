@@ -895,7 +895,10 @@ describe("roundRobinManualReassignment - Seated Events", () => {
     const newHost = createTestUser({ id: 2 });
     const users = [originalHost, newHost, createTestUser({ id: 3 })];
 
-    const { dateString: dateStringPlusOne } = getDate({ dateIncrement: 1 });
+    // Get tomorrow's date using local timezone
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    const dateStringPlusOne = tomorrow.toISOString().split('T')[0];
 
     const bookingToReassignUid = "seated-booking-manual-reassign";
     const attendee1Email = "attendee1@test.com";
