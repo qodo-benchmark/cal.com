@@ -32,7 +32,7 @@ const ServerPage = async () => {
     return redirect("/onboarding/personal/settings");
   }
 
-  const userEmail = session.user.email || "";
+  const userEmail = session.user.email || '';
 
   return <OnboardingView userEmail={userEmail} />;
 };
