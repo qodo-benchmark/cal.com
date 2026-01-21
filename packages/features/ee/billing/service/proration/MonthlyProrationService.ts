@@ -193,6 +193,8 @@ export class MonthlyProrationService {
     netSeatIncrease: number;
     monthKey: string;
     teamId: number;
+    subscriptionId: string;
+    invoiceId?: string | null;
   }) {
     const amountInCents = Math.round(proration.proratedAmount);
 
@@ -220,6 +222,7 @@ export class MonthlyProrationService {
       customerId: proration.customerId,
       autoAdvance: true,
       collectionMethod: hasDefaultPaymentMethod ? "charge_automatically" : "send_invoice",
+      daysUntilDue: 30,
       metadata: {
         type: "monthly_proration",
         prorationId: proration.id,
@@ -304,6 +307,11 @@ export class MonthlyProrationService {
 
     if (!proration) throw new Error(`Proration ${prorationId} not found`);
     if (proration.status !== "FAILED") throw new Error(`Proration ${prorationId} is not in FAILED status`);
+
+    // Void the old invoice to prevent double charging
+    if (proration.invoiceId) {
+      await this.billingService.voidInvoice(proration.invoiceId);
+    }
 
     await this.createStripeInvoiceItem(proration);
   }

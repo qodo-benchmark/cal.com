@@ -68,10 +68,10 @@ const mockProrationRepository = {
 };
 
 const mockBillingService: IBillingProviderService = {
-  createInvoiceItem: vi.fn().mockResolvedValue({ invoiceItemId: "ii_test_123" }),
-  createInvoice: vi.fn().mockResolvedValue({ invoiceId: "in_test_123" }),
-  finalizeInvoice: vi.fn().mockResolvedValue(undefined),
-  getSubscription: vi.fn().mockResolvedValue({
+  createInvoiceItem: jest.fn().mockResolvedValue({ invoiceItemId: "ii_test_123" }),
+  createInvoice: jest.fn().mockResolvedValue({ invoiceId: "in_test_123" }),
+  finalizeInvoice: jest.fn().mockResolvedValue(undefined),
+  getSubscription: jest.fn().mockResolvedValue({
     items: [
       { id: "si_test_123", quantity: 1, price: { unit_amount: 12000, recurring: { interval: "year" } } },
     ],
@@ -81,25 +81,25 @@ const mockBillingService: IBillingProviderService = {
     current_period_end: 1654041600,
     trial_end: null,
   }),
-  handleSubscriptionUpdate: vi.fn().mockResolvedValue(undefined),
-  checkoutSessionIsPaid: vi.fn().mockResolvedValue(true),
-  handleSubscriptionCancel: vi.fn().mockResolvedValue(undefined),
-  handleSubscriptionCreation: vi.fn().mockResolvedValue(undefined),
-  handleEndTrial: vi.fn().mockResolvedValue(undefined),
-  createCustomer: vi.fn().mockResolvedValue({ stripeCustomerId: "cus_test_123" }),
-  createPaymentIntent: vi.fn().mockResolvedValue({ id: "pi_test_123", client_secret: "secret_123" }),
-  createSubscriptionCheckout: vi
+  handleSubscriptionUpdate: jest.fn().mockResolvedValue(undefined),
+  checkoutSessionIsPaid: jest.fn().mockResolvedValue(true),
+  handleSubscriptionCancel: jest.fn().mockResolvedValue(undefined),
+  handleSubscriptionCreation: jest.fn().mockResolvedValue(undefined),
+  handleEndTrial: jest.fn().mockResolvedValue(undefined),
+  createCustomer: jest.fn().mockResolvedValue({ stripeCustomerId: "cus_test_123" }),
+  createPaymentIntent: jest.fn().mockResolvedValue({ id: "pi_test_123", client_secret: "secret_123" }),
+  createSubscriptionCheckout: jest
     .fn()
     .mockResolvedValue({ checkoutUrl: "https://checkout.test", sessionId: "cs_test_123" }),
-  createPrice: vi.fn().mockResolvedValue({ priceId: "price_test_123" }),
-  getPrice: vi.fn().mockResolvedValue(null),
-  getSubscriptionStatus: vi.fn().mockResolvedValue(null),
-  getCheckoutSession: vi.fn().mockResolvedValue(null),
-  getCustomer: vi.fn().mockResolvedValue(null),
-  getSubscriptions: vi.fn().mockResolvedValue(null),
-  updateCustomer: vi.fn().mockResolvedValue(undefined),
-  getPaymentIntentFailureReason: vi.fn().mockResolvedValue(null),
-  hasDefaultPaymentMethod: vi.fn().mockResolvedValue(true),
+  createPrice: jest.fn().mockResolvedValue({ priceId: "price_test_123" }),
+  getPrice: jest.fn().mockResolvedValue(null),
+  getSubscriptionStatus: jest.fn().mockResolvedValue(null),
+  getCheckoutSession: jest.fn().mockResolvedValue(null),
+  getCustomer: jest.fn().mockResolvedValue(null),
+  getSubscriptions: jest.fn().mockResolvedValue(null),
+  updateCustomer: jest.fn().mockResolvedValue(undefined),
+  getPaymentIntentFailureReason: jest.fn().mockResolvedValue(null),
+  hasDefaultPaymentMethod: jest.fn().mockResolvedValue(true),
 } as IBillingProviderService;
 
 vi.mock("../../../repository/proration/MonthlyProrationTeamRepository", () => ({
