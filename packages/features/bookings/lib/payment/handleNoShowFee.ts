@@ -104,7 +104,8 @@ export const handleNoShowFee = async ({
   };
 
   if (teamId) {
-    const userIsInTeam = await MembershipRepository.findUniqueByUserIdAndTeamId({
+    const membershipRepository = new MembershipRepository()
+    const userIsInTeam = await membershipRepository.findUniqueByUserIdAndTeamId({
       userId,
       teamId,
     });
@@ -114,7 +115,7 @@ export const handleNoShowFee = async ({
       throw new Error("User is not a member of the team");
     }
   }
-  let paymentCredential = await CredentialRepository.findPaymentCredentialByAppIdAndUserIdOrTeamId({
+  const paymentCredential = await CredentialRepository.findPaymentCredentialByAppIdAndUserIdOrTeamId({
     appId,
     userId,
     teamId,
