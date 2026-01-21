@@ -3,6 +3,7 @@ import { Type } from "class-transformer";
 import { IsEnum, ValidateNested, IsNumber, IsString, IsOptional, IsUrl } from "class-validator";
 
 import { SUCCESS_STATUS, ERROR_STATUS } from "@calcom/platform-constants";
+import type { BookingRepository } from "@calcom/features/bookings/lib/BookingRepository";
 
 export class RecordingItem {
   @ApiProperty({ example: "1234567890" })

