@@ -18,7 +18,7 @@ type UseOnboardingCalendarEventsResult = {
   isLoading: boolean;
 };
 
-const emptyAvailabilityData: RouterOutputs["viewer"]["availability"]["user"] = {
+const emptyAvailabilityData = {
   busy: [],
   timeZone: "",
   dateRanges: [],

