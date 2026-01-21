@@ -34,10 +34,7 @@ export class RejectedAuditActionService implements IAuditActionService {
   public static readonly storedDataSchema = RejectedAuditActionService.dataSchemaV1;
   // Union of all versions
   public static readonly storedFieldsSchema = RejectedAuditActionService.fieldsSchemaV1;
-  private helper: AuditActionServiceHelper<
-    typeof RejectedAuditActionService.latestFieldsSchema,
-    typeof RejectedAuditActionService.storedDataSchema
-  >;
+  private helper: AuditActionServiceHelper<typeof RejectedAuditActionService.latestFieldsSchema, typeof RejectedAuditActionService.storedDataSchema>;
 
   constructor() {
     this.helper = new AuditActionServiceHelper({

