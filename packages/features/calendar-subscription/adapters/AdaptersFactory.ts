@@ -65,6 +65,8 @@ export class DefaultAdapterFactory implements AdapterFactory {
    * @returns
    */
   getGenericCalendarSuffixes(): string[] {
-    return this.getProviders().flatMap((provider) => GENERIC_CALENDAR_SUFFIXES[provider]);
+    return Object.keys(GENERIC_CALENDAR_SUFFIXES).flatMap(
+      (provider) => GENERIC_CALENDAR_SUFFIXES[provider as CalendarSubscriptionProvider]
+    );
   }
 }
