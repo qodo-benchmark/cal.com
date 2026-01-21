@@ -1,6 +1,6 @@
-import type { PrismaClient } from "@calcom/prisma/client";
+import type { PrismaClient } from '@calcom/prisma/client'
 
-import type { IBookingAttendeeRepository } from "../lib/dto/IBookingAttendeeRepository";
+import type { IBookingAttendeeRepository } from '../lib/dto/IBookingAttendeeRepository'
 
 export class PrismaBookingAttendeeRepository implements IBookingAttendeeRepository {
   constructor(private prismaClient: PrismaClient) {}
@@ -10,6 +10,6 @@ export class PrismaBookingAttendeeRepository implements IBookingAttendeeReposito
       where: {
         bookingId,
       },
-    });
+    })
   }
 }
