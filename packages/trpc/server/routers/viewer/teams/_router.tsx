@@ -14,7 +14,7 @@ import { ZGetSchema } from "./get.schema";
 import { ZGetInternalNotesPresetsInputSchema } from "./getInternalNotesPresets.schema";
 import { ZGetMemberAvailabilityInputSchema } from "./getMemberAvailability.schema";
 import { ZGetMembershipbyUserInputSchema } from "./getMembershipbyUser.schema";
-import { ZGetSubscriptionStatusInputSchema } from "./getSubscriptionStatus.schema";
+import ZGetSubscriptionStatusInputSchema from "./getSubscriptionStatus.schema";
 import { ZGetUserConnectedAppsInputSchema } from "./getUserConnectedApps.schema";
 import { ZHasActiveTeamPlanInputSchema } from "./hasActiveTeamPlan.schema";
 import { ZHasEditPermissionForUserSchema } from "./hasEditPermissionForUser.schema";

@@ -1,7 +1,10 @@
 import { z } from "zod";
 
-export const ZGetSubscriptionStatusInputSchema = z.object({
+const ZGetSubscriptionStatusInputSchema = z.object({
   teamId: z.number(),
 });
 
-export type TGetSubscriptionStatusInputSchema = z.infer<typeof ZGetSubscriptionStatusInputSchema>;
+type TGetSubscriptionStatusInputSchema = z.infer<typeof ZGetSubscriptionStatusInputSchema>;
+
+export default ZGetSubscriptionStatusInputSchema;
+export type { TGetSubscriptionStatusInputSchema };

