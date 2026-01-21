@@ -5,7 +5,7 @@ import { Alert, ScrollView, Switch, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { AppPressable } from "@/components/AppPressable";
 import { useUpdateSchedule } from "@/hooks/useSchedules";
-import type { Schedule } from "@/services/calcom";
+import { CalComAPIService, type Schedule } from "@/services/calcom";
 import type { ScheduleAvailability } from "@/services/types";
 import { showErrorAlert } from "@/utils/alerts";
 

