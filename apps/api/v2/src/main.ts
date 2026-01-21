@@ -1,4 +1,7 @@
-import type { AppConfig } from "@/config/type";
+import "dotenv/config";
+
+import { IncomingMessage, Server, ServerResponse } from "node:http";
+import process from "node:process";
 import { Logger } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { NestFactory } from "@nestjs/core";
@@ -7,8 +10,10 @@ import "dotenv/config";
 import { WinstonModule } from "nest-winston";
 import * as qs from "qs";
 
-import { bootstrap } from "./app";
+import type { AppConfig } from "@/config/type";
+
 import { AppModule } from "./app.module";
+import { bootstrap } from "./app.service";
 import { loggerConfig } from "./lib/logger";
 import { generateSwaggerForApp } from "./swagger/generate-swagger";
 
@@ -17,13 +22,13 @@ run().catch((error: Error) => {
   process.exit(1);
 });
 
-async function run() {
+async function run(): Promise<void> {
   const app = await createNestApp();
   const logger = new Logger("App");
 
   try {
-    bootstrap(app);
     const port = app.get(ConfigService<AppConfig, true>).get("api.port", { infer: true });
+    bootstrap(app);
     generateSwaggerForApp(app);
     await app.listen(port);
     logger.log(`Application started on port: ${port}`);
@@ -35,7 +40,9 @@ async function run() {
   }
 }
 
-export async function createNestApp() {
+export async function createNestApp(): Promise<
+  NestExpressApplication<Server<typeof IncomingMessage, typeof ServerResponse>>
+> {
   const app = await NestFactory.create<NestExpressApplication>(AppModule, {
     logger: WinstonModule.createLogger(loggerConfig()),
     bodyParser: false,
