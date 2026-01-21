@@ -74,7 +74,7 @@ function CalendarList(props: Props): JSX.Element {
 const AddCalendarButton = (): JSX.Element => {
   const { t } = useLocale();
   return (
-    <Button color="secondary" StartIcon="plus" href="/apps/categories/calendar">
+    <Button color='secondary' StartIcon='plus' href='/apps/categories/calendar'>
       {t("add_calendar")}
     </Button>
   );
