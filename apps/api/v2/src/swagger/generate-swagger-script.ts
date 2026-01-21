@@ -1,7 +1,7 @@
 import "dotenv/config";
 import process from "node:process";
 
-import { bootstrap } from "../bootstrap";
+import { bootstrap } from "../app.service";
 import { createNestApp } from "../main";
 import { generateSwaggerForApp } from "../swagger/generate-swagger";
 

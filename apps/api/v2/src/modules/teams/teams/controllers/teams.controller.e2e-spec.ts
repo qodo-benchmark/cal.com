@@ -1,4 +1,4 @@
-import { bootstrap } from "@/bootstrap";
+import { bootstrap } from "@/app.service";
 import { AppModule } from "@/app.module";
 import { StripeService } from "@/modules/stripe/stripe.service";
 import { CreateTeamInput } from "@/modules/teams/teams/inputs/create-team.input";

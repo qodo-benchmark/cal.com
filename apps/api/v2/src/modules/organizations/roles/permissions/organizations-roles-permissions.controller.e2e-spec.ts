@@ -1,4 +1,4 @@
-import { bootstrap } from "@/bootstrap";
+import { bootstrap } from "@/app.service";
 import { AppModule } from "@/app.module";
 import { CreateTeamRoleInput } from "@/modules/organizations/teams/roles/inputs/create-team-role.input";
 import type { CreateTeamRoleOutput } from "@/modules/organizations/teams/roles/outputs/create-team-role.output";

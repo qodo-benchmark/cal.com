@@ -13,7 +13,7 @@ import * as qs from "qs";
 import type { AppConfig } from "@/config/type";
 
 import { AppModule } from "./app.module";
-import { bootstrap } from "./bootstrap";
+import { bootstrap } from "./app.service";
 import { loggerConfig } from "./lib/logger";
 import { generateSwaggerForApp } from "./swagger/generate-swagger";
 
@@ -27,8 +27,8 @@ async function run(): Promise<void> {
   const logger = new Logger("App");
 
   try {
-    bootstrap(app);
     const port = app.get(ConfigService<AppConfig, true>).get("api.port", { infer: true });
+    bootstrap(app);
     generateSwaggerForApp(app);
     await app.listen(port);
     logger.log(`Application started on port: ${port}`);
