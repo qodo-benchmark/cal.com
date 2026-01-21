@@ -8,7 +8,7 @@ export type ResolvedFeatureState = {
   userState: FeatureState | undefined; // Raw state
   effectiveEnabled: boolean;
   // Auto-opt-in flags for UI to show checkbox state
-  orgAutoOptIn: boolean;
+  orgAutoOptIn: boolean;   
   teamAutoOptIns: boolean[];
   userAutoOptIn: boolean;
 };

