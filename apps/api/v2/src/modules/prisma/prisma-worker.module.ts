@@ -12,7 +12,7 @@ import { PrismaWriteService } from "@/modules/prisma/prisma-write.service";
         const service = new PrismaReadService();
         service.setOptions({
           readUrl: config.get<string>("db.readUrl", { infer: true }),
-          maxReadConnections: parseInt(config.get<number>("db.workerReadPoolMax", { infer: true }), 10),
+          maxReadConnections: parseInt(config.get<number>("db.workerReadPoolMax", { infer: true })),
           e2e: config.get<boolean>("e2e", { infer: true }) ?? false,
           type: "worker",
         });
@@ -26,7 +26,7 @@ import { PrismaWriteService } from "@/modules/prisma/prisma-write.service";
         const service = new PrismaWriteService();
         service.setOptions({
           writeUrl: config.get<string>("db.writeUrl", { infer: true }),
-          maxWriteConnections: parseInt(config.get<number>("db.workerWritePoolMax", { infer: true }), 10),
+          maxWriteConnections: parseInt(config.get<number>("db.workerWritePoolMax", { infer: true })),
           e2e: config.get<boolean>("e2e", { infer: true }) ?? false,
           type: "worker",
         });

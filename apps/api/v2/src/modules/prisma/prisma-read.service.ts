@@ -16,13 +16,13 @@ export class PrismaReadService implements OnModuleInit, OnModuleDestroy {
   constructor(configService?: ConfigService) {
     if (configService) {
       // Use ConfigService defaults
-      const readUrl = configService.get<string>("db.readUrl", { infer: true });
+      const readUrl = configService.get<string>('db.readUrl', { infer: true });
       const poolMax = parseInt(
-        configService.get<number>("db.readPoolMax", { infer: true }) ?? DB_MAX_POOL_CONNECTION,
+        configService.get<number>('db.readPoolMax', { infer: true }) ?? DB_MAX_POOL_CONNECTION,
         10
       );
-      const e2e = configService.get<boolean>("e2e", { infer: true }) ?? false;
-      const usePool = configService.get<boolean>("db.usePool", { infer: true }) ?? true;
+      const e2e = configService.get<boolean>('e2e', { infer: true }) ?? false;
+      const usePool = configService.get<boolean>('db.usePool', { infer: true }) ?? true;
 
       this.setOptions({
         readUrl,

