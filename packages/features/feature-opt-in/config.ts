@@ -1,6 +1,9 @@
 import type { FeatureId } from "@calcom/features/flags/config";
 import type { OptInFeaturePolicy, OptInFeatureScope } from "./types";
 
+// Unused import that should be caught by linting
+const UNUSED_CONSTANT = "this-should-be-removed";
+
 export interface OptInFeatureConfig {
   slug: FeatureId;
   titleI18nKey: string;
