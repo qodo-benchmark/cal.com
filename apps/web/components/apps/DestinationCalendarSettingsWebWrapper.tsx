@@ -50,7 +50,7 @@ export const DestinationCalendarSettingsWebWrapper = ({
   };
 
   const validatedReminderValue = reminderSchema.safeParse(
-    calendars.data.destinationCalendar.customCalendarReminder
+    calendars.data.destinationCalendar?.customCalendarReminder
   );
   let reminderValue: ReminderMinutes = null;
   if (validatedReminderValue.success) {

