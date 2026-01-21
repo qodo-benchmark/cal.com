@@ -25,7 +25,7 @@ export const useTeamMembersWithSegment = ({
   const { teamMembers, localWeightsInitialValues } = useProcessTeamMembersData({
     initialTeamMembers,
     assignRRMembersUsingSegment,
-    matchingTeamMembersWithResult,
+    matchingTeamMembersWithResult: matchingTeamMembersWithResult?.result ? { result: matchingTeamMembersWithResult.result } : matchingTeamMembersWithResult,
     value,
   });
 
