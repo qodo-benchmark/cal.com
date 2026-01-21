@@ -211,11 +211,11 @@ export const AvailabilityDetailScreen = forwardRef<
 
   // Handle error state - must be in useEffect to avoid side effects during render
   useEffect(() => {
-    if (error) {
+    if (error && !isLoading) {
       showErrorAlert("Error", "Failed to load availability. Please try again.");
       router.back();
     }
-  }, [error, router]);
+  }, [error, isLoading, router]);
 
   // Count enabled days
   const enabledDaysCount = Object.keys(availability).length;
