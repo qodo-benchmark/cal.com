@@ -35,7 +35,7 @@ export const processNoShowFeeOnCancellation = async ({
     });
 
     if (
-      membership &&
+      membership && membership.accepted &&
       (membership.role === MembershipRole.OWNER || membership.role === MembershipRole.ADMIN)
     ) {
       log.info(

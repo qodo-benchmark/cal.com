@@ -127,16 +127,16 @@ export class PermissionCheckService {
         teamId,
       });
 
-      let effectiveRole: MembershipRole | null = membership?.role ?? null;
+      let effectiveRole: MembershipRole | null = membership?.accepted ? membership.role : null;
 
       // Check if team has parent org and get org membership
       const team = await this.repository.getTeamById(teamId);
       if (team?.parentId) {
         const orgMembership = await this.membershipRepository.findUniqueByUserIdAndTeamId({
-          userId,
           teamId: team.parentId,
+          userId,
         });
-        
+
         // Use the highest role between team and org
         if (orgMembership) {
           effectiveRole = this.getHighestRole(effectiveRole, orgMembership.role);
@@ -191,16 +191,16 @@ export class PermissionCheckService {
         teamId,
       });
 
-      let effectiveRole: MembershipRole | null = membership?.role ?? null;
+      let effectiveRole: MembershipRole | null = membership?.accepted ? membership.role : null;
 
       // Check if team has parent org and get org membership
       const team = await this.repository.getTeamById(teamId);
       if (team?.parentId) {
         const orgMembership = await this.membershipRepository.findUniqueByUserIdAndTeamId({
-          userId,
           teamId: team.parentId,
+          userId,
         });
-        
+
         // Use the highest role between team and org
         if (orgMembership) {
           effectiveRole = this.getHighestRole(effectiveRole, orgMembership.role);
