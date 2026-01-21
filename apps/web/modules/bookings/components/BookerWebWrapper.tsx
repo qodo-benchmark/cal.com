@@ -1,7 +1,7 @@
 "use client";
 
 import { useSession } from "next-auth/react";
-import { useSearchParams, usePathname, useRouter } from "next/navigation";
+import { useSearchParams, usePathname } from "next/navigation";
 import { useMemo, useCallback, useEffect } from "react";
 import React from "react";
 import { shallow } from "zustand/shallow";
@@ -39,7 +39,6 @@ export type BookerWebWrapperAtomProps = BookerProps & {
 };
 
 const BookerWebWrapperComponent = (props: BookerWebWrapperAtomProps) => {
-  const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const clientFetchedEvent = useEvent({

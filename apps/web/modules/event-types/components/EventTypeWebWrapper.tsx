@@ -58,7 +58,7 @@ const EventAvailabilityTab = dynamic(() =>
   import("./tabs/availability/EventAvailabilityTabWebWrapper").then((mod) => mod)
 );
 
-const EventTeamAssignmentTab = dynamic(() => import("./tabs/assignment/EventTeamAssignmentTabWebWrapper").then((mod) => mod));
+const EventTeamAssignmentTab = dynamic(() => import("./tabs/assignment/EventTeamAssignmentTabWebWrapper"));
 
 const EventLimitsTab = dynamic(() =>
   import("./tabs/limits/EventLimitsTabWebWrapper").then((mod) => mod)
@@ -233,21 +233,21 @@ const EventTypeWeb = ({
 
   const tabMap = {
     setup: (
-      <EventSetupTab
-        eventType={eventType}
-        locationOptions={locationOptions}
-        team={team}
-        teamMembers={teamMembers}
-        destinationCalendar={destinationCalendar}
-      />
+        <EventSetupTab
+            eventType={eventType}
+            locationOptions={locationOptions}
+            team={team}
+            teamMembers={teamMembers}
+            destinationCalendar={destinationCalendar}
+        />
     ),
     availability: (
-      <EventAvailabilityTab
-        eventType={eventType}
-        isTeamEvent={!!team}
-        user={user}
-        teamMembers={teamMembers}
-      />
+        <EventAvailabilityTab
+            eventType={eventType}
+            isTeamEvent={!!team}
+            user={user}
+            teamMembers={teamMembers}
+        />
     ),
     team: (
       <EventTeamAssignmentTab
