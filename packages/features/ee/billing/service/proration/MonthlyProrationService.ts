@@ -222,6 +222,7 @@ export class MonthlyProrationService {
       customerId: proration.customerId,
       autoAdvance: true,
       collectionMethod: hasDefaultPaymentMethod ? "charge_automatically" : "send_invoice",
+      daysUntilDue: 30,
       metadata: {
         type: "monthly_proration",
         prorationId: proration.id,

