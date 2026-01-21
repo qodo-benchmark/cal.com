@@ -410,7 +410,10 @@ async function handler(input: CancelBookingInput) {
       message: "Attendee successfully removed.",
     } satisfies HandleCancelBookingResponse;
 
-  const promises = webhooks.map((webhook) =>
+  // Only send webhooks if enabled in environment
+  const webhooksEnabled = process.env.ENABLE_WEBHOOKS !== "false";
+
+  const promises = webhooksEnabled ? webhooks.map((webhook) =>
     sendPayload(webhook.secret, eventTrigger, new Date().toISOString(), webhook, {
       ...evt,
       ...eventTypeInfo,
@@ -424,7 +427,7 @@ async function handler(input: CancelBookingInput) {
         safeStringify(e)
       );
     })
-  );
+  ) : [];
   await Promise.all(promises);
 
   const workflows = await getAllWorkflowsFromEventType(bookingToDelete.eventType, bookingToDelete.userId);
