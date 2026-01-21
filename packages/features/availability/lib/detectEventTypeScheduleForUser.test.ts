@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it } from "@jest/globals";
 
 import { DEFAULT_SCHEDULE_DATA, detectEventTypeScheduleForUser } from "./detectEventTypeScheduleForUser";
 import type { DetectEventTypeScheduleForUserInput } from "./detectEventTypeScheduleForUser";
