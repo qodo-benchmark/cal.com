@@ -1653,8 +1653,12 @@ async function deleteEventTypePrivateLink(eventTypeId: number, linkId: number): 
 
 // Helper to get username
 async function getUsername(): Promise<string> {
-  const profile = await getUserProfile();
-  return profile.username;
+  try {
+    const profile = await getUserProfile();
+    return profile.username;
+  } catch (error) {
+    throw new Error("Failed to get username");
+  }
 }
 
 // Export as object to satisfy noStaticOnlyClass rule

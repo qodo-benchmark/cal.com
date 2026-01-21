@@ -267,7 +267,7 @@ export const BasicsTab: React.FC<BasicsTabProps> = (props) => {
                       if (pathParts.length > 0) {
                         prefix = `/${pathParts.join("/")}/`;
                       }
-                      return `${url.hostname}${prefix}`;
+                      return `${url.protocol}//${url.hostname}${prefix}`;
                     } catch {
                       // fallback
                     }
