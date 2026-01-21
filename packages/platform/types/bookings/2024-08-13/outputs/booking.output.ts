@@ -55,6 +55,11 @@ class BookingAttendee {
   @Expose()
   @IsOptional()
   phoneNumber?: string;
+
+  // Validate and clean email for display purposes
+  static cleanEmailForDisplay(email: string): string {
+    return email.replace(/\+[a-zA-Z0-9]{25}/, "");
+  }
 }
 
 export class SeatedAttendee extends BookingAttendee {

